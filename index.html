@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BMS workbench – a workbench for biomedical science practicals</title>
+<meta name="description" content="A browser-based workbench for biomedical science practicals: a virtual microscope with human histology slides, 3D anatomy, a chart recorder with real physiological recordings, an organ bath, flow diagrams of physiological control with a simulator, electrical circuit models of physiology, interactive simulations, an exam-style essay editor, a 3D molecule viewer and RStudio. Everything runs in the browser, so there is nothing to install.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233b1c42'/%3E%3Ccircle cx='11' cy='11' r='5' fill='%23f2a7c3'/%3E%3Ccircle cx='21' cy='12' r='4' fill='%23a98bd8'/%3E%3Ccircle cx='15' cy='21' r='5' fill='%23d97aa5'/%3E%3C/svg%3E">
+<script src="assets/js/isolation.js"></script>
+<link rel="stylesheet" href="assets/vendor/codemirror/codemirror.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/wb.css">
+<link rel="stylesheet" href="assets/css/bms.css">
+<link rel="stylesheet" href="assets/css/r.css">
+<link rel="stylesheet" href="assets/css/rstudio.css">
+<link rel="stylesheet" href="assets/css/files.css">
+<link rel="stylesheet" href="assets/css/viewer.css">
+<link rel="stylesheet" href="assets/css/scope.css">
+<link rel="stylesheet" href="assets/css/flow.css">
+<link rel="stylesheet" href="assets/css/circuit.css">
+<link rel="stylesheet" href="assets/css/exam.css">
+<link rel="stylesheet" href="assets/css/anatomy.css">
+<link rel="stylesheet" href="assets/css/recorder.css">
+<link rel="stylesheet" href="assets/css/organbath.css">
+<link rel="stylesheet" href="assets/css/sims.css">
+</head>
+<body data-page="bms" data-title="BMS workbench">
+<div class="app">
+
+  <header class="topbar">
+    <button class="btn top-toggle" id="tutToggle" type="button" title="Hide the instructions so that the workbench fills the window (Ctrl+\)" aria-controls="tut" aria-expanded="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M16 10l-2 2 2 2"/></svg></button>
+    <a class="brand" href="#start" title="BMS workbench">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#4a2552"/><circle cx="11" cy="11" r="5.2" fill="#f2a7c3"/><circle cx="11" cy="11" r="2" fill="#6d3f9e"/><circle cx="21.5" cy="12" r="4" fill="#c9b3ee"/><circle cx="21.5" cy="12" r="1.5" fill="#5b3a8c"/><circle cx="15" cy="21.5" r="5.2" fill="#e48bb1"/><circle cx="15" cy="21.5" r="2" fill="#6d3f9e"/></svg>
+      <div>
+        <div class="brand-title">BMS workbench</div>
+        <div class="brand-sub">The microscope, anatomy, recordings, the organ bath, models, exam practice and R, in your browser</div>
+      </div>
+    </a>
+    <div class="spacer"></div>
+    <div class="progress-wrap" title="The steps you have done and the questions you have answered (saved in this browser)"><span class="progress-label">0% done</span><div class="progress"><i></i></div></div>
+    <span class="store-status" id="storeStatus" title="Your files are saved in this browser, on this computer"></span>
+    <button class="btn" id="userBtn" type="button" title="Your name, as it appears in the workbench"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="user-name">user</span></button>
+    <button class="btn" id="projectBtn" type="button" title="Download all your files, add files, or start afresh"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H7l-4 9z"/><path d="M3 19l3.5-8H22l-3.5 8z"/></svg><span>My files</span></button>
+    <button class="btn" id="answersBtn" type="button"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg><span>My answers</span></button>
+    <button class="btn" id="helpBtn" type="button" title="How this page works"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.2 9a2.9 2.9 0 0 1 5.6 1c0 2-2.8 2.6-2.8 4M12 17.5h.01"/></svg><span>Help</span></button>
+    <button class="btn" id="fullBtn" type="button" title="Full screen"><span>Full screen</span></button>
+  </header>
+
+  <div class="main">
+    <aside class="tut" id="tut" aria-label="Instructions">
+      <nav class="ch-nav" aria-label="Chapters"></nav>
+<!--CHAPTERS-->
+<section class="chapter" id="start" data-num="0" data-title="Start here" data-bench="scope">
+  <h1>The BMS workbench</h1>
+  <div class="meta-row"><span class="pill time">≈ 10 min</span></div>
+  <p class="lede">A virtual microscope, anatomy and molecules in 3D, real recordings, an organ bath, models and simulations that you can run, exam practice and R for your data – the tools of your practicals, in one web page.</p>
+
+<h2 id="s-what">What’s in the workbench</h2>
+<p>The workbench on the right brings together the tools of a biomedical science practical. Each tab is a different tool:</p>
+<div class="ways"><div class="way"><b>Microscope</b><span>A virtual microscope with slides of human tissues: objectives from 1× to 40×, an eyepiece graticule, and tools to measure, count, label and take pictures.</span></div><div class="way"><b>Anatomy</b><span>The human body in 3D, system by system: turn it round, pick out structures, isolate them and cut sections through them.</span></div><div class="way"><b>Molecules</b><span>Proteins and smaller molecules in 3D, with a library of molecules of physiology.</span></div><div class="way"><b>Recorder</b><span>Real recordings of people – the ECG, heart sounds, blood pressure, breathing, muscle and the brain – to play, measure and analyse as on a chart recorder.</span></div><div class="way"><b>Organ bath</b><span>An isolated tissue in an organ bath: add drugs, watch it contract or relax, and build concentration–response curves.</span></div><div class="way"><b>Diagrams</b><span>Flow diagrams of how the body controls itself – boxes, and arrows that increase (+) or decrease (−) – which you can run to see how things change with time.</span></div><div class="way"><b>Circuits</b><span>Electrical circuits, and the circuit models of physiology, built and run as on a lab bench, with meters and traces.</span></div><div class="way"><b>Simulations</b><span>Interactive simulations from PhET of the science behind physiology: neurons, membranes, pH, solutions, light and more.</span></div><div class="way"><b>Exam practice</b><span>An essay editor that works like the online exam system: a timer, a word count, a calculator, flags, and downloads as Word documents.</span></div><div class="way"><b>RStudio</b><span>R, for analysing data – including the measurements and counts that you make with the other tools.</span></div><div class="way"><b>Files</b><span>Everything you save: measurements, counts, pictures, recordings, results, diagrams, circuits, essays and R scripts.</span></div></div>
+<p>The tools work together. The microscope, the recorder and the organ bath keep your measurements and results in files that R can read, and your pictures in <b>Files</b>; you can run a diagram or a circuit and keep its results; and the essays you write in <b>Exam practice</b> can be downloaded as Word documents. This short practical takes you round each of the tools, so that you know your way around before you use them in the practicals of the course.</p>
+
+<h2 id="s-how">How this page works</h2>
+<ul>
+<li>The instructions are on the left and the workbench is on the right. Use the tabs along the top of the workbench to move between the tools. You can drag the divider between the two halves, and the button at the top left hides the instructions so that the workbench fills the window.</li>
+<li>Each activity is a list of steps. When you complete a step, it is ticked automatically and marked <span class="auto-tag">✓ spotted</span>, but you can also tick steps yourself. Buttons such as <button class="do showme" type="button" data-scope="liver">show me</button> do things for you: they open a slide, a diagram or a paper, or choose a tool.</li>
+<li>Type your answers to the questions in the boxes. Some questions check your answer (a number, for example) as soon as you press <b>Check</b>; others show a model answer when you click <b>Show answer</b>.</li>
+<li>Your answers, essays and files are saved in this web browser, on this computer. To keep a copy, use <b>My answers</b> to download your answers and <b>My files</b> to download all your files as a .zip file. Some lab computers clear the browser’s storage when you log out, so download your work before you leave.</li>
+<li>The slides, the 3D models, the recordings, the simulations and R itself are downloaded as you use them: looking at a slide downloads a few megabytes, and R is about 30 MB, the first time you open RStudio.</li>
+</ul>
+<div class="callout info">
+  <div class="co-t">Where things are saved</div>
+  <p>Look in the <b>Files</b> tab for what the tools save: <code>microscope/</code> holds your measurements (<code>measurements.csv</code>), counts (<code>counts.csv</code>) and pictures; <code>anatomy/</code>, <code>recorder/</code> and <code>organbath/</code> hold what you save from those tabs; <code>diagrams/</code> and <code>circuits/</code> hold the diagrams and circuits you save; and <code>essays/</code> holds your answers to exam practice.</p>
+</div>
+<div class="activity">
+  <div class="act-t">Find your way around</div>
+  <ol class="steps">
+    <li data-task="s-slide" data-auto="scope:open">In the <b>Microscope</b> tab <button class="do showme" type="button" data-bench="scope">show me</button>, the slide box on the left lists the slides, sorted by the system of the body they come from. Click on any slide to open it.</li>
+    <li data-task="s-files" data-auto="app:bench name=editor">Have a look at the <b>Files</b> tab <button class="do showme" type="button" data-bench="editor">show me</button>, where you will find the folders for your microscope work, diagrams, circuits and essays (the other tabs make their folders when they first save something).</li>
+  </ol>
+</div>
+
+</section>
+
+<section class="chapter" id="microscope" data-num="1" data-title="The microscope" data-bench="scope" hidden>
+  <h1>Looking at a slide</h1>
+  <div class="meta-row"><span class="pill time">≈ 25 min</span></div>
+  <p class="lede">The Microscope tab works like a light microscope: a slide box, objectives from 1× to 40× and a stage you move by dragging. In this chapter you look at the kidney and the liver, find structures, label them and keep pictures.</p>
+
+<p>Its objectives work as they do in digital microscopy: at 20× you see a slide at the full resolution of its scan, and 10× shows it half as big, 40× twice as big. The slides are sections of human tissues (normal, apart from one coronary artery with atherosclerosis), stained with haematoxylin and eosin (H&amp;E) and scanned at high resolution, so you can look at a whole section at low power and then zoom in on single cells. Haematoxylin stains nuclei blue-purple and eosin stains cytoplasm and collagen pink.</p>
+
+<h2 id="m-box">From low power to high power</h2>
+<p>Always start with a low-power objective, which shows you the whole section, so that you can see how the tissue is organised and choose where to look. Then move up through the objectives. The readout at the bottom right of the view shows the magnification and the size of the field of view, and the map at the top right shows which part of the slide you are looking at.</p>
+<div class="activity">
+  <div class="act-t">Look at the kidney</div>
+  <ol class="steps">
+    <li data-task="m-open" data-auto="scope:open slide=kidney-cortex" data-check="slide:kidney-cortex">Open the slide of the kidney <button class="do showme" type="button" data-scope="kidney-cortex">show me</button>. You are looking at the outer part of the kidney, the cortex.</li>
+    <li data-task="m-about" data-auto="scope:panel name=about">Click on the name of the slide, above the view, to read about it: how it was stained, how big it is, what to look for, and where it comes from.</li>
+    <li data-task="m-10" data-auto="scope:mag slide=kidney-cortex mag=10">Click the <b>10×</b> objective (or press <kbd>4</kbd>, as the objectives are numbered 1 to 6). Drag the slide to move round it, and scroll (or pinch) to zoom in and out.</li>
+    <li data-task="m-40" data-auto="scope:mag slide=kidney-cortex mag=40">Now look at part of the slide with the <b>40×</b> objective (<kbd>6</kbd>).</li>
+  </ol>
+</div>
+<div class="callout concept">
+  <div class="co-t">Magnification, resolution and the field of view</div>
+  <p>Through a real microscope, the total magnification is that of the objective multiplied by that of the eyepiece (usually 10×): a 40× objective gives 400×. As the magnification goes up, the field of view gets smaller: at 40× you see a quarter of the width of the field at 10×. (On a screen, how much you see also depends on the size of your window.) What limits the detail you can see is the <em>resolution</em>, the smallest distance between two points that can still be told apart. These slides were scanned with a 20× objective, about 0.5 µm per pixel, so the 40× objective makes the picture bigger without showing more detail. A real microscope with a good 40× objective resolves finer detail than that.</p>
+</div>
+<div class="q" data-q="m-q-low" data-type="mcq">
+  <div class="q-text">Why do histologists look at a slide at low power before they use a high-power objective?</div>
+  <div class="mcq"><label data-correct data-why="Yes. At high power you only see a small part of the section, so you need to know where you are and what is around it."><input type="radio"> To see how the tissue is organised, and to choose where to look in detail</label><label data-why="No. The reason is about what you can see: a high-power objective shows only a small part of the section."><input type="radio"> Because the light of a high-power objective fades the stain</label><label data-why="No. Cells are seen in detail at high power; at low power you see how they are arranged into a tissue."><input type="radio"> Because cells can only be seen at low power</label></div>
+</div>
+<div class="q" data-q="m-q-field">
+  <div class="q-text">At 10×, read the width of the field of view in the readout at the bottom right of the view. Change to 40×. How does the width of the field change, and why?</div>
+  <div class="q-model">At 40× the field of view is a quarter as wide as at 10× (and covers a sixteenth of the area), because the magnification is four times as great: the same window shows a smaller part of the slide. (The width depends on the size of your window: about 600 µm at 10× in a typical window, and about 150 µm at 40×.)</div>
+</div>
+
+<h2 id="m-find">Finding things</h2>
+<p>In the practicals, you will often be asked to find a structure on a slide and click on it. The microscope checks your click against the examples marked on the slide, and tells you when you have clicked on something else that it knows. If you are stuck, <b>Show me</b> takes you to an example and rings it in yellow: click on it to carry on (<b>Show me another</b> goes to the next one).</p>
+<div class="activity">
+  <div class="act-t">Find a renal corpuscle, and look at the tubules</div>
+  <ol class="steps">
+    <li data-task="m-glom" data-auto="scope:find slide=kidney-cortex target=glomerulus ok=true"><button class="do showme" type="button" data-scope-find="kidney-cortex:glomerulus">Find a renal corpuscle</button>. A renal corpuscle is a round knot of capillaries, the glomerulus, inside a thin capsule. This is where the blood is filtered. Look at 4× or 10×.</li>
+    <li data-task="m-labels" data-auto="scope:labels on=true">Show the slide’s labels <button class="do showme" type="button" data-scope-tool="labels">show me</button> (the tag button in the toolbar: the labels are hidden at first, so that you can look for things yourself). The <b>Labels</b> panel lists them: click <i>Proximal convoluted tubule</i> to go to one, and look at it at 20× or 40×. Most of the tubules of the cortex are proximal convoluted tubules: their cells are the pinkest, with a fuzzy brush border lining the lumen (which often looks lacy in this slide). Compare them with the smaller tubules that have clear lumens and more nuclei.</li>
+  </ol>
+</div>
+
+<h2 id="m-lab">Your own labels and pictures</h2>
+<div class="activity">
+  <div class="act-t">Label it and keep a picture</div>
+  <ol class="steps">
+    <li data-task="m-mylabel" data-auto="scope:label">Choose the <b>Label</b> tool <button class="do showme" type="button" data-scope-tool="label">show me</button> and click on something you can recognise. Type a name for it.</li>
+    <li data-task="m-picture" data-auto="scope:capture">Take a picture of the view with the camera button <button class="do showme" type="button" data-scope-tool="capture">show me</button>. The picture includes a scale bar and the slide’s credit, and it is saved in your files, in <code>microscope/pictures</code>.</li>
+    <li data-task="m-files" data-auto="editor:view path~/microscope/pictures/">Find your picture in the <b>Files</b> tab <button class="do showme" type="button" data-bench="editor">show me</button> and click on it to see it.</li>
+  </ol>
+</div>
+<div class="callout tip">
+  <div class="co-t">Using the pictures</div>
+  <p>To put a picture into a report, download it from Files (the download button above the picture), or use <b>⋯ → Take a picture and download it</b> in the microscope. The credit at the bottom of the picture says where the slide comes from: keep it when you use the picture.</p>
+</div>
+
+<h2 id="m-liver">Another tissue: the liver</h2>
+<div class="activity">
+  <div class="act-t">Look at the liver</div>
+  <ol class="steps">
+    <li data-task="m-liver" data-auto="scope:open slide=liver" data-check="slide:liver">Open the slide of the liver <button class="do showme" type="button" data-scope="liver">show me</button>, and look at it at 1× and then at 4×.</li>
+    <li data-task="m-pt" data-auto="scope:find slide=liver target=portal-tract ok=true"><button class="do showme" type="button" data-scope-find="liver:portal-tract">Find a portal tract</button>: a patch of connective tissue holding a branch of the portal vein, a small artery (hard to see on this slide) and one or more bile ducts. There are several on this slide, one of them large.</li>
+    <li data-task="m-cv" data-auto="scope:find slide=liver target=central-vein ok=true"><button class="do showme" type="button" data-scope-find="liver:central-vein">Find a central vein</button>: a thin-walled vein, with plates of liver cells running out from it like the spokes of a wheel, and no bile duct or connective tissue beside it. There are only a few on this slide, so take your time.</li>
+  </ol>
+</div>
+<div class="q" data-q="m-q-cv">
+  <div class="q-text">How could you tell a central vein from a portal tract at low power?</div>
+  <div class="q-model">A central vein is a single thin-walled vessel with liver cells right up to its wall, and the plates of liver cells run out from it like spokes. A portal tract is a patch of pink connective tissue that holds several tubes: a branch of the portal vein, a small artery and one or more bile ducts.</div>
+</div>
+
+</section>
+
+<section class="chapter" id="measuring" data-num="2" data-title="Measuring and counting" data-bench="scope" hidden>
+  <h1>Measuring and counting</h1>
+  <div class="meta-row"><span class="pill time">≈ 30 min</span></div>
+  <p class="lede">How big is it, and how many are there? Calibrate an eyepiece graticule, measure with the microscope’s tools, work with magnifications and scale bars, and count cells with a haemocytometer.</p>
+
+<p>A lot of laboratory work is measurement: how big a cell is, or how many cells there are in a millilitre. In this chapter you calibrate an eyepiece graticule with a stage micrometer, measure with the microscope’s tools, work out sizes from magnifications and scale bars, and count cells with a haemocytometer.</p>
+
+<h2 id="n-cal">Calibrating an eyepiece graticule</h2>
+<p>The eyepiece of a microscope can hold a <em>graticule</em>, a glass disc with a scale on it (here, 100 divisions). The graticule is in the eyepiece, not on the slide, so the length on the slide that one division covers depends on the objective. To use it for measuring, you calibrate it against a <em>stage micrometer</em>: a slide with a scale of known length, here 1 mm divided into 100 divisions of 10 µm.</p>
+<div class="activity">
+  <div class="act-t">Calibrate the graticule</div>
+  <ol class="steps">
+    <li data-task="n-sm" data-auto="scope:open slide=stage-micrometer" data-check="slide:stage-micrometer">Open the stage micrometer <button class="do showme" type="button" data-scope="stage-micrometer@0.75,0.304,10x">show me</button> at 10×.</li>
+    <li data-task="n-eye" data-auto="scope:eyepiece on=true">Switch on the eyepiece view <button class="do showme" type="button" data-scope-tool="eyepiece:on">show me</button> (the eyepiece button in the toolbar). You now see a round field of view, with the graticule across its middle.</li>
+    <li data-task="n-line">The graticule’s divisions (blue) hang down from its line, and the micrometer’s divisions (black) stand up from theirs. Drag the slide sideways so that the 0 of the graticule lines up with a long line of the micrometer. Then look along the two scales for the point, as far along as you can, where a line of the graticule lines up exactly with a line of the micrometer.</li>
+  </ol>
+</div>
+<div class="q" data-q="n-q-10" data-accept="num:4±0.2" data-hint="Count the micrometer divisions that match the 100 divisions of the graticule; each micrometer division is 10 µm." data-placeholder="µm per division">
+  <div class="q-text">At 10×, how many micrometres does one division of the graticule cover?</div>
+  <div class="q-model">4 µm. The whole graticule, 100 divisions, lines up with 40 divisions of the micrometer, which is 40 × 10 µm = 400 µm, so one division covers 400 µm ÷ 100 = 4 µm.</div>
+</div>
+<div class="activity">
+  <div class="act-t">Calibrate the other objectives</div>
+  <ol class="steps">
+    <li data-task="n-40" data-auto="scope:mag slide=stage-micrometer mag=40">Change to the 40× objective (<kbd>6</kbd>) and line up the scales again.</li>
+  </ol>
+</div>
+<div class="q" data-q="n-q-40" data-accept="num:1±0.1" data-placeholder="µm per division">
+  <div class="q-text">At 40×, how many micrometres does one division of the graticule cover?</div>
+  <div class="q-model">1 µm. The 100 divisions of the graticule now match 10 divisions of the micrometer (100 µm), so one division covers 1 µm: a quarter of what it covered at 10×, because the magnification is four times as great.</div>
+</div>
+<div class="callout concept">
+  <div class="co-t">One calibration for each objective</div>
+  <p>What one division of the graticule covers is inversely proportional to the magnification: 4 µm at 10× means 10 µm at 4× and 1 µm at 40×. To measure something, count the divisions across it and multiply by the calibration for that objective.</p>
+</div>
+
+<h2 id="n-tools">Measuring with the microscope’s tools</h2>
+<p>The microscope also has tools that measure for you, using the scale that each slide was scanned at. The <b>Measure</b> tool (the ruler) measures a length, and the <b>Area</b> tool (the outline) measures the area inside an outline you draw. Every measurement is listed in the <b>Measurements</b> panel, and kept in the file <code>microscope/measurements.csv</code>, which R can read.</p>
+<div class="activity">
+  <div class="act-t">Measure renal corpuscles</div>
+  <ol class="steps">
+    <li data-task="n-kidney" data-auto="scope:open slide=kidney-cortex" data-check="slide:kidney-cortex">Go back to the kidney <button class="do showme" type="button" data-scope="kidney-cortex@1.4,2.95,10x">show me</button>, at 10×, and switch the eyepiece view off <button class="do showme" type="button" data-scope-tool="eyepiece:off">show me</button>.</li>
+    <li data-task="n-measure" data-auto="scope:measure slide=kidney-cortex n&gt;4">Choose the <b>Measure</b> tool <button class="do showme" type="button" data-scope-tool="measure:renal corpuscle">show me</button>. This button also labels the measurements that follow as “renal corpuscle”, as you can see in the Measurements panel. Measure the diameter of five renal corpuscles: drag across each one at its widest, from the outside of its capsule to the other side.</li>
+  </ol>
+</div>
+<div class="q" data-q="n-q-mean" data-accept="num:60..300" data-placeholder="µm">
+  <div class="q-text">The Measurements panel shows the mean and standard deviation of your lengths. What is the mean diameter of your renal corpuscles, in micrometres?</div>
+  <div class="q-model">Usually between 100 and 200 µm. Renal corpuscles are about 200 µm across in life, but a section cuts most of them away from their widest part, and the tissue shrinks a little as it is processed, so the diameters you measure are smaller and vary.</div>
+</div>
+<div class="q" data-q="n-q-sphere">
+  <div class="q-text">The renal corpuscles in the section are not all the same size. Give two reasons why.</div>
+  <div class="q-model">First, they really do vary in size. Second, a section is a thin slice through the tissue: it cuts through each corpuscle at a different level, and only a slice through the middle shows the full diameter; most slices are nearer the edge and show a smaller circle. (This is why a mean from sections underestimates the true size of round structures.)</div>
+</div>
+
+<h2 id="n-mag">Magnification and scale bars</h2>
+<p>The magnification of a picture is how much bigger it is than the real thing:</p>
+<p class="eq">magnification = size in the picture ÷ real size &nbsp;&nbsp;so&nbsp;&nbsp; real size = size in the picture ÷ magnification</p>
+<p>Both sizes have to be in the same units: 1 mm = 1000 µm. A picture that carries a scale bar is safer than a magnification, because the scale bar grows or shrinks with the picture when it is printed or shown at a different size. (The pictures you take with the microscope carry a scale bar.) The calculator <button class="do showme" type="button" data-calc="1">open it</button> is the same as the one in Exam practice.</p>
+<div class="q" data-q="n-q-mag" data-accept="num:400±2" data-placeholder="e.g. 250">
+  <div class="q-text">In a printed micrograph, a scale bar labelled 50 µm is 20 mm long. What is the magnification of the print?</div>
+  <div class="q-model">×400. The scale bar is 20 mm = 20 000 µm long in the print and stands for 50 µm, so the magnification is 20 000 µm ÷ 50 µm = 400.</div>
+</div>
+<div class="q" data-q="n-q-real" data-accept="num:22.5±0.5" data-placeholder="µm">
+  <div class="q-text">In the same print, a cell is 9 mm wide. How wide is the real cell, in micrometres?</div>
+  <div class="q-model">22.5 µm. 9 mm = 9000 µm in the print, and 9000 µm ÷ 400 = 22.5 µm.</div>
+</div>
+
+<h2 id="n-haemo">Counting cells: the haemocytometer</h2>
+<p>A haemocytometer is a thick glass slide with a counting chamber of known depth, 0.1 mm, and a grid ruled on its floor. In the commonest kind (the improved Neubauer), the grid has nine large squares, each 1 mm × 1 mm, so the volume above one large square is 1 mm × 1 mm × 0.1 mm = 0.1 mm³ = 0.1 µL = 10<sup>−4</sup> mL. You count the cells in several large squares, and work out how many cells there are in a millilitre:</p>
+<p class="eq">cells per mL = mean number of cells in a large square × 10<sup>4</sup> × dilution factor</p>
+<p>Before counting, the cells are often mixed with trypan blue. Living cells keep the dye out and look clear; dead cells take it up and look blue. To avoid counting a cell twice, count the cells that touch the top or the left-hand line of a square, but not those that touch the bottom or the right-hand line.</p>
+<div class="activity">
+  <div class="act-t">Count the cells</div>
+  <ol class="steps">
+    <li data-task="n-haemo" data-auto="scope:open slide=haemocytometer" data-check="slide:haemocytometer">Open the haemocytometer <button class="do showme" type="button" data-scope="haemocytometer@0.7,0.7,4x">show me</button>. This slide is a drawing, made for practising counts. Find the large square at the top left, which is divided into 16 smaller squares, and look at it at 10×.</li>
+    <li data-task="n-count" data-auto="scope:count slide=haemocytometer total&gt;19">Choose the <b>Count</b> tool <button class="do showme" type="button" data-scope-tool="count:Living cells,Dead cells">show me</button>. This button also names the two categories in the Counts panel: choose a category there, then click on each cell to count it (click a mark again to remove it). Count the living and the dead cells in the top-left large square, going along the rows of small squares so that you don’t miss any.</li>
+  </ol>
+</div>
+<div class="q" data-q="n-q-count" data-accept="num:57..63" data-placeholder="living cells">
+  <div class="q-text">How many <b>living</b> cells did you count in the top-left large square?</div>
+  <div class="q-model">60 living cells (and 8 dead ones). If your count is a cell or two out, look again at the cells that touch the lines of the square.</div>
+</div>
+<div class="q" data-q="n-q-conc" data-accept="num:1.145e6±4%" data-hint="Find the mean per large square first; then multiply by 10⁴ and by the dilution factor." data-placeholder="cells per mL, e.g. 2.5e6 or 2.5×10^6">
+  <div class="q-text">The four large corner squares held 229 living cells altogether (60 in the top-left square, and 64, 60 and 45 in the other three). The cells had been mixed 1:1 with trypan blue (a dilution factor of 2). How many living cells were there in a millilitre of the original suspension?</div>
+  <div class="q-model">1.145 × 10<sup>6</sup> living cells per mL. The mean is 229 ÷ 4 = 57.25 cells per large square. Each large square holds 10<sup>−4</sup> mL, so the suspension in the chamber held 57.25 × 10<sup>4</sup> = 5.725 × 10<sup>5</sup> cells per mL; it had been diluted twofold with trypan blue, so the original suspension held 1.145 × 10<sup>6</sup> cells per mL (about 1.1 × 10<sup>6</sup>).</div>
+</div>
+<div class="q" data-q="n-q-viab" data-accept="num:89.8±0.3" data-placeholder="%">
+  <div class="q-text">The same four squares held 26 dead cells. What percentage of the cells were alive (the <em>viability</em> of the cells)?</div>
+  <div class="q-model">89.8%. The four squares held 229 + 26 = 255 cells, of which 229 were alive: 229 ÷ 255 × 100 = 89.8%.</div>
+</div>
+<div class="callout tip">
+  <div class="co-t">Your counts in R</div>
+  <p>The marks you make with the Count tool are kept in <code>microscope/counts.csv</code>, with the slide, the category and where each mark is. In the last chapter you read your measurements and counts in R, and do this calculation there too.</p>
+</div>
+
+</section>
+
+<section class="chapter" id="anatomy" data-num="3" data-title="Anatomy in 3D" data-bench="anatomy" hidden>
+  <h1>Anatomy in 3D</h1>
+  <div class="meta-row"><span class="pill time">≈ 20 min</span></div>
+  <p class="lede">The body in 3D, system by system: turn it round, find the organs and structures of physiology, see what lies next to what, and cut through it as a scan does.</p>
+
+<p>The <b>Anatomy</b> tab shows the body in 3D, system by system: the skeleton, the muscles, the heart and the vessels, the organs, the brain and the nerves. Each structure is a separate model that you can select, hide, isolate or cut through, and each has its English and Latin names and a short definition. The models come from <a href="https://www.z-anatomy.com/" target="_blank" rel="noopener">Z-Anatomy</a>, an open atlas of anatomy built largely from BodyParts3D, a 3D reconstruction of a man’s body.</p>
+<div class="callout concept">
+  <div class="co-t">Directions in the body</div>
+  <p>Anatomy describes the body in the <em>anatomical position</em>: standing, facing forwards, arms by the sides with the palms forwards. <b>Anterior</b> is towards the front and <b>posterior</b> towards the back; <b>superior</b> is towards the head and <b>inferior</b> towards the feet; <b>medial</b> is towards the midline and <b>lateral</b> away from it. Left and right are always the body’s own: in a view from the front, the body’s left is on <em>your</em> right, as when you face someone. The small figure at the bottom left of the view shows which way the body faces (S, I, A, P, L and R).</p>
+</div>
+
+<h2 id="an-around">Finding your way round</h2>
+<p>The <b>Systems</b> list (the first button of the toolbar opens and closes it) shows and hides the systems of the body; the eye beside each makes it faint, so that you can see what lies behind it. Below it, the structures of the systems shown are listed in groups, and the search box finds any structure by its English or Latin name, or by an everyday one such as <em>adrenal</em> or <em>windpipe</em>. When the workbench is narrow, the list and the panel about a structure take turns at the side of the view.</p>
+<div class="activity">
+  <div class="act-t">The endocrine glands</div>
+  <ol class="steps">
+    <li data-task="an-open" data-auto="anat:system id=endocrine on=true">Show the endocrine glands <button class="do showme" type="button" data-anat="endocrine">show me</button>. The skeleton stays faint behind them, so that you can see where each gland lies.</li>
+    <li data-task="an-turn" data-auto="anat:view">Turn the body round: drag it (one finger on a touch screen), and scroll or pinch to zoom. Then try the standard views in the <b>View</b> menu (or the keys <kbd>1</kbd> to <kbd>6</kbd>).</li>
+    <li data-task="an-select" data-auto="anat:select id=thyroid-gland by=click||anat:select id=thyroid-gland by=list">Click on the thyroid gland, at the front of the neck. Its name, its Latin name and the start of its Wikipedia article appear in the panel on the right (on a small screen, tap its name at the bottom of the view).</li>
+    <li data-task="an-find" data-auto="anat:find ok=true target~suprarenal"><button class="do showme" type="button" data-anat-find="suprarenal-gland">Find a suprarenal gland</button> (also called the adrenal gland). If you are stuck, <b>Show me</b> makes it glow.</li>
+    <li data-task="an-pit" data-auto="anat:select id=hypothalamus by=click||anat:select id=hypothalamus by=list">Look at the pituitary gland, the <em>hypophysis</em>, under the brain <button class="do showme" type="button" data-anat="endocrine:adenohypophysis">show me</button>. It has two parts, the adenohypophysis (the anterior pituitary) and the neurohypophysis (the posterior pituitary): click on each. Then click on the hypothalamus, just above them, which controls them.</li>
+  </ol>
+</div>
+<div class="q" data-q="an-q-thyroid">
+  <div class="q-text">Show the thyroid gland with the respiratory system <button class="do showme" type="button" data-anat="endocrine+respiratory:thyroid-gland@anterior">show me</button>, and turn it round. What does the gland lie against in this model, and how does that compare with where the thyroid gland usually lies?</div>
+  <div class="q-model">In this model the gland sits high: its lobes lie against the sides of the larynx (the thyroid and cricoid cartilages), its isthmus crosses in front of the cricoid cartilage, with a pyramidal lobe rising from it in front of the thyroid cartilage, and its lower poles barely reach the trachea – at about the level of the vertebrae C5 and C6. Usually the gland lies lower: its lobes reach from the sides of the thyroid cartilage down to about the sixth ring of the trachea, and its isthmus crosses the front of the trachea over its second and third rings (sometimes the fourth), the whole gland lying at about the level of C5 to T1. The thyroid varies from person to person in its position, its size and its shape (a pyramidal lobe is found in about half of people), and this model was made from one man.</div>
+</div>
+<div class="q" data-q="an-q-pit">
+  <div class="q-text">The neurohypophysis is part of the brain, and the adenohypophysis is a gland that grew up from the roof of the mouth. How does the hypothalamus control each of them?</div>
+  <div class="q-model">The neurohypophysis is made of the axons of neurons whose cell bodies lie in the hypothalamus: they run down the pituitary stalk and release their hormones (oxytocin and vasopressin, ADH) straight into the blood. The adenohypophysis has no nerves from the hypothalamus: the hypothalamus controls it with releasing and inhibiting hormones, which travel to it in the blood of the hypophysial portal vessels of the stalk.</div>
+</div>
+
+<h2 id="an-heart">The heart and the great vessels</h2>
+<div class="activity">
+  <div class="act-t">Look at the heart</div>
+  <ol class="steps">
+    <li data-task="an-heart" data-auto="anat:system id=heart on=true">Show the heart and the great vessels <button class="do showme" type="button" data-anat="heart">show me</button>: the chambers and the valves, the coronary vessels, the aorta, the pulmonary arteries and veins, and the venae cavae.</li>
+    <li data-task="an-iso" data-auto="anat:isolate base~left ventricle on=true">Click on the left ventricle and click <b>Isolate</b> in the panel (or press <kbd>I</kbd>): only the left ventricle is shown. Turn it round, then click <b>Show the others</b>.</li>
+    <li data-task="an-find-pt" data-auto="anat:find ok=true target=pulmonary-trunk"><button class="do showme" type="button" data-anat-find="pulmonary-trunk">Find the pulmonary trunk</button>, the artery that leaves the right ventricle and divides into the two pulmonary arteries.</li>
+    <li data-task="an-fade" data-auto="anat:fade on=true">Select the aortic arch and click <b>Fade the others</b>: everything else becomes faint, so that you can see the arch in place. Turn the body round: the arch runs backwards as well as to the left, over the pulmonary arteries. Click <b>Unfade the others</b> when you have looked.</li>
+  </ol>
+</div>
+<div class="q" data-q="an-q-front" data-type="mcq">
+  <div class="q-text">Look at the heart from the front (the anterior view). Which chamber forms most of its front (sternocostal) surface?</div>
+  <div class="mcq"><label data-correct data-why="Yes. The heart is turned so that the right ventricle faces forwards, behind the sternum; the left ventricle forms the apex and the left border, and the right atrium the right border."><input type="radio"> The right ventricle</label><label data-why="Not most of it: from the front, the left ventricle shows only as a strip along the left border and at the apex. The heart is turned so that the right ventricle faces forwards."><input type="radio"> The left ventricle</label><label data-why="The right atrium forms the right border of the heart in the anterior view, but most of the front is the right ventricle."><input type="radio"> The right atrium</label><label data-why="No: the left atrium is the most posterior chamber, and forms most of the base (the back) of the heart."><input type="radio"> The left atrium</label></div>
+</div>
+
+<h2 id="an-section">Cutting through the body</h2>
+<p>Medical images are sections: a CT or MRI scan shows the body in transverse (axial), coronal or sagittal slices, and a histological section is a slice too. <b>Section</b> cuts through the model, so that you can match a slice to the organs in 3D. The bar at the bottom of the view moves the cut, and <b>Flip</b> keeps the other part. A transverse section is shown as CT and MRI images are: you look at the cut from below, from the feet, so the front of the body is at the top of the view and the body’s left is on your right.</p>
+<div class="activity">
+  <div class="act-t">Sections</div>
+  <ol class="steps">
+    <li data-task="an-cut" data-auto="anat:section axis=transverse">Cut through the abdomen at the level of the kidneys <button class="do showme" type="button" data-anat="digestive+urinary+skeleton+section:transverse@0.63@inferior">show me</button>: the part above the cut is kept, and you see the cut from below, as in a CT scan.</li>
+    <li data-task="an-slide" data-auto="anat:section axis=transverse at&lt;0.55">Move the cut down, towards the pelvis, with the slider (to less than halfway), and watch which organs are cut.</li>
+    <li data-task="an-sag" data-auto="anat:section axis=sagittal">Make a sagittal section through the middle of the body, seen from the left <button class="do showme" type="button" data-anat="heart+respiratory+digestive+urinary+skeleton+section:sagittal@0.5@left">show me</button>: the trachea, the oesophagus, the heart and the vertebral column are cut along their length.</li>
+  </ol>
+</div>
+<div class="q" data-q="an-q-kidney">
+  <div class="q-text">In the transverse section at the level of the kidneys, where do the kidneys lie compared with the vertebral column and the intestines?</div>
+  <div class="q-model">On either side of the vertebral column, against the posterior wall of the abdomen, behind the intestines and the peritoneum (they are retroperitoneal), at about the level of the vertebrae T12 to L3. The liver lies above the right kidney, which is why the right kidney lies a little lower than the left.</div>
+</div>
+
+<h2 id="an-pics">Labels and pictures</h2>
+<div class="activity">
+  <div class="act-t">Label the glands and keep a picture</div>
+  <ol class="steps">
+    <li data-task="an-labels" data-auto="anat:labels on=true">Show the endocrine glands with their labels <button class="do showme" type="button" data-anat="endocrine+labels">show me</button> (the <b>Labels</b> button, or <kbd>L</kbd>): each gland is named at the side of the view. Turn the body round and watch the labels follow.</li>
+    <li data-task="an-picture" data-auto="anat:capture">Take a picture of the view with the camera button at the right of the toolbar. It is saved in your files, in the folder <code>anatomy</code>, with the labels and the credits of the models shown.</li>
+    <li data-task="an-files" data-auto="editor:view path~/anatomy/">Find your picture in the <b>Files</b> tab <button class="do showme" type="button" data-bench="editor">show me</button> and click on it to see it.</li>
+  </ol>
+</div>
+<div class="callout tip">
+  <div class="co-t">Using the pictures</div>
+  <p>The models are shared under the Creative Commons Attribution-ShareAlike licence (CC BY-SA 4.0): you may use the pictures, in a report or a poster, as long as you keep the credits at the bottom of each picture (Z-Anatomy and BodyParts3D, and the other sources of what is shown: Brain for Blender for the brain, the University of Dundee for the cranial nerves), and share what you make with them under the same licence. The tab’s <b>About</b> panel says where each part of the models comes from, and what is not included (the body is a man’s, and there is no ear, no skin and no inside of the kidney).</p>
+</div>
+
+</section>
+
+<section class="chapter" id="molecules" data-num="4" data-title="3D molecules" data-bench="viewer" hidden>
+  <h1>Molecules in 3D</h1>
+  <div class="meta-row"><span class="pill time">≈ 10 min</span></div>
+  <p class="lede">The structures of proteins and of the small molecules of physiology, in 3D: open them, turn them round and colour them.</p>
+
+<p>The <b>Molecules</b> tab shows the structures of proteins and smaller molecules in 3D: where each atom is, as worked out (mostly) by X-ray crystallography and cryo-electron microscopy, and kept in the Protein Data Bank (PDB). You can turn a molecule round, change how it is drawn and coloured, and look closely at the parts that matter, such as the site where something binds.</p>
+
+<h2 id="v-hb">A protein: haemoglobin</h2>
+<div class="activity">
+  <div class="act-t">Look at haemoglobin</div>
+  <ol class="steps">
+    <li data-task="v-load" data-auto="viewer:loaded id~4hhb">Open haemoglobin <button class="do showme" type="button" data-pdb="4HHB">show me</button> (its PDB ID is 4HHB). It is drawn as a <em>cartoon</em>, which follows the backbone of each chain: the coils are α helices.</li>
+    <li data-task="v-turn">Drag to turn the molecule round, scroll to zoom, and right-drag (or two-finger drag) to move it.</li>
+    <li data-task="v-chain" data-auto="viewer:color scheme=chain">Colour each chain differently <button class="do showme" type="button" data-viewer="color chain">show me</button>.</li>
+    <li data-task="v-haem" data-auto="viewer:style type=spheres">Show the haem groups as spheres <button class="do showme" type="button" data-viewer="show spheres HEM">show me</button>, coloured by element <button class="do showme" type="button" data-viewer="color element HEM">colour them</button>. The iron atom at the centre of each haem is where oxygen binds.</li>
+  </ol>
+</div>
+<div class="q" data-q="v-q-chains" data-accept="num:4" data-placeholder="the number of chains">
+  <div class="q-text">How many protein chains does haemoglobin have, and how many haem groups?</div>
+  <div class="q-model">Four chains (two α and two β globins), each with one haem group: four haem groups, so a molecule of haemoglobin can carry four molecules of oxygen.</div>
+</div>
+
+<h2 id="v-lib">The library</h2>
+<p>The viewer has a library of proteins of physiology and of small molecules – hormones, transmitters and others – ready to open. They are kept with the workbench, so they open quickly.</p>
+<div class="activity">
+  <div class="act-t">Open a small molecule</div>
+  <ol class="steps">
+    <li data-task="v-library" data-auto="viewer:library">Click <b>Library</b> (the button with a book, at the top left of the viewer) to see what it holds.</li>
+    <li data-task="v-glucose" data-auto="viewer:molecule name=Glucose">Open glucose <button class="do showme" type="button" data-viewer="clear; molecule glucose; only ballstick; color cpk">show me</button> (the button clears haemoglobin away first). A small molecule is drawn with every atom: here as balls and sticks, coloured by element – grey for carbon, red for oxygen and white for hydrogen.</li>
+    <li data-task="v-atp" data-auto="viewer:molecule name=ATP">Open ATP in the same way <button class="do showme" type="button" data-viewer="clear; molecule atp; only ballstick; color cpk">show me</button> and find its three phosphate groups (phosphorus is orange).</li>
+  </ol>
+</div>
+<div class="q" data-q="v-q-draw">
+  <div class="q-text">Why is a protein drawn as a cartoon, while a small molecule is drawn with all its atoms?</div>
+  <div class="q-model">A protein has thousands of atoms (haemoglobin has about 4500, not counting hydrogens), so drawing them all gives a tangle in which you cannot see the fold. The cartoon follows the backbone of each chain and shows its helices and sheets. A small molecule has only a few dozen atoms, so all of them can be shown, and its chemistry is in the atoms themselves.</div>
+</div>
+
+</section>
+
+<section class="chapter" id="recordings" data-num="5" data-title="Recordings" data-bench="recorder" hidden>
+  <h1>Real recordings of the body</h1>
+  <div class="meta-row"><span class="pill time">≈ 20 min</span></div>
+  <p class="lede">The Recorder plays back real recordings of people, as a chart recorder does in a physiology practical – the ECG, heart sounds, blood pressure, breathing, muscle and the brain. Measure intervals, work out rates, and keep your measurements for R.</p>
+
+<p>In a physiology practical, a <em>chart recorder</em> (on a computer, with an amplifier and a data-acquisition unit) records signals from the body – the ECG, the pulse, breathing, blood pressure, muscle – as traces against time. The <b>Recorder</b> tab works the same way, with real recordings of people from <a href="https://physionet.org" target="_blank" rel="noopener">PhysioNet</a>, a collection of open databases of physiological signals. Each recording's <b>About</b> panel (click its name above the trace) says what it shows, who it comes from and how to cite it.</p>
+<p>The traces of a recording are its <em>channels</em>, one above the other, all on the same time axis. You move along a recording by dragging the trace (or with the strip at the bottom, which shows the whole recording), and zoom with the <b>−</b> and <b>+</b> buttons, or the menu of the time across the screen between them.</p>
+
+<h2 id="rec-ecg">Measuring the ECG</h2>
+<p>Each heartbeat shows in the ECG as a P wave (the atria depolarising), a QRS complex (the ventricles depolarising) and a T wave (the ventricles repolarising). The time from one R wave to the next, the <em>R–R interval</em>, gives the heart rate: <b>heart rate (beats per minute) = 60 ÷ R–R interval (s)</b>. The <b>Calipers</b> measure the time between two cursors and work out this rate for you.</p>
+<div class="activity">
+  <div class="act-t">Measure a heart rate</div>
+  <ol class="steps">
+    <li data-task="rec-open" data-auto="rec:open id=ecg-normal">Open the recording of sinus rhythm <button class="do showme" type="button" data-rec="ecg-normal">show me</button>. The upper channel is close to lead II, and the letters above the beats are the labels cardiologists gave them (N: a normally conducted beat).</li>
+    <li data-task="rec-zoom" data-auto="rec:view id=ecg-normal span&lt;3">Zoom in until about 2 seconds fit across the screen <button class="do showme" type="button" data-rec="ecg-normal@2,4">show me</button>. Find the P wave, the QRS complex and the T wave of a beat. At this scale the ECG is drawn on ECG paper: a small square is 0.04 s across and 0.1 mV high.</li>
+    <li data-task="rec-calipers" data-auto="rec:measure id=ecg-normal dt&gt;0.5 dt&lt;1.2">Choose the <b>Calipers</b> <button class="do showme" type="button" data-rec-tool="calipers">show me</button> and drag from the peak of one R wave to the peak of the next. The bar above the trace shows the time between the cursors (Δt) and the rate it corresponds to. (To put a cursor exactly on a peak, drag its flag, A or B, at the top of the chart: a drag anywhere else starts a new measurement.)</li>
+    <li data-task="rec-pad" data-auto="rec:datapad id=ecg-normal n_rr&gt;2">Add the measurement to the <b>data pad</b> with the button at the right of the bar (or press <kbd>Enter</kbd>); the menu beside the button says what you measured: R–R. Measure two more R–R intervals – each can start where the last one ended – and add them too <button class="do showme" type="button" data-rec-tool="datapad">show the data pad</button>. The data pad works out the heart rate from its R–R intervals.</li>
+    <li data-task="rec-pr" data-auto="rec:datapad id=ecg-normal n_pr&gt;0 n_qt&gt;0">Zoom in further (about 1 s across the screen) and measure the <b>PR interval</b>, from the start of the P wave to the start of the QRS, and the <b>QT interval</b>, from the start of the QRS to the end of the T wave. Add each to the data pad, checking first that the menu beside the <b>Data pad</b> button says PR, then QT (choose it if not): the data pad keeps them apart from the R–R intervals that give the heart rate.</li>
+  </ol>
+</div>
+<div class="q" data-q="rec-q-rate" data-accept="num:75±1" data-placeholder="beats per minute">
+  <div class="q-text">An ECG has an R–R interval of 0.80 s. What is the heart rate, in beats per minute?</div>
+  <div class="q-model">75 beats per minute: 60 ÷ 0.80 s = 75. (A normal PR interval is 0.12–0.20 s, mostly the delay in the atrioventricular node; the QT interval is about 0.35–0.45 s, and shortens as the heart rate rises.)</div>
+</div>
+
+<h2 id="rec-arr">When the rhythm changes</h2>
+<p>The strip at the top of the chart names the rhythm, as the cardiologists who labelled these recordings did. Compare two arrhythmias with sinus rhythm.</p>
+<div class="activity">
+  <div class="act-t">Compare two arrhythmias</div>
+  <ol class="steps">
+    <li data-task="rec-ectopic" data-auto="rec:open id=ecg-ectopic">Open the <b>ventricular ectopic beats</b> <button class="do showme" type="button" data-rec="ecg-ectopic">show me</button>. The beats labelled V are premature ventricular contractions: they come early, their QRS is wide and oddly shaped, and no P wave comes before them.</li>
+    <li data-task="rec-pause" data-auto="rec:measure id=ecg-ectopic">Measure the R–R interval before an ectopic beat and the one after it. The pause after an ectopic beat is longer than the normal interval: the next beat of the sinoatrial node finds the ventricles still refractory, so it is not conducted.</li>
+    <li data-task="rec-af" data-auto="rec:measure id=ecg-af from&gt;28">Open the <b>atrial fibrillation</b> <button class="do showme" type="button" data-rec="ecg-af">show me</button>. It begins in sinus rhythm, and after about 28 seconds the atria start to fibrillate (the strip at the top shows where). Measure a few R–R intervals in each part, and zoom in to look for a P wave before each QRS (clearest in ECG 2).</li>
+  </ol>
+</div>
+<div class="q" data-q="rec-q-af" data-type="mcq">
+  <div class="q-text">Which features show that the second part of this recording is atrial fibrillation?</div>
+  <div class="mcq"><label data-correct data-why="Yes. The atria fibrillate instead of contracting together, so there are no P waves (the small fibrillation waves that take their place are too small to see in this recording), and impulses reach the ventricles at random intervals: the rhythm is irregularly irregular. In the first part a P wave comes before each QRS and the R–R intervals are nearly equal: sinus rhythm."><input type="radio"> No P waves, and R–R intervals that vary without any pattern</label><label data-why="No: those are ventricular ectopic beats, as in the previous recording."><input type="radio"> Early, wide QRS complexes with no P wave before them, each followed by a pause</label><label data-why="No: that is a 2:1 heart block (there is a recording of it in the list: Second-degree heart block)."><input type="radio"> Regular P waves, only every other one followed by a QRS</label></div>
+</div>
+
+<h2 id="rec-rsa">Heart rate and breathing</h2>
+<p>The <b>Heart rate</b> button adds a channel of the heart rate, worked out beat by beat from the R–R intervals: each dot is one beat.</p>
+<div class="activity">
+  <div class="act-t">Watch the heart rate with each breath</div>
+  <ol class="steps">
+    <li data-task="rec-rsa" data-auto="rec:open id=rsa">Open <b>Heart rate and breathing</b> <button class="do showme" type="button" data-rec="rsa">show me</button>: an ECG and the breathing of a healthy young woman lying still.</li>
+    <li data-task="rec-hr" data-auto="rec:hr id=rsa on=true">Switch on the heart-rate channel <button class="do showme" type="button" data-rec-tool="hr">show me</button>.</li>
+    <li data-task="rec-all" data-auto="rec:view id=rsa span&gt;80">Show the whole 90 seconds <button class="do showme" type="button" data-rec="rsa@0,90">show me</button> and compare the heart rate with the breathing trace, which rises as she breathes in.</li>
+    <li data-task="rec-play" data-auto="rec:play on=true">Press <b>Play</b> <button class="do showme" type="button" data-rec-tool="play">show me</button>: the recording is replayed in real time, as it was recorded, with the pen moving across the chart. Press <b>Stop</b> (or the space bar) to stop.</li>
+  </ol>
+</div>
+<div class="q" data-q="rec-q-rsa">
+  <div class="q-text">Does her heart rate rise as she breathes in or as she breathes out? What causes this?</div>
+  <div class="q-model">It rises as she breathes in and falls as she breathes out: a respiratory sinus arrhythmia. During inspiration the activity of the vagus nerves to the sinoatrial node falls (the cardiac vagal neurones in the brainstem are inhibited with each inspiration, and the stretch of the lungs and the changing venous return add to this), so the heart speeds up; during expiration the vagal activity returns and the heart slows. It is a normal finding, largest in young, fit people, and it shrinks with age.</div>
+</div>
+
+<h2 id="rec-eeg">The brain: the EEG</h2>
+<div class="activity">
+  <div class="act-t">Find the alpha rhythm</div>
+  <ol class="steps">
+    <li data-task="rec-eeg" data-auto="rec:open id=eeg-alpha">Open the <b>EEG</b> <button class="do showme" type="button" data-rec="eeg-alpha">show me</button>. The first half was recorded with the eyes open, the second with the eyes closed: the double line marks where one part ends and the other begins. Compare O1, Oz and O2, at the back of the head, before and after it.</li>
+    <li data-task="rec-alpha" data-auto="rec:measure id=eeg-alpha">Zoom in on the eyes-closed part, with about 1 s across the screen <button class="do showme" type="button" data-rec="eeg-alpha@40,41">show me</button>, and use the calipers to measure the time taken by ten alpha waves in O1 (from the peak of one wave to the peak of the eleventh). The rate in the bar treats the whole interval as one wave, so work out the frequency yourself: waves ÷ time.</li>
+  </ol>
+</div>
+<div class="q" data-q="rec-q-alpha" data-accept="num:10.5±0.3" data-placeholder="Hz">
+  <div class="q-text">Ten alpha waves take 0.95 s. What is the frequency of the alpha rhythm, in hertz (waves a second)?</div>
+  <div class="q-model">10.5 Hz: one wave takes 0.95 ÷ 10 = 0.095 s, and 1 ÷ 0.095 s = 10.5 waves a second. The alpha rhythm (8–13 Hz) is strongest over the back of the head with the eyes closed and the person relaxed, and opening the eyes blocks it.</div>
+</div>
+<div class="callout tip">
+  <div class="co-t">Muscle: listen to the EMG</div>
+  <p>The list has three recordings of the electrical activity of a muscle (EMG), recorded with a needle electrode: a healthy muscle, a myopathy and a neuropathy. They open on the same scale (−3.5 to +3.5 mV) and the same time scale, so you can compare the size of their motor unit potentials, and how fast they fire: the calipers give the rate, in Hz, from the interval between two potentials of one unit. (If you change a scale, read the new one at the left of the trace before you compare.) Switch on <b>Sound</b> and press <b>Play</b> to hear them, as clinicians do (headphones help). The recording of <b>heart sounds</b> can be heard in the same way.</p>
+</div>
+
+<h2 id="rec-r">Your measurements in R</h2>
+<p>Everything in the data pad is kept in <code>recorder/measurements.csv</code>, one row for each measurement with its kind (R-R, PR, QRS, QT or other), which R can read. A whole recording can be saved as a CSV file too, with a column of times and a column for each channel.</p>
+<div class="activity">
+  <div class="act-t">Analyse the data pad</div>
+  <ol class="steps">
+    <li data-task="rec-padview" data-auto="editor:open path~recorder/measurements.csv||editor:view path~recorder/measurements.csv">Open the data pad’s file, <code>recorder/measurements.csv</code>, in Files <button class="do showme" type="button" data-rec-tool="padfile">show me</button> (or with the <b>measurements.csv</b> button under the data pad). Each row is one measurement: its recording, channel and kind, Δt, the rate and your note.</li>
+    <li data-task="rec-script" data-auto="rstudio:doc name=recorder-measurements.R">Open the script for the data pad in RStudio <button class="do showme" type="button" data-rec-r="measurements">show me</button> and run it line by line with <kbd>Ctrl</kbd>+<kbd>Enter</kbd> (<kbd>⌘</kbd>+<kbd>Enter</kbd> on a Mac). It works out the heart rate of each recording from its R–R intervals only (60 ÷ the mean R–R interval), and the mean PR and QT intervals in milliseconds.</li>
+    <li data-task="rec-plot" data-auto="rstudio:doc name=rsa.R">Plot a whole recording in R <button class="do showme" type="button" data-rec-r="rsa">show me</button>: this saves <code>recorder/rsa.csv</code> and the beats (<code>rsa-beats.csv</code>, with the R–R interval and heart rate of each beat), and opens a script that plots them.</li>
+  </ol>
+</div>
+
+</section>
+
+<section class="chapter" id="organbath" data-num="6" data-title="The organ bath" data-bench="bath" hidden>
+  <h1>Drugs on an isolated tissue</h1>
+  <div class="meta-row"><span class="pill time">≈ 25 min</span></div>
+  <p class="lede">Add drugs to a piece of guinea-pig ileum in an organ bath, build concentration–response curves, see what a competitive antagonist does to them, and analyse them in R.</p>
+
+<p>An <b>organ bath</b> keeps a piece of tissue alive outside the body. A length of guinea-pig ileum, say, hangs in warm physiological salt solution, bubbled with air, and is tied by a thread to a <b>force transducer</b>, which records the tension the tissue develops. Drugs added to the bath reach the tissue’s receptors, and the tension shows how strongly it responds. The <b>Organ bath</b> tab is a simulation of one: each tissue is a little different, its responses take time to develop, and there is noise – but it follows the pharmacology of real tissues.</p>
+
+<h2 id="ob-h-setup">Setting up</h2>
+<div class="activity">
+  <div class="act-t">Set up a tissue</div>
+  <ol class="steps">
+    <li data-task="ob-tissue" data-auto="bath:setup tissue=ileum">Set up a guinea-pig ileum <button class="do showme" type="button" data-bath="ileum">set it up</button>. The drawing shows the bath, and the chart on the right shows the tension against time. The small, irregular movements are the ileum’s own.</li>
+    <li data-task="ob-speed" data-auto="bath:speed">The clock runs in real time (×1). Make it run five times faster <button class="do showme" type="button" data-bath-do="speed 5">show me</button>: the ileum responds within seconds, and the faster clock saves you waiting.</li>
+  </ol>
+</div>
+
+<h2 id="ob-h-dil">Concentrations in the bath</h2>
+<p>A drug is added from a <b>stock solution</b>, and the bath dilutes it. If you add a volume <i>v</i> of a stock of concentration <i>C</i><sub>stock</sub> to a bath of volume <i>V</i>, the concentration in the bath is</p>
+<p class="eq"><i>C</i><sub>bath</sub> = <i>C</i><sub>stock</sub> × <i>v</i> / (<i>V</i> + <i>v</i>)</p>
+<p>The tab works this out before you add the drug (under <b>Add a drug</b>). The concentrations of a curve are spaced evenly on a <b>log scale</b> – 10<sup>−8</sup>, 3 × 10<sup>−8</sup>, 10<sup>−7</sup> M and so on – because the response grows with the logarithm of the concentration over a wide range.</p>
+<div class="q" data-q="ob-q-dil" data-accept="num:9.9e-8±0.5%||^99(\.0+)? ?nm$||^0?\.099 ?(µ|μ|u)m$" data-hint="the bath holds 10.1 mL once you have added 0.1 mL to it" data-placeholder="M">
+  <div class="q-text">You add 100 µL of a 10<sup>−5</sup> M stock of acetylcholine to a 10 mL bath. What is the concentration of acetylcholine in the bath, in M? Use the equation above, with the volume you add.</div>
+  <div class="q-model">9.9 × 10<sup>−8</sup> M (99 nM): 10<sup>−5</sup> M × 0.1 mL / (10 mL + 0.1 mL) = 9.9 × 10<sup>−8</sup> M. Leaving out the volume you added (10<sup>−5</sup> × 0.1 / 10 = 10<sup>−7</sup> M) is 1% too high: small for one dose, but the error grows with larger volumes, and a cumulative curve adds dose upon dose to a bath that is no longer 10 mL.</div>
+</div>
+
+<h2 id="ob-h-curve">A concentration–response curve</h2>
+<p>Each dose is left until the response reaches its plateau, and then washed out; the tissue recovers before the next dose. The tab measures each response – the rise in tension above the baseline before the dose – when you wash, and keeps it in the <b>Results</b> under the chart.</p>
+<div class="activity">
+  <div class="act-t">Build a curve for acetylcholine</div>
+  <ol class="steps">
+    <li data-task="ob-first" data-auto="bath:add drug=acetylcholine">Add acetylcholine to give 10<sup>−8</sup> M in the bath: choose <b>Acetylcholine</b>, a stock of 10<sup>−6</sup> M and 100 µL, and press <b>Add to the bath</b> <button class="do showme" type="button" data-bath-do="add acetylcholine 1e-8">show me</button>.</li>
+    <li data-task="ob-plat" data-auto="bath:response drug=acetylcholine">Wait for the response to reach its plateau (or press <b>Plateau</b> <button class="do showme" type="button" data-bath-do="plateau">show me</button>), then <b>Wash</b> <button class="do showme" type="button" data-bath-do="wash">show me</button>. The response goes into the Results.</li>
+    <li data-task="ob-more" data-auto="bath:response drug=acetylcholine condition=control n&gt;4">Give the tissue a minute to recover after each wash, and go on up the scale: 3 × 10<sup>−8</sup>, 10<sup>−7</sup>, 3 × 10<sup>−7</sup>, 10<sup>−6</sup> and 3 × 10<sup>−6</sup> M, each to its plateau and then washed out. Use a stronger stock as you go, to keep the volumes small. When two doses give about the same response, you have reached the maximum.</li>
+  </ol>
+</div>
+
+<h2 id="ob-h-antag">In the presence of an antagonist</h2>
+<p><b>Atropine</b> is an antagonist at muscarinic receptors. To see what it does to the curve, the tissue is equilibrated with a fixed concentration of atropine, and the curve is built again. Here the atropine is put in the solution used for washing, so that its concentration stays the same after every wash.</p>
+<div class="activity">
+  <div class="act-t">Repeat the curve in atropine</div>
+  <ol class="steps">
+    <li data-task="ob-atr" data-auto="bath:antagonist drug=atropine">Put atropine (10<sup>−8</sup> M) in the washing solution, and wash the bath with it <button class="do showme" type="button" data-bath-do="antagonist atropine 1e-8">show me</button>.</li>
+    <li data-task="ob-eq" data-auto="bath:equilibrated drug=atropine">Let it equilibrate with the tissue for 10 minutes: <b>Wait</b> ▸ 10 minutes <button class="do showme" type="button" data-bath-do="wait 600">show me</button>, or let the clock run at ×20.</li>
+    <li data-task="ob-curve2" data-auto="bath:response drug=acetylcholine condition~atropine n&gt;3">Build the curve of acetylcholine again, from 10<sup>−7</sup> M up to 10<sup>−4</sup> M. In the Results, these responses are marked <i>atropine 1e-8 M</i>.</li>
+  </ol>
+</div>
+<div class="q" data-q="ob-q-shift" data-type="mcq">
+  <div class="q-text">In atropine, the curve has moved to the right, in parallel, and it reaches the same maximum. What does that tell you about atropine?</div>
+  <div class="mcq"><label data-correct data-why="Yes. Atropine binds reversibly to the same receptors as acetylcholine, so more agonist restores the same occupancy and the same maximum: the curve shifts in parallel, by the dose ratio."><input type="radio"> It is a competitive antagonist: enough acetylcholine outcompetes it for the receptors</label><label data-why="No: a drug that acted beyond the receptor would lower the maximum, and no amount of agonist could restore it."><input type="radio"> It stops the muscle from contracting, whatever the agonist</label><label data-why="No: a partial agonist would cause a response of its own, and atropine causes none."><input type="radio"> It is a partial agonist</label><label data-why="No: an irreversible antagonist removes receptors, and once the spare receptors are used up the maximum falls."><input type="radio"> It inactivates the receptors irreversibly</label></div>
+</div>
+<div class="q" data-q="ob-q-max">
+  <div class="q-text">What would it mean if, instead, the maximum response fell in the presence of a drug?</div>
+  <div class="q-model">That the antagonism is insurmountable: no amount of agonist restores the maximum. The drug might act beyond the receptor – a non-competitive antagonist, such as a relaxant or a Ca²⁺-channel blocker, which stops the muscle contracting whatever the agonist. Or it might inactivate the receptors irreversibly, as phenoxybenzamine does at α-adrenoceptors: with fewer receptors, once the tissue’s spare receptors (its receptor reserve) are used up, even a saturating concentration of agonist can’t produce the full response. (A partial agonist also has a lower maximum, but it causes a response of its own.)</div>
+</div>
+
+<h2 id="ob-h-r">Analysing the curves in R</h2>
+<div class="activity">
+  <div class="act-t">Fit the curves and work out the pA<sub>2</sub></div>
+  <ol class="steps">
+    <li data-task="ob-script" data-auto="bath:r||rstudio:doc name~ileum">Open the script for your results in RStudio <button class="do showme" type="button" data-bath-r="responses">show me</button> (or press <b>Analyse in R</b> in the tab). It reads the results of your tissue (<code>~/organbath/ileum-1.csv</code> for the first ileum), which the tab keeps up to date.</li>
+    <li data-task="ob-run" data-auto="rstudio:plot||rstudio:source path~organbath">Run it a line at a time (<kbd>Ctrl</kbd>+<kbd>Enter</kbd>). It fits a Hill curve to each set of responses with <code>nls()</code> and plots them, and it works out the EC<sub>50</sub> of each curve and the <b>dose ratio</b>: how many times more acetylcholine gave the same response in atropine.</li>
+  </ol>
+</div>
+<p>For a competitive antagonist the dose ratio (DR) follows the Schild equation, DR = 1 + [B]/<i>K</i><sub>B</sub>, where [B] is the antagonist’s concentration and <i>K</i><sub>B</sub> its dissociation constant. So each dose ratio gives an estimate of the <b>pA<sub>2</sub></b> = log(DR − 1) − log[B]: the negative log of the concentration of antagonist that makes you double the agonist’s concentration. With several concentrations of antagonist, a <b>Schild plot</b> of log(DR − 1) against log[B] should be a straight line with a slope of 1, which crosses the x-axis where log[B] = −pA<sub>2</sub>. The script draws one when you have curves at two or more concentrations of atropine.</p>
+<div class="q" data-q="ob-q-pa2" data-accept="num:9±0.05" data-placeholder="pA2">
+  <div class="q-text">In one tissue, 10<sup>−8</sup> M atropine raised the EC<sub>50</sub> of acetylcholine from 8 × 10<sup>−8</sup> M to 8.8 × 10<sup>−7</sup> M. What is the pA<sub>2</sub> of atropine?</div>
+  <div class="q-model">9.0. The dose ratio is 8.8 × 10<sup>−7</sup> / 8 × 10<sup>−8</sup> = 11, so pA<sub>2</sub> = log(11 − 1) − log(10<sup>−8</sup>) = 1 + 8 = 9.0. In other words, 10<sup>−9</sup> M (1 nM) atropine doubles the concentration of acetylcholine needed for the same response.</div>
+</div>
+
+<div class="optional">
+<h2 id="ob-h-more">If you have time</h2>
+<p>Try the other drugs of the ileum. Is the response to <b>histamine</b> blocked by atropine, or by mepyramine? What do <b>drugs X and Y</b> do, and where? (Each tissue has its own; <b>About</b>, ⓘ, tells you when you have decided.) Or set up a ring of <b>rat aorta</b> <button class="do showme" type="button" data-bath="aorta">show me</button>: contract it with phenylephrine (10<sup>−6</sup> M), and then add acetylcholine, which relaxes it through nitric oxide made by the endothelium. Then try a ring whose endothelium has been rubbed off <button class="do showme" type="button" data-bath="aorta?endothelium=off">show me</button> – the experiment with which Furchgott and Zawadzki discovered, in 1980, that the endothelium makes a relaxing factor (nitric oxide).</p>
+</div>
+
+</section>
+
+<section class="chapter" id="diagrams" data-num="7" data-title="Diagrams" data-bench="flow" hidden>
+  <h1>Flow diagrams that run</h1>
+  <div class="meta-row"><span class="pill time">≈ 15 min</span></div>
+  <p class="lede">Draw the boxes-and-arrows diagrams of physiology, and run them to see how the quantities in them change with time.</p>
+
+<p>Physiology is full of flow diagrams: boxes for quantities, such as a concentration or a temperature, and arrows that show what increases (+) or decreases (−) what. In the <b>Diagrams</b> tab you can draw them, and you can also <em>run</em> them. The workbench turns the diagram into a simple model, in which each quantity moves towards what its arrows tell it, and plots how each quantity changes with time. Running a diagram is a good way to check that it does what you think it does.</p>
+<div class="callout info">
+  <div class="co-t">Kinds of box</div>
+  <p>A <b>quantity</b> (a rounded box) is something that changes, such as a level or a rate. A <b>stimulus</b> (a flag) pushes on the system from outside: switched on and left on, a pulse, a ramp or a wave. A <b>set point</b> is a fixed level, and a <b>comparator</b> (Σ) adds up its inputs: a + arrow adds and a − arrow subtracts. A green <b>+</b> arrow stimulates, a red <b>−</b> arrow (with a bar at its end) inhibits, and each arrow has a <em>strength</em> and can have a <em>delay</em>.</p>
+</div>
+
+<h2 id="f-run">Run an example</h2>
+<p>This example is a loop in which a regulated variable is measured, compared with its set point, and corrected by an effector – but the signal from the sensor arrives two minutes late.</p>
+<div class="activity">
+  <div class="act-t">A loop with a delay</div>
+  <ol class="steps">
+    <li data-task="f-open" data-auto="flow:open example=delay-oscillation">Open the example <button class="do showme" type="button" data-flow="example:delay-oscillation">show me</button>. You can also find it in the tab’s <b>Examples</b> menu.</li>
+    <li data-task="f-run" data-auto="flow:run name~delay">Press <b>Run</b> <button class="do showme" type="button" data-flow-run="1">show me</button>. The graphs under the diagram show each quantity over the run, and you can drag the slider to see the diagram at any moment. The regulated variable overshoots, and swings up and down, less and less.</li>
+    <li data-task="f-short" data-auto="flow:run name~delay settled=true">Click the arrow labelled <i>sensor</i>. Its settings are in the panel on the right: change its <b>Delay</b> to 0.5 min, and press <b>Run</b> again.</li>
+    <li data-task="f-long" data-auto="flow:run name~delay oscillation=growing">Now make the delay 4 min, and run it again.</li>
+  </ol>
+</div>
+<div class="q" data-q="f-q-delay">
+  <div class="q-text">What happens to the swings when the delay is short, and when it is long? Why does a delay in a loop like this make it swing?</div>
+  <div class="q-model">With a short delay the variable settles quickly, with little or no overshoot; with a long delay the swings get bigger and bigger. The effector corrects for the error that the sensor reported, but with a delay that report is out of date: the effector keeps pushing after the error has gone, and overshoots, and then over-corrects the other way. The longer the delay (or the stronger the correction), the bigger each overshoot.</div>
+</div>
+
+<h2 id="f-draw">Draw your own</h2>
+<div class="activity">
+  <div class="act-t">Build a small loop</div>
+  <ol class="steps">
+    <li data-task="f-new" data-auto="flow:open example=blank">Start a blank diagram <button class="do showme" type="button" data-flow="example:blank">show me</button>, click its name at the top, and call it <i>My loop</i>.</li>
+    <li data-task="f-boxes" data-auto="flow:node role=stimulus">Add a stimulus with <b>Box</b> ▸ <i>A stimulus or disturbance</i>, and two quantities by double-clicking on empty parts of the diagram. Double-click each box to name it: <i>Push</i> (the stimulus), <i>Level</i> and <i>Response</i>.</li>
+    <li data-task="f-plus" data-auto="flow:edge sign=+">Draw a + arrow from <i>Push</i> to <i>Level</i>: drag from one of the dots on the edge of <i>Push</i> to <i>Level</i>. Draw another + arrow from <i>Level</i> to <i>Response</i>.</li>
+    <li data-task="f-minus" data-auto="flow:edge sign=-">Choose <b>−</b> in the toolbar and draw an arrow from <i>Response</i> back to <i>Level</i>, which closes the loop.</li>
+    <li data-task="f-run2" data-auto="flow:run name~my loop">Run your diagram, and look at the level of <i>Level</i> at the end (the <b>Numbers</b> under the diagram).</li>
+    <li data-task="f-block" data-auto="flow:run name~my loop blocked&gt;0">Right-click the − arrow and block it, and run the diagram again.</li>
+    <li data-task="f-save" data-auto="flow:export format=csv" data-check="exists:diagrams/my-loop.flow.json">Save the diagram (<b>Save</b>, in your <code>diagrams</code> folder), and keep the results of the run as a table for R (<b>Results to my files</b>).</li>
+  </ol>
+</div>
+<div class="q" data-q="f-q-loop">
+  <div class="q-text">How did blocking the − arrow change what happened to <i>Level</i>, and why?</div>
+  <div class="q-model">Without the loop, <i>Level</i> rose by the whole size of the push (from 1 to 2, with the settings a new box starts with). With the loop it rose only half as far (to 1.5), because <i>Response</i> rose with it and pushed it back down: the − arrow opposes the change.</div>
+</div>
+<div class="callout tip">
+  <div class="co-t">Diagrams in your work</div>
+  <p>The <b>Export</b> menu saves a diagram as a picture (PNG or SVG) for a report, and the results of a run as a CSV table that you can plot in RStudio. A diagram saved in your files opens again in this tab when you click on it in Files.</p>
+</div>
+
+</section>
+
+<section class="chapter" id="circuits" data-num="8" data-title="Circuits" data-bench="circuit" hidden>
+  <h1>Circuits on the bench</h1>
+  <div class="meta-row"><span class="pill time">≈ 15 min</span></div>
+  <p class="lede">Build electrical circuits and run them, and use the same circuits as models of the body.</p>
+
+<p>The <b>Circuits</b> tab is an electronics bench: batteries, resistors, capacitors, switches and meters, joined by wires, and a simulator that works out the voltage at every point and the current through every part as time passes. In its <b>Physiology</b> mode the same circuits become models of the body: pressure for voltage, flow for current, resistance to flow for resistance, and compliance for capacitance.</p>
+
+<h2 id="c-ohm">Ohm’s law</h2>
+<p>The current through a resistor is proportional to the voltage across it: <i>I</i> = <i>V</i> / <i>R</i>.</p>
+<div class="activity">
+  <div class="act-t">Check Ohm’s law</div>
+  <ol class="steps">
+    <li data-task="c-open" data-auto="circuit:open example=ohms-law">Open the example <button class="do showme" type="button" data-circuit="example:ohms-law">show me</button>: a 9 V battery, a 1 kΩ resistor, an ammeter in series and a voltmeter in parallel with the resistor.</li>
+    <li data-task="c-run" data-auto="circuit:run">Press <b>Run</b> <button class="do showme" type="button" data-circuit-run="1">show me</button>. The moving dots show the current, and the meters show their readings.</li>
+  </ol>
+</div>
+<div class="q" data-q="c-q-9" data-accept="num:9±0.05" data-placeholder="mA">
+  <div class="q-text">What current does the ammeter show, in milliamps (mA)?</div>
+  <div class="q-model">9 mA: <i>I</i> = <i>V</i> / <i>R</i> = 9 V / 1000 Ω = 0.009 A.</div>
+</div>
+<div class="activity">
+  <div class="act-t">Change the resistance</div>
+  <ol class="steps">
+    <li data-task="c-r" data-auto="circuit:edit">Click the resistor and change its resistance to <code>2.2k</code> (2.2 kΩ) in the panel on the right.</li>
+  </ol>
+</div>
+<div class="q" data-q="c-q-22" data-accept="num:4.09±0.03" data-placeholder="mA">
+  <div class="q-text">What current flows through a 2.2 kΩ resistor, in mA?</div>
+  <div class="q-model">4.09 mA: 9 V / 2200 Ω = 0.00409 A. Doubling the resistance (roughly) halves the current.</div>
+</div>
+
+<h2 id="c-rc">Charging a capacitor</h2>
+<p>A capacitor stores charge. Charged through a resistor, it charges quickly at first and then more and more slowly: after one <em>time constant</em>, τ = <i>RC</i>, it has reached 63% of its final voltage.</p>
+<div class="activity">
+  <div class="act-t">Watch a capacitor charge</div>
+  <ol class="steps">
+    <li data-task="c-rc" data-auto="circuit:open example=rc-circuit">Open the example <button class="do showme" type="button" data-circuit="example:rc-circuit">show me</button> and press <b>Run</b>.</li>
+    <li data-task="c-close" data-auto="circuit:switch on=true">Click the switch labelled <b>Charge</b> to close it, and watch the trace of the capacitor’s voltage under the circuit. Then open it again, and close <b>Discharge</b>.</li>
+  </ol>
+</div>
+<div class="q" data-q="c-q-tau" data-accept="num:1±0.15" data-placeholder="s">
+  <div class="q-text">With R1 = 10 kΩ and C1 = 100 µF, how long does the capacitor take to charge to 63% of the battery’s 5 V (3.16 V), in seconds?</div>
+  <div class="q-model">1 s: τ = <i>RC</i> = 10 000 Ω × 0.0001 F = 1 s. After 2τ it has reached 86%, and after 3τ 95%.</div>
+</div>
+<div class="q" data-q="c-q-double" data-type="mcq">
+  <div class="q-text">What happens to the time constant if you double the resistance?</div>
+  <div class="mcq"><label data-correct data-why="Yes. τ = RC, so a bigger resistance (which lets less current through) means the capacitor takes longer to charge."><input type="radio"> It doubles</label><label data-why="No: a bigger resistance lets less current through, so the capacitor charges more slowly. τ = RC."><input type="radio"> It halves</label><label data-why="No: τ = RC depends on both the resistance and the capacitance."><input type="radio"> It stays the same</label></div>
+</div>
+
+<h2 id="c-phys">Circuits as models of the body</h2>
+<div class="activity">
+  <div class="act-t">Physiology mode</div>
+  <ol class="steps">
+    <li data-task="c-mode" data-auto="circuit:mode mode=physiology">Switch the tab to <b>Physiology</b> (at the top). The parts are now called pressure sources, resistances to flow, compliances and valves, and the meters read pressure (mmHg) and flow (mL/s).</li>
+    <li data-task="c-wk" data-auto="circuit:open example=windkessel">Open the Windkessel model of the circulation <button class="do showme" type="button" data-circuit="example:windkessel">show me</button> and run it. The heart pumps blood in pulses, but the elastic arteries (a compliance) smooth them into a pressure that never falls to zero.</li>
+    <li data-task="c-save" data-auto="circuit:save">Save the circuit in your files (<b>Save</b>, in your <code>circuits</code> folder).</li>
+  </ol>
+</div>
+
+</section>
+
+<section class="chapter" id="simulations" data-num="9" data-title="Simulations" data-bench="sims" hidden>
+  <h1>Interactive simulations</h1>
+  <div class="meta-row"><span class="pill time">≈ 15 min</span></div>
+  <p class="lede">Models of the science behind the body that you can change and watch: the ions of an action potential, the light a solution absorbs, and the logarithmic scale of pH.</p>
+
+<p>The <b>Simulations</b> tab holds a library of simulations made by <b>PhET Interactive Simulations</b> at the University of Colorado Boulder, chosen for biomedical science. Each one is a model of a piece of science – ions crossing a membrane, light passing through a solution, the particles of a gas – that you can change and watch. Each has its own controls, and many have several screens, which you choose from the bar at the bottom of the simulation (or from the list in the tab’s toolbar). The <b>ⓘ</b> button tells you what a simulation is for, who made it and its licence.</p>
+
+<h2 id="sim-nerve">The action potential</h2>
+<p>The Neuron simulation shows a short length of an axon, cut across, with the channels in its membrane and the sodium and potassium ions on either side.</p>
+<div class="activity">
+  <div class="act-t">Stimulate a neuron</div>
+  <ol class="steps">
+    <li data-task="sim-lib" data-auto="sim:filter topic~membranes">Look through the library of the <b>Simulations</b> tab, and choose the topic <b>Membranes and nerves</b> to see the simulations about membranes.</li>
+    <li data-task="sim-neuron" data-auto="sim:open id=neuron">Open the Neuron simulation <button class="do showme" type="button" data-sim="neuron">show me</button>. The legend on the right shows the ions and the four kinds of channel.</li>
+    <li data-task="sim-stim" data-auto="sim:action id=neuron action=stimulate">Press <b>Stimulate Neuron</b> and watch the channels and the ions. Choose <b>Slow Motion</b>, or pause and step it with the buttons under the axon, to see the order of events.</li>
+    <li data-task="sim-chart" data-auto="sim:action id=neuron action=chart">Tick <b>Potential Chart</b> (under <b>Show</b>) and stimulate the neuron again: the chart plots the membrane potential against time – the action potential.</li>
+    <li data-task="sim-conc" data-auto="sim:action id=neuron action=concentrations">Tick <b>Concentrations</b> as well, and stimulate it once more, watching the concentrations of Na⁺ and K⁺ inside and outside the axon.</li>
+  </ol>
+</div>
+<div class="q" data-q="sim-q-first" data-type="mcq">
+  <div class="q-text">When the neuron is stimulated, which channels open first, and which way do the ions move through them?</div>
+  <div class="mcq"><label data-correct data-why="Yes. Na⁺ is more concentrated outside, and the inside is negative, so it flows in when its channels open, and the membrane depolarises."><input type="radio"> Voltage-gated sodium channels: Na⁺ moves into the axon</label><label data-why="The potassium channels open too, but later and more slowly: they bring the potential back down after the peak."><input type="radio"> Voltage-gated potassium channels: K⁺ moves out of the axon</label><label data-why="Na⁺ is more concentrated outside the axon, and the inside is negative: when its channels open it moves in."><input type="radio"> Voltage-gated sodium channels: Na⁺ moves out of the axon</label><label data-why="The leak channels are open all the time and set the resting potential; the action potential comes from the gated channels."><input type="radio"> The leak channels: both ions move at once</label></div>
+  <div class="q-model">The voltage-gated sodium channels open first, and Na⁺ moves into the axon: the rising phase of the action potential. Then the sodium channels close (they inactivate) and the voltage-gated potassium channels open, K⁺ moves out, and the potential falls again – briefly below the resting potential, until the potassium channels close.</div>
+</div>
+<div class="q" data-q="sim-q-conc">
+  <div class="q-text">Did the concentrations of Na⁺ and K⁺ inside the axon change much during an action potential? What does that tell you?</div>
+  <div class="q-model">Hardly at all. Only a tiny fraction of the ions cross the membrane in one action potential: enough to change the charge on the membrane, which (like a capacitor) needs little charge to change its voltage, but far too few to change the concentrations. That is why a neuron can fire many action potentials before the Na⁺/K⁺ pump has to restore the gradients.</div>
+</div>
+
+<h2 id="sim-beer-law">Absorbance and concentration</h2>
+<p>A spectrophotometer measures how much light of one wavelength a solution absorbs. The <b>Beer–Lambert law</b> says that the absorbance, <i>A</i>, is proportional to the concentration, <i>c</i>, and to the distance the light travels through the solution, the path length, <i>l</i>:</p>
+<p class="eq"><i>A</i> = <i>ε</i> <i>c</i> <i>l</i></p>
+<p>where <i>ε</i>, the molar absorptivity (or extinction coefficient), depends on the substance and on the wavelength. It is why a standard curve of absorbance against concentration is a straight line, and why cuvettes have a standard width of 1 cm.</p>
+<div class="activity">
+  <div class="act-t">Measure absorbance</div>
+  <ol class="steps">
+    <li data-task="sim-beer" data-auto="sim:open id=beers-law-lab screen=2||sim:screen id=beers-law-lab screen=2">Open Beer’s Law Lab on its <b>Beer’s Law</b> screen <button class="do showme" type="button" data-sim="beers-law-lab:2">show me</button>.</li>
+    <li data-task="sim-detect" data-auto="sim:action id=beers-law-lab action=detector">Switch the light on (the red button), choose <b>Absorbance</b> on the detector, and drag the detector’s probe into the beam behind the cuvette.</li>
+    <li data-task="sim-bconc" data-auto="sim:change id=beers-law-lab what=concentration">Change the concentration of the drink mix with its slider, and watch the absorbance: double the concentration, and the absorbance doubles.</li>
+    <li data-task="sim-path" data-auto="sim:change id=beers-law-lab what=path">Change the path length: drag the yellow arrows on the side of the cuvette to make it wider or narrower, and measure it with the ruler.</li>
+  </ol>
+</div>
+<div class="q" data-q="sim-q-beer" data-accept="num:0.51±0.02" data-placeholder="the absorbance">
+  <div class="q-text">With the drink mix at 100 mM in a 1.00 cm cuvette, the absorbance at 508 nm is 0.51. What absorbance do you expect from a 50 mM solution in a 2.00 cm cuvette? Check your answer in the simulation.</div>
+  <div class="q-model">0.51, the same: halving the concentration halves the absorbance, and doubling the path length doubles it. In <i>A</i> = <i>εcl</i>, (½<i>c</i>)(2<i>l</i>) = <i>cl</i>.</div>
+</div>
+
+<h2 id="sim-ph-log">pH, a logarithmic scale</h2>
+<p>The pH of a solution is minus the logarithm (to base 10) of the concentration of hydrogen ions – strictly, H₃O⁺ – in moles per litre:</p>
+<p class="eq">pH = −log<sub>10</sub> [H₃O⁺]</p>
+<p>so each step of one pH unit is a tenfold change in the concentration of H₃O⁺.</p>
+<div class="activity">
+  <div class="act-t">The pH of blood</div>
+  <ol class="steps">
+    <li data-task="sim-ph" data-auto="sim:open id=ph-scale screen=2||sim:screen id=ph-scale screen=2">Open pH Scale on its <b>Micro</b> screen <button class="do showme" type="button" data-sim="ph-scale:2">show me</button>, which shows the concentrations of H₃O⁺ and OH⁻ as well as the pH.</li>
+    <li data-task="sim-blood" data-auto="sim:change id=ph-scale what=solution value~blood">Choose <b>Blood</b> from the list of liquids at the top. Read its pH, and the concentration of H₃O⁺ on the graph on the left (the graph shows concentrations when its switch is set to <b>Concentration</b>).</li>
+    <li data-task="sim-water" data-auto="sim:change id=ph-scale what=water">Add water from the tap at the top right, and watch the pH and the concentrations as the blood is diluted.</li>
+  </ol>
+</div>
+<div class="q" data-q="sim-q-h" data-accept="num:40±2" data-placeholder="nmol per litre">
+  <div class="q-text">Blood has a pH of 7.4. What is the concentration of H₃O⁺ in blood, in nanomoles per litre?</div>
+  <div class="q-model">About 40 nmol L⁻¹: 10<sup>−7.4</sup> mol L⁻¹ = 4.0 × 10<sup>−8</sup> mol L⁻¹ = 40 nmol L⁻¹. A fall in pH of only 0.3, to 7.1, doubles it (10<sup>0.3</sup> ≈ 2).</div>
+</div>
+<div class="callout warn">
+  <div class="co-t">A model is not the body</div>
+  <p>In the simulation, adding water to blood moves its pH towards 7, as it would for any solution of an acid or a base. Real blood resists such changes: its buffers – bicarbonate above all, with proteins such as haemoglobin, and phosphate – take up or release H⁺, and the lungs and kidneys adjust them. A simulation shows what its model predicts, and its model is simpler than the body. Use simulations to build a picture and to test your reasoning, and keep in mind what they leave out.</p>
+</div>
+<div class="callout tip">
+  <div class="co-t">More in the library</div>
+  <p>The library also has gases and their pressures (Gas Properties), diffusion, transport across membranes, the membrane as a capacitor (Capacitor Lab: Basics), lenses and how a microscope forms an image (Geometric Optics), colour vision, concentrations of solutions (Molarity), and fitting a straight line to data (Least-Squares Regression). Each simulation’s <b>ⓘ</b> says what it is for in biomedical science, and links to PhET’s own activities for it.</p>
+</div>
+
+</section>
+
+<section class="chapter" id="exam" data-num="10" data-title="Exam practice" data-bench="exam" hidden>
+  <h1>Writing answers as in the exam</h1>
+  <div class="meta-row"><span class="pill time">≈ 20 min</span></div>
+  <p class="lede">Practise writing essays in the browser, as you will in the exam: a timer, a word count, the editor’s toolbar, flags, the calculator, and a Word document of your answers at the end.</p>
+
+<p>Your exams are written on a computer, in an online exam system (Inspera). The <b>Exam practice</b> tab works in the same way, so that you can get used to planning, writing and checking an essay in a browser – with a timer and a word limit – before it matters. Your practicals will set essays here too.</p>
+<div class="callout info">
+  <div class="co-t">What is the same, and what isn’t</div>
+  <p>The layout, the timer, the editor and its toolbar, flags, the calculator and the submission page work as they do in the exam system. As in the exam browser, you can copy and paste within the exam, but text copied from anywhere else can’t be pasted in – so write your answers here, not in another program. But this is practice: your answers are saved only in this browser, nobody marks them, and after you submit you can review them alongside the marking guidance and download them as a Word document.</p>
+</div>
+
+<h2 id="e-paper">A short practice paper</h2>
+<div class="activity">
+  <div class="act-t">Take the paper</div>
+  <ol class="steps">
+    <li data-task="e-open" data-auto="exam:open paper=tour">Open the paper <i>Getting to know exam practice</i> <button class="do showme" type="button" data-exam="tour">show me</button> and read its first page.</li>
+    <li data-task="e-start" data-auto="exam:start paper=tour">Press <b>Start</b>. The time left is shown at the top left, under your candidate number.</li>
+    <li data-task="e-write" data-auto="exam:words paper=tour words&gt;59">Go to question 1 with the arrow at the bottom right (or the tile <b>1</b>). It asks you to look at a slide: the buttons at the top of the page open it in the Microscope tab, and the <b>Exam practice</b> tab brings you back. Write at least 60 words, and watch the word count under the box.</li>
+    <li data-task="e-format" data-auto="exam:format cmd=special">Try the toolbar: make a word bold, start a bulleted list, and insert a special character such as µ or → (the <b>Ω</b> button).</li>
+    <li data-task="e-paste" data-auto="exam:paste refused=true">Copy a sentence of these instructions (<kbd>Ctrl</kbd>+<kbd>C</kbd>) and try to paste it into your answer (<kbd>Ctrl</kbd>+<kbd>V</kbd>): as in the exam browser, it won’t go in. What you copy in the exam itself – from your answer or from the question – can be pasted.</li>
+    <li data-task="e-flag" data-auto="exam:flag on=true">Flag a question that you want to come back to (the bookmark at the top right of the question). Its tile at the bottom shows the flag.</li>
+    <li data-task="e-calc" data-auto="calc:result">Answer the calculation, using the calculator (at the top of the page).</li>
+    <li data-task="e-submit" data-auto="exam:submit paper=tour">Go to the submission page (the ✓ tile at the bottom right, or ☰ ▸ <i>Go to submission page</i>), look at what you have and haven’t answered, and submit.</li>
+    <li data-task="e-word" data-auto="exam:download format~docx">Download your answers as a Word document.</li>
+  </ol>
+</div>
+<div class="q" data-q="e-q-differ">
+  <div class="q-text">What is one thing about writing in the browser that is different from writing by hand, and how will you allow for it in an exam?</div>
+  <div class="q-model">For example: you can edit and move text, so it is worth writing a plan (headings, or a list that you delete later) and then filling it in; the word count shows how much you have written, so you can share your time between the sections; there is no spelling checker in most exams, so leave time to read your answer through; drawings take longer than on paper, so keep them simple; and you can’t see the whole essay at once, so a clear structure (paragraphs with a point each) matters even more.</div>
+</div>
+
+<h2 id="e-free">Essays of your own</h2>
+<p><b>Write an essay…</b>, on the list of papers, starts an essay with any title, with a word limit and a time limit if you like <button class="do showme" type="button" data-exam="free">show me</button>. Your attempts and essays are kept in your <code>essays</code> folder, and open again from there.</p>
+
+</section>
+
+<section class="chapter" id="r" data-num="11" data-title="Data in R" data-bench="rstudio" hidden>
+  <h1>From the microscope to R</h1>
+  <div class="meta-row"><span class="pill time">≈ 15 min</span></div>
+  <p class="lede">Your measurements and counts are kept in files that R can read. Summarise and plot them in RStudio, and turn a calculation into a script.</p>
+
+<p>The microscope keeps your measurements and counts in two files in your <code>microscope</code> folder, <code>measurements.csv</code> and <code>counts.csv</code>. Each row is one measurement (or one mark of the Count tool), so they are ready for R. In this chapter you read them in <b>RStudio</b>, summarise them and plot them. You only need to run the scripts – but have a look at each line, to see what it does.</p>
+<div class="callout info">
+  <div class="co-t">The first time</div>
+  <p>The first time you open RStudio, the workbench downloads R itself (about 30 MB), which can take a minute. After that, the browser keeps it.</p>
+</div>
+
+<h2 id="r-meas">Your measurements</h2>
+<div class="activity">
+  <div class="act-t">Summarise your measurements</div>
+  <ol class="steps">
+    <li data-task="r-csv" data-auto="editor:view path~measurements.csv||editor:open path~measurements.csv">Look at your measurements in Files <button class="do showme" type="button" data-edit="microscope/measurements.csv">show me</button>. Each row has the slide, what you measured (its label), the value and its unit, the objective, and where on the slide it was.</li>
+    <li data-task="r-script" data-auto="rstudio:doc name=microscope-measurements.R">Open the microscope’s script for your measurements in RStudio <button class="do showme" type="button" data-scope-r="measurements">show me</button>. (In the microscope, the <b>Analyse in R</b> button of the Measurements panel does the same.)</li>
+    <li data-task="r-run" data-auto="r:input kind=rstudio line~read.csv||rstudio:source path~microscope-measurements||r:input kind=rstudio line~microscope-measurements.R">Put the cursor on the first line of code and press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> (<kbd>⌘</kbd>+<kbd>Enter</kbd> on a Mac) to run it. Keep pressing it to run the script line by line, and watch the Console.</li>
+    <li data-task="r-plot" data-auto="rstudio:plot">When you reach <code>boxplot(…)</code>, the box plot of your lengths appears in the <b>Plots</b> pane.</li>
+  </ol>
+</div>
+<div class="q" data-q="r-q-sd">
+  <div class="q-text">R gives the mean, the standard deviation (SD) and the number of your renal corpuscle measurements. What does the standard deviation tell you?</div>
+  <div class="q-model">How spread out the measurements are around the mean: roughly, how far a typical measurement lies from the mean. About two thirds of measurements from a normal distribution lie within one SD of the mean. A large SD compared with the mean means that the diameters varied a lot (here, because the corpuscles are cut at different levels).</div>
+</div>
+
+<h2 id="r-counts">Your counts</h2>
+<div class="activity">
+  <div class="act-t">Count your counts</div>
+  <ol class="steps">
+    <li data-task="r-counts" data-auto="r:input kind=rstudio line~counts.csv||rstudio:source path~microscope-counts||r:input kind=rstudio line~microscope-counts.R">Open the script for your counts <button class="do showme" type="button" data-scope-r="counts">show me</button> and run it line by line. <code>table()</code> counts the marks of each category on each slide, and <code>prop.table()</code> turns the counts into proportions.</li>
+  </ol>
+</div>
+
+<h2 id="r-calc">Calculations in a script</h2>
+<p>A calculation written as a script is easy to check, and easy to run again with new numbers. This script does the haemocytometer calculation of the last chapter.</p>
+<div class="codefile" data-path="scripts/haemocytometer.R"><div class="cf-head"><span class="cf-name">scripts/haemocytometer.R</span><span class="grow"></span><button class="do" type="button" data-file-create="scripts/haemocytometer.R">Create this file</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock"># Counting cells with a haemocytometer
+# the living (clear) and dead (blue) cells in the four large corner squares
+live &lt;- c(60, 64, 60, 45)
+dead &lt;- c(8, 8, 8, 2)
+
+volume_mL &lt;- 1e-4   # the volume over one large square: 1 mm x 1 mm x 0.1 mm = 0.1 uL = 0.0001 mL
+dilution &lt;- 2       # the cells were mixed 1:1 with trypan blue
+
+# living cells per mL of the original suspension
+cells_per_mL &lt;- mean(live) / volume_mL * dilution
+cells_per_mL
+format(cells_per_mL, scientific = TRUE)
+
+# the percentage of the cells that are alive (the viability)
+viability &lt;- 100 * sum(live) / (sum(live) + sum(dead))
+round(viability, 1)</pre><div class="cf-note"><b>Create this file</b> saves the script in your files and opens it in RStudio.</div></div>
+<div class="activity">
+  <div class="act-t">Run the calculation</div>
+  <ol class="steps">
+    <li data-task="r-make" data-auto="file:create name=haemocytometer.R">Click <b>Create this file</b> above.</li>
+    <li data-task="r-source" data-auto="rstudio:source path~haemocytometer||r:input kind=rstudio line~cells_per_mL||r:input kind=rstudio line~haemocytometer.R">Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> (<kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> on a Mac), or choose <b>Source with Echo</b> from the arrow beside the <b>Source</b> button: R runs the whole script and shows each line and its result in the Console. (The <b>Source</b> button itself runs the script without showing the results.) Check that R gets the same answers as you did.</li>
+    <li data-task="r-change" data-check="has:scripts/haemocytometer.R|live &lt;- c\(48, ?52, ?50, ?46\)">Change the counts to <code>live &lt;- c(48, 52, 50, 46)</code>, save the script (<kbd>Ctrl</kbd>+<kbd>S</kbd>) and run it again.</li>
+  </ol>
+</div>
+<div class="q" data-q="r-q-new" data-accept="num:9.8e5±1%" data-placeholder="cells per mL">
+  <div class="q-text">With the new counts (48, 52, 50 and 46 living cells, and the same dead cells), how many living cells were there per mL of the original suspension?</div>
+  <div class="q-model">9.8 × 10<sup>5</sup> cells per mL: the mean is 196 ÷ 4 = 49 cells per large square, and 49 ÷ 10<sup>−4</sup> mL × 2 = 980 000 cells per mL.</div>
+</div>
+
+</section>
+<!--/CHAPTERS-->
+    </aside>
+
+    <div class="splitter" role="separator" aria-orientation="vertical" title="Drag to resize, or double-click to reset"></div>
+
+    <section class="bench" aria-label="Workbench">
+      <div class="wb-tabs" role="tablist">
+        <button class="wb-tab rail-btn" type="button" id="tutRail" title="Show the instructions (Ctrl+\)" hidden><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M13 10l2 2-2 2"/></svg><span>Instructions</span></button>
+        <button class="wb-tab on" type="button" role="tab" data-wb="scope" title="A virtual microscope with slides of human tissues"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9.5 2.8l3.6 1.4-3 7.6-3.6-1.4z"/><path d="M7.7 12.4l-.9 2.2"/><path d="M4 16.5h9"/><path d="M13.6 7.6a6.5 6.5 0 0 1 1.9 11.2"/><path d="M5 21h14"/><path d="M15.5 18.8V21"/></svg><span class="lbl">Microscope</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="anatomy" title="The anatomy of the human body in 3D (from Z-Anatomy)"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="4.6" r="2.3"/><path d="M12 7.6v6.6M6.2 10.6L12 8.8l5.8 1.8M8.8 21l3.2-6.8 3.2 6.8"/></svg><span class="lbl">Anatomy</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="viewer" title="Proteins and other molecules in 3D"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="6" cy="7" r="2.6"/><circle cx="18" cy="7" r="2.6"/><circle cx="12" cy="17.5" r="2.6"/><path d="M8.6 7h6.8M7.3 9.3l3.4 5.9M16.7 9.3l-3.4 5.9"/></svg><span class="lbl">Molecules</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="recorder" title="A chart recorder with real recordings of people (the ECG, heart sounds, blood pressure, breathing, muscle and the brain), from PhysioNet"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M6 13h2.5l1.5-4.5 2.5 8 1.8-5.5 1 2H18"/></svg><span class="lbl">Recorder</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="bath" title="An organ bath: isolated tissues, drugs and concentration–response curves"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5.5 3h13"/><path d="M7 3v13.5A4.5 4.5 0 0 0 11.5 21h1a4.5 4.5 0 0 0 4.5-4.5V3"/><path d="M12 3v4.5"/><rect x="10.7" y="7.5" width="2.6" height="6" rx="1.3"/><path d="M9.3 17.6h.01M14.4 16.4h.01M11.8 18.9h.01"/></svg><span class="lbl">Organ bath</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="flow" title="Flow diagrams of physiological control, with a simulator"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="5" rx="1.2"/><rect x="14" y="3" width="7" height="5" rx="1.2"/><rect x="14" y="16" width="7" height="5" rx="1.2"/><path d="M10 5.5h4M17.5 8v8M14 18.5H7.5a1.5 1.5 0 0 1-1.5-1.5V8"/></svg><span class="lbl">Diagrams</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="circuit" title="Electrical circuits, and the circuit models of physiology"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12h3.5l1.7-4 2.6 8 2.6-8 2.6 8 1.7-4H22"/></svg><span class="lbl">Circuits</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="sims" title="Interactive simulations from PhET (University of Colorado Boulder)"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h8.5M16.5 6H20M4 12h2.5M10.5 12H20M4 18h10.5M18.5 18H20"/><circle cx="14.5" cy="6" r="2"/><circle cx="8.5" cy="12" r="2"/><circle cx="16.5" cy="18" r="2"/></svg><span class="lbl">Simulations</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="exam" title="Exam practice: write essays and answers as you will in an online exam"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3H6.5A2.5 2.5 0 0 0 4 5.5v13A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg><span class="lbl">Exam practice</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="rstudio" title="RStudio, for analysing data in R"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/></svg><span class="lbl">RStudio</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="editor" title="Your files"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H7l-4 9z"/><path d="M3 19l3.5-8H22l-3.5 8z"/></svg><span class="lbl">Files</span><span class="dot"></span></button>
+        <button class="bench-close" type="button" aria-label="Back to the instructions" title="Back to the instructions">✕<span class="lbl">Instructions</span></button>
+      </div>
+      <div class="wb-body">
+        <div class="wb-pane" data-wb="scope"><div id="scopeRoot"></div></div>
+        <div class="wb-pane" data-wb="anatomy" hidden><div id="anatRoot"></div></div>
+        <div class="wb-pane" data-wb="viewer" hidden><div id="viewerRoot"></div></div>
+        <div class="wb-pane" data-wb="recorder" hidden><div id="recRoot"></div></div>
+        <div class="wb-pane" data-wb="bath" hidden><div id="bathRoot"></div></div>
+        <div class="wb-pane" data-wb="flow" hidden><div id="flowRoot"></div></div>
+        <div class="wb-pane" data-wb="circuit" hidden><div id="circuitRoot"></div></div>
+        <div class="wb-pane" data-wb="sims" hidden><div id="simsRoot"></div></div>
+        <div class="wb-pane" data-wb="exam" hidden><div id="examRoot"></div></div>
+        <div class="wb-pane" data-wb="rstudio" hidden><div id="rsRoot"></div></div>
+        <div class="wb-pane" data-wb="editor" hidden><div id="edRoot"></div></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<button class="bench-fab" type="button" aria-label="Open the workbench"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/></svg>Workbench</button>
+<noscript><p style="padding:20px">This page needs JavaScript.</p></noscript>
+
+<script>window.BMS_STARTERS = [];
+window.BMS_STARTERS_VERSION = 1;</script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/vfs.js"></script>
+<script src="assets/js/project.js"></script>
+<script src="assets/vendor/codemirror/codemirror.js"></script>
+<script src="assets/vendor/codemirror/r.js"></script>
+<script src="assets/vendor/codemirror/markdown.js"></script>
+<script src="assets/vendor/codemirror/yaml.js"></script>
+<script src="assets/vendor/codemirror/shell.js"></script>
+<script src="assets/vendor/codemirror/javascript.js"></script>
+<script src="assets/vendor/codemirror/python.js"></script>
+<script src="assets/vendor/codemirror/overlay.js"></script>
+<script src="assets/vendor/codemirror/multiplex.js"></script>
+<script src="assets/vendor/codemirror/yaml-frontmatter.js"></script>
+<script src="assets/vendor/codemirror/rmarkdown.js"></script>
+<script src="assets/vendor/codemirror/matchbrackets.js"></script>
+<script src="assets/vendor/codemirror/closebrackets.js"></script>
+<script src="assets/vendor/codemirror/comment.js"></script>
+<script src="assets/vendor/codemirror/searchcursor.js"></script>
+<script src="assets/vendor/codemirror/active-line.js"></script>
+<script src="assets/vendor/codemirror/runmode.js"></script>
+<script src="assets/vendor/dompurify/purify.min.js"></script>
+<script src="assets/vendor/marked/marked.min.js"></script>
+<script src="assets/js/rsession.js"></script>
+<script src="assets/js/rui.js"></script>
+<script src="assets/js/dataview.js"></script>
+<script src="assets/js/knit.js"></script>
+<script src="assets/js/rstudio.js"></script>
+<script src="assets/js/rsource.js"></script>
+<script src="assets/js/shiny.js"></script>
+<script src="assets/js/pdfview.js"></script>
+<script src="assets/js/editor.js"></script>
+<script src="assets/js/page.js"></script>
+<script src="assets/js/tutorial.js"></script>
+<script src="assets/js/workbench.js"></script>
+</body>
+</html>
