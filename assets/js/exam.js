@@ -1246,7 +1246,7 @@
         const r = document.caretRangeFromPoint ? document.caretRangeFromPoint(e.clientX, e.clientY) : null;
         // pictures from the computer: put in where they are dropped (the same as Insert picture)
         if (dt.files && dt.files.length) {
-          if (!this.o.images) return this._note('Files and pictures cannot be put into this answer. Use the drawing tool for a diagram.');
+          if (!this.o.images) return this._note('Files and pictures can’t be added to this answer, but you can use the drawing tool for a diagram.');
           return this._addPictures(dt.files, r && this.area.contains(r.startContainer) ? r : null);
         }
         if (r) {
@@ -1852,30 +1852,30 @@
       const list = Array.from(files || []);
       const isPic = (f) => /^image\//.test(f.type || '') || /\.(png|jpe?g|gif|webp|bmp|heic|heif|avif)$/i.test(f.name || '');
       const pics = list.filter(isPic);
-      if (!pics.length) return this._note('Only pictures can be added to an answer: PNG, JPEG, GIF or WebP files.', 8000);
+      if (!pics.length) return this._note('Only pictures can be added to an answer, such as PNG, JPEG, GIF or WebP files.', 8000);
       const room = PIC.perAnswer - this.area.querySelectorAll('img.ex-image').length;
       if (room <= 0) return this._note(`An answer can have up to ${PIC.perAnswer} pictures.`, 8000);
       const notes = [];
-      if (pics.length < list.length) notes.push('Only pictures can be added: the other files were left out.');
+      if (pics.length < list.length) notes.push('Only pictures can be added, so the other files were left out.');
       if (pics.length > room) notes.push(`An answer can have up to ${PIC.perAnswer} pictures, so only ${plural(room, 'picture')} ${room === 1 ? 'was' : 'were'} added.`);
       this._note(pics.length > 1 ? 'Adding the pictures…' : 'Adding the picture…', 60000, true);
       const ready = [];
       for (const f of pics.slice(0, room)) {
         const name = f.name || 'A picture';
         if (f.size > PIC.maxFileMB * 1048576) {
-          notes.push(`${name} is too big to add (${Math.round(f.size / 1048576)} MB: the most is ${PIC.maxFileMB} MB).`);
+          notes.push(`${name} is too big to add (${Math.round(f.size / 1048576)} MB, and the limit is ${PIC.maxFileMB} MB).`);
           continue;
         }
         try {
           const rec = await preparePicture(f);
           const id = this.o.images.add(rec);
           if (!id) {
-            notes.push('There is no room for more pictures in this attempt.');
+            notes.push('There’s no room for any more pictures in this attempt.');
             break;
           }
           ready.push({ id, rec });
         } catch (e) {
-          notes.push(`${name} couldn’t be opened: save it as a JPEG or PNG, and add that.`);
+          notes.push(`${name} couldn’t be opened. Try saving it as a JPEG or PNG and adding that instead.`);
         }
       }
       if (ready.length) this._insertPictures(ready, range);
@@ -1957,7 +1957,7 @@
       this._format('picture');
     }
     async _removePicture(img) {
-      if (!(await MG.confirmBox('Take the picture out?', '<p>The picture goes from your answer. (Undo – Ctrl+Z – brings it back.)</p>', 'Take it out', { cancel: 'Keep it' }))) return;
+      if (!(await MG.confirmBox('Take the picture out?', '<p>This takes the picture out of your answer. If you change your mind, Undo (Ctrl+Z) brings it back.</p>', 'Take it out', { cancel: 'Keep it' }))) return;
       if (!img.isConnected) return;
       this.flush();
       const p = img.parentElement;
@@ -2587,7 +2587,7 @@
       const ins = h('div.ex-instr');
       ins.innerHTML = paper.instructions ? cleanTrusted(paper.instructions) : '';
       const HI = handInOf(paper);
-      const hand = HI ? h('div.ex-handin', h('h3', 'To hand in'), h('p', `When you have submitted it, you hand it in from here, and it goes straight to ${possessive(HI.to)} ${HI.drive}.${HI.password ? ` You will need the hand-in password that ${HI.to} gave you (it isn’t on this site).` : ''}`))
+      const hand = HI ? h('div.ex-handin', h('h3', 'To hand in'), h('p', `Once you’ve submitted it, you hand it in from here, and it goes straight to ${possessive(HI.to)} ${HI.drive}.${HI.password ? ` You’ll need the hand-in password that ${HI.to} gave you, which isn’t on this site.` : ''}`))
         : handInHTML(paper) ? h('div.ex-handin', { html: '<h3>To hand in</h3>' + cleanTrusted(handInHTML(paper)) }) : null;
       V.append(h('div.ex-startcard', h('p.ex-kicker', paper.week ? `Supervision ${paper.week}${paper.required ? ' · to hand in' : ' · optional'}` : 'Supervision work'), h('h2', paper.title), paper.description ? h('p', paper.description) : null, dl, ins, hand, paper.minutes ? h('p.hint', `The time starts when you press Start, and keeps running if you leave the page. ${paper.autoSubmit ? 'Your answers are submitted when the time is up.' : 'When the time is up your answers are locked, and you submit them.'}`) : null, acts, h('div.ex-startback', back)));
     }
@@ -3222,7 +3222,7 @@
 <li><kbd>Ctrl</kbd>+<kbd>Z</kbd> undo, <kbd>Ctrl</kbd>+<kbd>Y</kbd> redo; <kbd>Ctrl</kbd>+<kbd>C</kbd>, <kbd>Ctrl</kbd>+<kbd>X</kbd> and <kbd>Ctrl</kbd>+<kbd>V</kbd> copy, cut and paste.${this.att && this.att.paper.clipboard === 'any' ? '' : ' As in Inspera’s exam browser, you can paste only what you copied in this exam (from your answers or the questions): text copied anywhere else cannot be pasted in.'}</li>
 <li>In a list, <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> indent and outdent an item. Right-click in a table for its rows and columns.</li>
 <li>Double-click a formula or a drawing to change it. <kbd>Esc</kbd> leaves the expanded view.</li>
-<li>Insert picture puts in pictures from your computer – a photo of a diagram you drew on paper, say – or drag a picture file into your answer. Type a caption under it if you like. Double-click a picture to take it out.</li>
+<li><b>Insert picture</b> adds pictures from your computer, such as a photo of a diagram you drew on paper, and you can also drag a picture file into your answer. Type a caption under it if you like. To take a picture out, double-click it.</li>
 <li>The calculator: type a calculation and press <kbd>Enter</kbd>; <kbd>↑</kbd> brings back the earlier ones, <kbd>Esc</kbd> clears it.</li>
 </ul>`);
     }
@@ -3301,7 +3301,7 @@
     async _confirmSubmit() {
       const n = this._questions().filter((q) => q.type !== 'info' && !this._attempted(q)).length;
       const HI = handInOf(this.att.paper);
-      const ok = await MG.confirmBox('Submit your answers?', `<p>${n ? `You have <b>${plural(n, 'unattempted question')}</b>. ` : ''}After you submit, you cannot change your answers in this attempt.</p>${HI ? `<p>Then you hand it in, from the page that follows: it goes straight to ${esc(possessive(HI.to))} ${esc(HI.drive)}.</p>` : ''}`, 'Submit now', { cancel: 'Go back' });
+      const ok = await MG.confirmBox('Submit your answers?', `<p>${n ? `You have <b>${plural(n, 'unattempted question')}</b>. ` : ''}After you submit, you cannot change your answers in this attempt.</p>${HI ? `<p>Then you hand it in on the next page, and it goes straight to ${esc(possessive(HI.to))} ${esc(HI.drive)}.</p>` : ''}`, 'Submit now', { cancel: 'Go back' });
       if (ok) this._submit();
     }
     _submit(auto) {
@@ -3358,7 +3358,7 @@
         essays.length ? h('p.muted', essays.map((q) => `${q.title || 'Essay'}: ${plural((att.answers[q.id] || {}).words || 0, 'word')}`).join(' · ')) : null,
         hand,
         h('div.ex-recacts', dl, save, rev, again, back),
-        h('p.hint', `Your attempt is kept in Files: ${this.fs.pretty(path)}. ${HI ? `When you hand it in, its Word document goes to ${possessive(HI.to)} ${HI.drive}, and nowhere else.` : 'Nothing has been sent anywhere: to hand your work in, download it and send it yourself.'}`)));
+        h('p.hint', `Your attempt is kept in Files: ${this.fs.pretty(path)}. ${HI ? `When you hand it in, the Word document goes to ${possessive(HI.to)} ${HI.drive} and nowhere else.` : 'Nothing has been sent anywhere. To hand your work in, download it and send it yourself.'}`)));
     }
     /** handing in a submitted paper, through the hand-in script (config.js: handIn.script): the student types the
         hand-in password, and the site sends the Word document to the script, which saves it in the supervisor's
@@ -3389,12 +3389,12 @@
         box.classList.add('handed');
         const again = h('button.linkbtn', { type: 'button' }, 'Hand it in again');
         again.addEventListener('click', async () => {
-          if (!(await MG.confirmBox('Hand it in again?', `<p>It is already handed in. Handing it in again sends ${esc(HI.to)} a second copy (the first one is kept).</p>`, 'Hand it in again', { cancel: 'Keep it as it is' }))) return;
+          if (!(await MG.confirmBox('Hand it in again?', `<p>You’ve already handed this in. Handing it in again sends ${esc(HI.to)} a second copy, and the first one is kept too.</p>`, 'Hand it in again', { cancel: 'Keep it as it is' }))) return;
           setPaperState(id, { handedIn: null, receipt: null, file: null, folder: null });
           show();
         });
         box.append(h('h3.ex-hi-h', h('span.ex-hi-ok', { 'aria-hidden': 'true', html: IC.check }), `Handed in to ${HI.to}`),
-          h('p', `Received by ${where} at ${fmtWhen(st.handedIn)}${st.receipt ? ` · receipt ${st.receipt}` : ''}.`),
+          h('p', `It arrived in ${where} at ${fmtWhen(st.handedIn)}.${st.receipt ? ` Your receipt number is ${st.receipt}.` : ''}`),
           st.file ? h('p.muted', 'It was saved as ', h('code.ex-hi-file', st.file), st.folder ? ` in the folder ${st.folder}.` : '.') : null,
           h('p.ex-hi-acts', copy('Download your copy'), again));
         return box;
@@ -3410,14 +3410,14 @@
       form.addEventListener('submit', async (ev) => {
         ev.preventDefault();
         if (HI.password && !pw.value.trim()) {
-          say('no', `Type the hand-in password that ${esc(HI.to)} gave you.`);
+          say('no', `Please type in the hand-in password that ${esc(HI.to)} gave you.`);
           pw.focus();
           return;
         }
         const c = att.candidate || {};
         if (!(c.name || fullName()) && MG.app.nameDialog) await MG.app.nameDialog({ title: 'Your name, for your essay', why: `Your name goes at the top of your essay and on its file, so that ${HI.to} knows whose work it is. It is kept in this browser only.`, cancel: 'Not now' });
         if (!(c.name || fullName())) {
-          say('no', 'Add your name first: it goes on your essay. (Press <b>Your name</b>, at the top of the page.)');
+          say('no', 'Please add your name first, so that it goes on your essay. You’ll find <b>Your name</b> at the top of the page.');
           return;
         }
         go.disabled = true;
@@ -3436,20 +3436,20 @@
           return;
         }
         bus.emit('exam:handin', { paper: id, step: 'failed', error: r.error || '' });
-        const still = ` If it still won’t go, download a copy (below), and send it to ${esc(HI.to)} another way.`;
+        const still = ` If it still won’t go, download a copy (below) and send it to ${esc(HI.to)} another way.`;
         if (r.error === 'password') {
-          say('no', `That isn’t the hand-in password. Check it with ${esc(HI.to)}, and try again.`);
+          say('no', `That isn’t the right hand-in password. Check it with ${esc(HI.to)} and try again.`);
           pw.select();
           pw.focus();
         } else if (r.error === 'network') {
-          say('no', `Your essay couldn’t be sent: ${esc(where)} didn’t answer. Check that you are online, and try again.${still}`);
+          say('no', `Your essay couldn’t be sent, because ${esc(where)} didn’t respond. Check that you’re online and try again.${still}`);
         } else {
           // (the hand-in's own messages say what to do: wait, try again, or tell the supervisor)
           say('no', `${esc(r.message || 'Your essay couldn’t be handed in. Try again in a moment.')}${still}`);
         }
       });
       box.append(h('h3.ex-hi-h', opts.title || 'Now hand it in'),
-        h('p.ex-hi-lede', `Your essay goes straight from here to ${where}.${HI.password ? ` Type the hand-in password that ${HI.to} gave you, and press Hand it in.` : ''}`),
+        h('p.ex-hi-lede', `Your essay goes straight from here to ${where}.${HI.password ? ` Type in the hand-in password that ${HI.to} gave you, then press Hand it in.` : ''}`),
         form, msg,
         h('p.ex-hi-small', copy('Download a copy for yourself')));
       return box;
@@ -3460,7 +3460,7 @@
       let body;
       try {
         const { blob, name } = await this._docx(att);
-        if (blob.size > 10 * 1048576) return { ok: false, error: 'size', message: `Your essay is too big to hand in with its pictures (${(blob.size / 1048576).toFixed(1)} MB: the most is 10 MB).` };
+        if (blob.size > 10 * 1048576) return { ok: false, error: 'size', message: `With its pictures, your essay is too big to hand in (${(blob.size / 1048576).toFixed(1)} MB, and the limit is 10 MB).` };
         const c = att.candidate || {};
         const words = this._questions(att).filter((q) => q.type === 'essay' || q.type === 'short').reduce((n, q) => n + ((att.answers[q.id] || {}).words || 0), 0);
         body = JSON.stringify({ v: 1, password, paper: att.paper.id, week: att.paper.week || 0, title: att.paper.title, name: c.name || fullName(), number: c.number || '',
@@ -3485,7 +3485,7 @@
         } catch (e) {
           r = null;
         }
-        return r && typeof r === 'object' ? r : { ok: false, error: 'reply', message: `The hand-in sent back an answer that couldn’t be read (${res.status}). Try again in a moment.` };
+        return r && typeof r === 'object' ? r : { ok: false, error: 'reply', message: `The hand-in sent back a reply that couldn’t be read (${res.status}). Please try again in a moment.` };
       } finally {
         if (timer) clearTimeout(timer);
       }

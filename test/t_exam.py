@@ -498,10 +498,10 @@ check(f'data-img="{pc[0]["id"]}"' in html and 'blob:' not in html and p.js(f"(h)
 # files that aren't pictures, and a picture that can't be opened
 choose([{'name': 'notes.txt', 'mimeType': 'text/plain', 'buffer': b'some notes'}])
 sleep(0.4)
-check(text('.ex-ednote') == 'Only pictures can be added to an answer: PNG, JPEG, GIF or WebP files.' and len(pics()) == 2, f'a file that isn’t a picture is refused: {text(".ex-ednote")}')
+check(text('.ex-ednote') == 'Only pictures can be added to an answer, such as PNG, JPEG, GIF or WebP files.' and len(pics()) == 2, f'a file that isn’t a picture is refused: {text(".ex-ednote")}')
 choose([{'name': 'broken.jpg', 'mimeType': 'image/jpeg', 'buffer': b'this is not a JPEG'}])
 p.wait("() => /couldn’t be opened/.test(document.querySelector('.ex-ednote').textContent)", timeout=10000)
-check(text('.ex-ednote') == 'broken.jpg couldn’t be opened: save it as a JPEG or PNG, and add that.' and len(pics()) == 2, 'a picture that can’t be opened says so')
+check(text('.ex-ednote') == 'broken.jpg couldn’t be opened. Try saving it as a JPEG or PNG and adding that instead.' and len(pics()) == 2, 'a picture that can’t be opened says so')
 # dropped in: as Insert picture
 DROPFILE = """([b64, name, type]) => { const A = document.querySelector('.ex-area'); const bin = atob(b64); const u = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); const dt = new DataTransfer(); dt.items.add(new File([u], name, { type }));

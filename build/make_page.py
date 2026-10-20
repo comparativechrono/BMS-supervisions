@@ -209,7 +209,7 @@ for sv in SUPERVISIONS:
   <span class="tile-n" aria-hidden="true">{n}</span>
   <span class="tile-kicker">Supervision {n}</span>
   <span class="tile-topic">Coming soon</span>
-  <span class="tile-text">The work for this supervision will be here nearer the time. Until then, this opens the workbench and its guide.</span>
+  <span class="tile-text">The work for this supervision will appear here nearer the time. Until then, this tile opens the workbench and its guide.</span>
   <span class="tile-go">Open the workbench <span aria-hidden="true">→</span></span>
 </a>''')
 REG = '<script>window.BMS_SUPERVISIONS = ' + json.dumps(registry, ensure_ascii=False, separators=(',', ':')) + ';</script>'

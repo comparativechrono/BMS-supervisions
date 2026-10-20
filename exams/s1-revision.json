@@ -4,14 +4,14 @@
  "required": false,
  "order": 3,
  "title": "Essay titles for revision",
- "description": "Four more essay titles from this week’s lectures: note them for revision, and write any of them here as practice.",
+ "description": "Four more essay titles from this week’s lectures. Note them down for revision, and write any of them here for practice.",
  "minutes": null,
  "suggestedMinutes": null,
  "autoSubmit": false,
  "spellcheck": false,
  "showWordCount": true,
  "clipboard": "exam",
- "instructions": "<p><b>Optional: for revision.</b> These are the other essay titles that go with this week’s lectures. Note them down: they are good practice for the exam. Only the Supervision 1 essay is to be handed in.</p><ul><li>Write any of them here, as practice, in the same way as the set essay: about <b>40 minutes</b> each, without notes. You don’t need to answer all of them.</li><li>Planning an answer to each – the argument, the examples, the order – is good revision too.</li><li>After you submit, <b>Review my answers</b> shows the ground each title covers.</li></ul>",
+ "instructions": "<p><b>Optional, for revision.</b> These are the other essay titles that go with this week’s lectures. It’s worth noting them down, as they’re good practice for the exam. Only the Supervision 1 essay needs to be handed in.</p><ul><li>You can write any of them here for practice, in the same way as the set essay: about <b>40 minutes</b> each, without notes. You don’t need to answer all of them.</li><li>Planning an answer to each one (the argument, the examples and their order) is good revision too.</li><li>After you submit, <b>Review my answers</b> shows you the ground each title covers.</li></ul>",
  "questions": [
   {
    "id": "multicellularity",
@@ -19,7 +19,7 @@
    "title": "Multicellularity",
    "text": "<p>How does multicellularity affect physiology?</p>",
    "lines": 18,
-   "guidance": "<p>Points to consider (not a model answer):</p><ul><li>Diffusion is fast over the distances within a cell but very slow over the distances of a large body (the Einstein equation, t = x²/2D): multicellular animals need bulk flow (circulation, ventilation) to move things around, and exchange surfaces with a large area.</li><li>Cells are bathed in extracellular fluid: an internal environment that the body can regulate (homeostasis), and that buffers cells from the outside world.</li><li>Specialisation and division of labour among cells, tissues and organs, which then need coordinating: hormones and nerves.</li><li>Costs and problems as well as benefits: energy, coordination, and cells that escape control.</li><li>Argue a position: for example, that most of physiology – circulation, homeostasis, chemical and electrical signalling – exists because of multicellularity.</li></ul>"
+   "guidance": "<p>Some points to consider. This isn’t a model answer.</p><ul><li>Diffusion is fast over the distances within a cell, but very slow over the distances in a large body (the Einstein equation, t = x²/2D). So multicellular animals need bulk flow (circulation and ventilation) to move things around, and exchange surfaces with a large area.</li><li>Cells are bathed in extracellular fluid. That gives the body an internal environment it can regulate (homeostasis), and it buffers the cells from the outside world.</li><li>Cells, tissues and organs specialise and divide up the work between them, so they then need coordinating, by hormones and nerves.</li><li>There are costs and problems as well as benefits, including energy, coordination, and cells that escape control.</li><li>Argue a position. You might argue, for example, that most of physiology, from circulation and homeostasis to chemical and electrical signalling, exists because of multicellularity.</li></ul>"
   },
   {
    "id": "hormones-electrical",
@@ -27,7 +27,7 @@
    "title": "Hormonal and electrical signals",
    "text": "<p>Discuss the relative merits of hormonal versus electrical signals.</p>",
    "lines": 18,
-   "guidance": "<p>Points to consider (not a model answer):</p><ul><li>Speed and duration: electrical signals in nerves are fast and brief; hormones are slower, and their effects can last for hours to days (half-lives; steroids acting through gene expression).</li><li>Reach and specificity: nerves deliver to particular targets; hormones broadcast to every cell with the receptor, which coordinates widespread responses.</li><li>Amplification by receptor cascades (GPCRs), and the costs of each system.</li><li>The overlap: neurohormones (ADH, oxytocin), adrenaline as hormone and transmitter, and responses that use both (fight or flight, then the HPA axis).</li><li>Evaluate: “merits” depends on the job – which signal suits which task, with examples.</li></ul>"
+   "guidance": "<p>Some points to consider. This isn’t a model answer.</p><ul><li><b>Speed and duration.</b> Electrical signals in nerves are fast and brief. Hormones are slower, and their effects can last for hours or days (think about half-lives, and about steroids acting through gene expression).</li><li><b>Reach and specificity.</b> Nerves deliver signals to particular targets, while hormones are broadcast to every cell with the right receptor, which makes them good at coordinating widespread responses.</li><li>Receptor cascades (GPCRs) <b>amplify</b> signals, and each system has its own <b>costs</b>.</li><li><b>The overlap.</b> Neurohormones (ADH, oxytocin), adrenaline acting as both a hormone and a transmitter, and responses that use both systems (fight or flight, followed by the HPA axis) all blur the line.</li><li><b>Evaluate.</b> The “merits” depend on the job, so say which signal suits which task, with examples.</li></ul>"
   },
   {
    "id": "hypothalamus",
@@ -35,7 +35,7 @@
    "title": "The hypothalamus in homeostasis",
    "text": "<p>Discuss the role of the hypothalamus in homeostasis.</p>",
    "lines": 18,
-   "guidance": "<p>Points to consider (not a model answer):</p><ul><li>The hypothalamus integrates information from inside the body (temperature, osmolarity, glucose, hormones such as leptin) and outside it (light, through the SCN).</li><li>It acts through the autonomic nervous system, through the pituitary (the posterior pituitary’s ADH; the anterior pituitary’s axes, with negative feedback) and through behaviour (thirst, feeding).</li><li>Circadian rhythms from the SCN let it anticipate predictable changes – feed-forward rather than feedback.</li><li>Evaluate: not all homeostasis goes through the hypothalamus (the pancreas and blood glucose, the baroreceptor reflex in the brainstem, local control of blood flow), and its set points can change (fever, daily rhythms).</li></ul>"
+   "guidance": "<p>Some points to consider. This isn’t a model answer.</p><ul><li>The hypothalamus integrates information from inside the body (temperature, osmolarity, glucose, and hormones such as leptin) and from outside it (light, through the SCN).</li><li>It acts through the autonomic nervous system, through the pituitary (ADH from the posterior pituitary, and the anterior pituitary’s axes with their negative feedback), and through behaviour (thirst and feeding).</li><li>Circadian rhythms from the SCN let it anticipate predictable changes, which is feed-forward rather than feedback.</li><li><b>Evaluate.</b> Not all homeostasis goes through the hypothalamus. Think of the pancreas and blood glucose, the baroreceptor reflex in the brainstem, and the local control of blood flow. Its set points can also change, as in fever and with daily rhythms.</li></ul>"
   },
   {
    "id": "adrenaline-cortisol",
@@ -43,7 +43,7 @@
    "title": "Adrenaline and cortisol",
    "text": "<p>Compare and contrast the roles of adrenaline and cortisol.</p>",
    "lines": 18,
-   "guidance": "<p>Points to consider (not a model answer):</p><ul><li>Origins and chemistry: the adrenal medulla’s catecholamine (water-soluble, stored in vesicles, short half-life) against the cortex’s steroid (lipid-soluble, made on demand, carried by a protein, long-lasting).</li><li>Receptors and speed: adrenoceptors (GPCRs) and fast effects, against intracellular receptors and changes in gene expression over hours.</li><li>Roles: acute stress (fight or flight, with the sympathetic nervous system) against longer-term and chronic stress (the HPA axis); both raise blood glucose, by different means.</li><li>How they work together: cortisol carried by the adrenal portal blood induces PNMT, which makes adrenaline, and cortisol increases adrenergic receptor expression; cortisol suppresses inflammation, growth and reproduction.</li><li>Control: the sympathetic nervous system for adrenaline; CRH and ACTH, with negative feedback and a strong circadian rhythm (a morning peak), for cortisol.</li></ul>"
+   "guidance": "<p>Some points to consider. This isn’t a model answer.</p><ul><li><b>Origins and chemistry.</b> Adrenaline is a catecholamine from the adrenal medulla. It’s water-soluble, stored in vesicles, and has a short half-life. Cortisol is a steroid from the cortex. It’s lipid-soluble, made on demand, carried by a protein, and long-lasting.</li><li><b>Receptors and speed.</b> Adrenaline acts on adrenoceptors (GPCRs) and its effects are fast, while cortisol acts on intracellular receptors and changes gene expression over hours.</li><li><b>Roles.</b> Adrenaline handles acute stress (fight or flight, together with the sympathetic nervous system), and cortisol handles longer-term and chronic stress (the HPA axis). Both raise blood glucose, but by different means.</li><li><b>How they work together.</b> Cortisol carried in the adrenal portal blood induces PNMT, the enzyme that makes adrenaline, and cortisol increases the expression of adrenergic receptors. Cortisol also suppresses inflammation, growth and reproduction.</li><li><b>Control.</b> Adrenaline is controlled by the sympathetic nervous system. Cortisol is controlled by CRH and ACTH, with negative feedback and a strong circadian rhythm that peaks in the morning.</li></ul>"
   }
  ]
 }

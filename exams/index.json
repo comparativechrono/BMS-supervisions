@@ -63,7 +63,7 @@
    "week": 1,
    "required": false,
    "questions": 5,
-   "description": "Five short-answer questions (SAQs) on this week’s lectures, for practice: not to hand in.",
+   "description": "Five short-answer questions (SAQs) on this week’s lectures. They’re for practice, not to hand in.",
    "order": 2
   },
   {
@@ -76,7 +76,7 @@
    "week": 1,
    "required": false,
    "questions": 4,
-   "description": "Four more essay titles from this week’s lectures: note them for revision, and write any of them here as practice.",
+   "description": "Four more essay titles from this week’s lectures. Note them down for revision, and write any of them here for practice.",
    "order": 3
   }
  ]

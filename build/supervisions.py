@@ -17,26 +17,26 @@ SUPERVISOR = 'Tim Hearn'
 GUIDE = {
     'page': 'workbench.html', 'data_page': 'workbench', 'week': 0, 'module': 'chapters',
     'title': 'The workbench guide', 'subtitle': 'How each tab of the workbench works',
-    'description': 'The BMS supervisions’ workbench: a guide to each of its tabs – the microscope, 3D anatomy and molecules, '
-                   'real recordings, the organ bath, diagrams and circuits that run, simulations, supervision work written as '
-                   'in the online exam, and R. Everything runs in your web browser.',
+    'description': 'A guide to each tab of the BMS supervisions workbench: the microscope, 3D anatomy and molecules, real '
+                   'recordings, the organ bath, diagrams and circuits you can run, simulations, supervision work written as in '
+                   'the online exam, and R. Everything runs in your web browser.',
 }
 
 SUPERVISIONS = [
     {
         'n': 1, 'status': 'ready', 'page': 'supervision-1.html', 'data_page': 'supervision-1', 'module': 's1',
         'title': 'Supervision 1', 'topic': 'Feedback, hormones and the hypothalamus',
-        'subtitle': 'Supervision 1: feedback, hormones and the hypothalamus – through the body’s clock',
-        'description': 'Supervision 1 of NST IA Biomedical Sciences: homeostasis and feedback, moving things around, '
-                       'hormones, the hypothalamus and pituitary, and the adrenal gland, seen through the body’s daily clock. '
-                       'An essay to hand in, written as in the online exam, and short exercises in the workbench.',
-        'card': 'Homeostasis and feedback, hormones, the hypothalamus and pituitary, and the adrenal gland – seen through '
-                'the body’s daily clock.',
+        'subtitle': 'Supervision 1: feedback, hormones and the hypothalamus, through the body’s clock',
+        'description': 'Supervision 1 of NST IA Biomedical Sciences covers homeostasis and feedback, moving things around, '
+                       'hormones, the hypothalamus and pituitary, and the adrenal gland, all seen through the body’s daily '
+                       'clock. There’s an essay to hand in, written as in the online exam, and short exercises in the workbench.',
+        'card': 'Homeostasis and feedback, hormones, the hypothalamus and pituitary, and the adrenal gland, all seen '
+                'through the body’s daily clock.',
         'handin': 'Discuss, with examples, why negative feedback mechanisms are more common than positive feedback '
                   'mechanisms in animal physiology.',
         'handin_short': 'an essay on why negative feedback is more common than positive feedback',
         'handin_paper': 's1-essay',
-        'time': 'Essay: about 40 minutes · exercises: about an hour',
+        'time': 'About 40 minutes for the essay, and an hour for the exercises',
     },
 ] + [
     {'n': n, 'status': 'soon', 'page': GUIDE['page'], 'title': f'Supervision {n}', 'topic': '', 'card': '', 'time': ''}

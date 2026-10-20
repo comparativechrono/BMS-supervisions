@@ -53,10 +53,10 @@
       e.textContent = `✓ Essay handed in (${day(r.handedIn)})`;
       e.classList.add('ok');
     } else if (r && r.submitted) {
-      e.textContent = `Essay submitted (${day(r.submitted)}), but not handed in yet: hand it in to ${to} from Supervision work`;
+      e.textContent = `Essay submitted (${day(r.submitted)}) but not handed in yet. You can hand it in to ${to} from Supervision work.`;
       e.classList.add('todo');
     } else if (r && r.started) {
-      e.textContent = 'Essay started, not yet submitted';
+      e.textContent = 'Essay started, but not submitted yet';
       e.classList.add('todo');
     } else e.textContent = 'Essay not started yet';
   }
@@ -77,7 +77,7 @@
     const save = h('button.btn.primary', { type: 'submit' }, 'Save');
     const cancel = h('button.btn', { type: 'button' }, 'Cancel');
     const form = h('form.user-form',
-      h('p', 'Your name goes on the essays and answers you download and hand in, so that your supervisor knows whose work it is. It is kept in this browser only, and every supervision’s page uses it.'),
+      h('p', 'Your name goes on the essays and answers you download and hand in, so your supervisor knows whose work it is. It’s only kept in this browser, and every supervision’s page uses it.'),
       h('label.user-label', { for: 'studentNameIn' }, 'Your name'), input,
       h('div.prompt-actions', h('span.grow'), cancel, save));
     m.box.querySelector('.modal-b').appendChild(form);
@@ -86,7 +86,7 @@
       const v = MG.user.setFullName(input.value);
       MG.user.set(v ? MG.user.suggest(v) || MG.user.DEFAULT : MG.user.DEFAULT);
       m.close();
-      toast(v ? `Saved: your work will show the name <b>${esc(v)}</b>.` : 'Your name has been removed.', 'ok', 3000);
+      toast(v ? `Saved. Your work will now show the name <b>${esc(v)}</b>.` : 'Your name has been removed.', 'ok', 3000);
       showName();
     });
     cancel.addEventListener('click', () => m.close());

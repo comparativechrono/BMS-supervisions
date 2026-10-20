@@ -154,7 +154,7 @@ check('No time limit (about 40 minutes suggested)' in meta, f'the essay has no t
 check(p.js("() => document.querySelector('.ex-card[data-paper=\"s1-revision\"] .ex-cmeta').textContent").find('marks') < 0, 'the revision titles carry no marks')
 check(wait_ticked('wk-name', 5), 'the name given on the landing page ticks wk-name')
 box = p.js("() => document.querySelector('#s1-week .handin-box').innerText")
-check('Discuss, with examples' in box and '40 minutes' in box and 'type the hand-in password that Tim Hearn gives you, and it goes straight to his Google Drive' in box,
+check('Discuss, with examples' in box and '40 minutes' in box and 'hand-in password that Tim Hearn gives you, and your essay then goes straight to his Google Drive' in box,
       f'This week shows the essay to hand in, the 40 minutes, and how it is handed in to Tim Hearn: {box[-160:]!r}')
 p.shot('s1-week')
 no_errors('opening Supervision 1')
@@ -489,7 +489,7 @@ p.wait("() => document.querySelector('.ex-submit')", timeout=10000)
 click('.ex-submit')
 time.sleep(0.2)
 mt = p.js("() => document.querySelector('.modal') ? document.querySelector('.modal').innerText : ''")
-check('Then you hand it in, from the page that follows: it goes straight to Tim Hearn’s Google Drive.' in mt, f'Submit asks first, and says how it will then be handed in: {mt[-120:]!r}')
+check('Then you hand it in on the next page, and it goes straight to Tim Hearn’s Google Drive.' in mt, f'Submit asks first, and says how it will then be handed in: {mt[-120:]!r}')
 click('.modal button:has-text("Submit now")')
 p.wait("() => document.querySelector('.ex-receipt')", timeout=10000)
 check(wait_ticked('es-submit', 5), 'submitting ticks es-submit')
@@ -514,7 +514,7 @@ if PW:
     check(not found, f'the hand-in password is in none of the site’s files: {found}')
 FILE = 'supervision-1-essay-ada-lovelace.docx'
 RX = '.ex-receipt .ex-hi'
-STILL = 'If it still won’t go, download a copy (below), and send it to Tim Hearn another way.'
+STILL = 'If it still won’t go, download a copy (below) and send it to Tim Hearn another way.'
 
 
 def state():
@@ -585,10 +585,10 @@ def handin(script):
     p.ctx.route('https://script.google.com/**', S)
     p.ctx.route('https://script.googleusercontent.com/**', lambda r: r.abort())
     hb = p.js(f"() => document.querySelector('{RX}') ? document.querySelector('{RX}').innerText : ''")
-    check('Now hand it in' in hb and 'Your essay goes straight from here to Tim Hearn’s Google Drive. Type the hand-in password that Tim Hearn gave you, and press Hand it in.' in hb,
+    check('Now hand it in' in hb and 'Your essay goes straight from here to Tim Hearn’s Google Drive. Type in the hand-in password that Tim Hearn gave you, then press Hand it in.' in hb,
           f'the receipt hands the essay in from here, with the hand-in password: {hb[:220]!r}')
     hint = p.js("() => document.querySelector('.ex-receipt p.hint').textContent")
-    check('When you hand it in, its Word document goes to Tim Hearn’s Google Drive, and nowhere else.' in hint, f'and says where it goes: {hint!r}')
+    check('When you hand it in, the Word document goes to Tim Hearn’s Google Drive and nowhere else.' in hint, f'and says where it goes: {hint!r}')
     check('Dropbox' not in p.js("() => document.querySelector('.ex-receipt').textContent"), 'and doesn’t mention Dropbox')
     box = p.js(f"() => {{ const i = document.querySelector('{RX} .ex-hi-pw'); return [i.type, i.getAttribute('autocomplete'), i.value, !!i.closest('form')]; }}")
     check(box == ['password', 'off', '', True], f'the password goes in a password box, which the browser doesn’t fill in: {box}')
@@ -609,18 +609,18 @@ def handin(script):
         return p.js(f"() => document.querySelector('{RX} .ex-hi-msg') ? document.querySelector('{RX} .ex-hi-msg').textContent : ''")
 
     msg = send('')
-    check(msg == 'Type the hand-in password that Tim Hearn gave you.' and not S.calls, f'with no password, it asks for one, and sends nothing: {msg!r}')
+    check(msg == 'Please type in the hand-in password that Tim Hearn gave you.' and not S.calls, f'with no password, it asks for one, and sends nothing: {msg!r}')
     msg = send('a wrong password')
-    check(msg == 'That isn’t the hand-in password. Check it with Tim Hearn, and try again.' and len(S.posts) == 1, f'a wrong password is refused by the hand-in: {msg!r}')
+    check(msg == 'That isn’t the right hand-in password. Check it with Tim Hearn and try again.' and len(S.posts) == 1, f'a wrong password is refused by the hand-in: {msg!r}')
     check(ev('exam:handin', "d.paper === 's1-essay' && d.step === 'failed' && d.error === 'password'") == 1 and not ticked('es-send') and not state().get('handedIn'),
           'and the essay isn’t handed in: es-send waits')
     msg = send(TEST_PW, 'network')
-    check(msg == 'Your essay couldn’t be sent: Tim Hearn’s Google Drive didn’t answer. Check that you are online, and try again. ' + STILL,
+    check(msg == 'Your essay couldn’t be sent, because Tim Hearn’s Google Drive didn’t respond. Check that you’re online and try again. ' + STILL,
           f'when the hand-in doesn’t answer, it says so, and what to do: {msg!r}')
     msg = send(None, 'busy')
     check(msg == 'The hand-in is busy. Try again in a moment. ' + STILL, f'the hand-in’s own messages are passed on: {msg!r}')
     msg = send(None, 'garbled')
-    check(msg == 'The hand-in sent back an answer that couldn’t be read (502). Try again in a moment. ' + STILL, f'and an answer that isn’t the hand-in’s is caught: {msg!r}')
+    check(msg == 'The hand-in sent back a reply that couldn’t be read (502). Please try again in a moment. ' + STILL, f'and an answer that isn’t the hand-in’s is caught: {msg!r}')
     check(not state().get('handedIn') and not ticked('es-send') and len(S.replies) == 2, 'none of them hands it in')
     # on a phone (where the workbench opens over the instructions), the password and the button fit
     P.set_viewport_size({'width': 390, 'height': 844})
@@ -656,7 +656,7 @@ def handin(script):
     check(media == ['word/media/image1.png'] and 'Figure 1. A negative feedback loop.' in doc, f'and its picture, with the caption: {media}')
     time.sleep(0.3)
     done_text = p.js(f"() => document.querySelector('{RX}').innerText")
-    check('Handed in to Tim Hearn' in done_text and 'Received by Tim Hearn’s Google Drive at' in done_text and f'receipt {R["receipt"]}' in done_text
+    check('Handed in to Tim Hearn' in done_text and 'It arrived in Tim Hearn’s Google Drive at' in done_text and f'Your receipt number is {R["receipt"]}.' in done_text
           and FILE in done_text and 'in the folder Supervision 1' in done_text, f'the receipt says it has arrived, and where it was saved: {done_text[:240]!r}')
     check(wait_ticked('es-send', 5) and ev('exam:handin', f"d.paper === 's1-essay' && d.step === 'confirmed' && d.receipt === '{R['receipt']}'") == 1,
           'handing it in ticks es-send')
@@ -679,7 +679,7 @@ def handin(script):
     p.wait("() => document.querySelector('.ex-startacts') && /You submitted this at/.test(document.querySelector('.ex-startacts').innerText)", timeout=10000)
     sa = p.js("() => document.querySelector('.ex-startacts').innerText")
     acts = p.js("() => [...document.querySelectorAll('.ex-startacts .btn')].map(b => b.textContent)")
-    check('Handed in to Tim Hearn' in sa and f'receipt {R["receipt"]}' in sa and acts == ['Download your copy', 'See what you submitted', 'Start a new attempt'],
+    check('Handed in to Tim Hearn' in sa and f'receipt number is {R["receipt"]}' in sa and acts == ['Download your copy', 'See what you submitted', 'Start a new attempt'],
           f'the paper’s first page says it is handed in, with the receipt: {acts}')
     click('.ex-startacts button:has-text("Hand it in again")')
     time.sleep(0.2)
@@ -703,7 +703,7 @@ def handin(script):
     p.wait("() => document.querySelector('.ex-startacts .ex-hi.handed')", timeout=20000)
     R2 = S.replies[-1]
     sa = p.js("() => document.querySelector('.ex-startacts').innerText")
-    check(R2.get('ok') and R2['receipt'] != R['receipt'] and f'receipt {R2["receipt"]}' in sa and 'supervision-1-essay-ada-lovelace (2).docx' in sa,
+    check(R2.get('ok') and R2['receipt'] != R['receipt'] and f'receipt number is {R2["receipt"]}' in sa and 'supervision-1-essay-ada-lovelace (2).docx' in sa,
           f'handed in again: a second copy, with a receipt of its own: {sa[:200]!r}')
     pl = pill()
     check(pl.startswith('Handed in'), f'and the list of papers says it is handed in: {pl}')
