@@ -581,11 +581,11 @@
             const p = peek();
             if (p && p.t === '^') {
               next();
-              if (a.sup) throw new Error('Two superscripts in a row: put them in braces, as in x^{ab}.');
+              if (a.sup) throw new Error('There are two superscripts in a row. Put them in braces, as in x^{ab}.');
               a.sup = arg();
             } else if (p && p.t === '_') {
               next();
-              if (a.sub) throw new Error('Two subscripts in a row: put them in braces, as in x_{ab}.');
+              if (a.sub) throw new Error('There are two subscripts in a row. Put them in braces, as in x_{ab}.');
               a.sub = arg();
             } else break;
           }
@@ -891,7 +891,7 @@
       ok.disabled = !s || !!e;
     }
     ta.addEventListener('input', update);
-    const help = h('p.hint', 'Type the formula, or use the buttons. Braces {} group things: x^{2a}, \\frac{top}{bottom}. Square brackets for concentrations: [Na^{+}]. Ordinary words: \\text{mmHg}.');
+    const help = h('p.hint', 'Type the formula, or use the buttons. Braces {} group things together, as in x^{2a} or \\frac{top}{bottom}. Use square brackets for concentrations, as in [Na^{+}], and \\text{} for ordinary words, as in \\text{mmHg}.');
     const body = h('div.ex-formula-dlg', h('div.ex-ftop', ex), pal, ta, help, h('div.ex-fprevwrap', h('span.ex-fname', 'Preview'), prev), err, h('div.prompt-actions', cancel, ok));
     const m = dialog('Edit formula', body, { wide: true });
     cancel.addEventListener('click', () => m.close());
@@ -1514,7 +1514,7 @@
       this.el.classList.remove('ex-limit-flash');
       void this.el.offsetWidth;
       this.el.classList.add('ex-limit-flash');
-      this._note(`You have reached the limit of ${this._limit()} words.`);
+      this._note(`You’ve reached the limit of ${this._limit()} words.`);
     }
     _note(text, ms, ok) {
       this.note.textContent = text;
@@ -1997,7 +1997,7 @@
       if (this.o.clipboard !== 'any') {
         // (only what was copied in the exam can be pasted, so the button pastes that: it does not read the computer's
         // clipboard)
-        if (!clipKey(CLIP.text) && !CLIP.html) return this._note('Nothing has been copied in this exam yet: select some text and press Ctrl+C.');
+        if (!clipKey(CLIP.text) && !CLIP.html) return this._note('You haven’t copied anything in this exam yet. Select some text and press Ctrl+C first.');
         return this.insertPasted(CLIP.html, CLIP.text);
       }
       try {
@@ -2011,7 +2011,7 @@
         if (navigator.clipboard && navigator.clipboard.readText) return this.insertPasted('', await navigator.clipboard.readText());
         throw new Error('no clipboard');
       } catch (e) {
-        this._note('Your browser does not let the page read the clipboard: use Ctrl+V (⌘+V on a Mac) to paste.');
+        this._note('Your browser won’t let the page read the clipboard, so use Ctrl+V (⌘+V on a Mac) to paste instead.');
       }
     }
     insertPasted(html, text) {
@@ -2033,7 +2033,7 @@
         if (wordsOfHTML(frag) > avail) {
           if (avail <= 0) return this._atLimit();
           frag = esc(firstWords(plain.replace(/\s+/g, ' '), avail));
-          this._note(`Only the first ${avail} words were pasted: the limit is ${max} words.`);
+          this._note(`Only the first ${avail} words were pasted in, because the limit is ${max} words.`);
         }
       }
       if (!frag) return;
@@ -2208,7 +2208,7 @@
         this.ed.el.classList.remove('ex-limit-flash');
         void this.ed.el.offsetWidth;
         this.ed.el.classList.add('ex-limit-flash');
-      } else toast(msg + ' (Text copied from outside the exam cannot be pasted in.)', 'warn', 4500);
+      } else toast(msg + ' (Text copied from outside the exam can’t be pasted in.)', 'warn', 4500);
       bus.emit('exam:paste', { paper: this.att.paper.id, q: this.qcur && this.qcur.id, refused: true });
     }
     /* ---------------- pictures (kept once, with the attempt) ---------------- */
@@ -2338,7 +2338,7 @@
     async _read(path) {
       const t = await this.fs.readText(path);
       const a = JSON.parse(t);
-      if (!a || !a.paper || !Array.isArray(a.paper.questions)) throw new Error('This is not an attempt of exam practice.');
+      if (!a || !a.paper || !Array.isArray(a.paper.questions)) throw new Error('This file isn’t an attempt from Supervision work.');
       a.answers = a.answers || {};
       a.backups = a.backups || {};
       a.images = a.images || {};
@@ -2392,7 +2392,7 @@
       else if (s === 'error') el.innerHTML = IC.notSaved + '<span>Not saved</span>';
       else el.innerHTML = IC.saved + '<span>Saved</span>';
       el.className = 'ex-status ' + (s || 'saved');
-      el.title = s === 'error' ? 'Your answer could not be saved: the browser may be out of space. Download your answers.' : when ? `Saved in this browser at ${fmtClock(when)}:${pad2(when.getSeconds())}` : 'Saved in this browser';
+      el.title = s === 'error' ? 'Your answer couldn’t be saved, perhaps because the browser is out of space. Download your answers to keep them safe.' : when ? `Saved in this browser at ${fmtClock(when)}:${pad2(when.getSeconds())}` : 'Saved in this browser';
     }
 
     /* ---------------- the start view ---------------- */
@@ -2437,9 +2437,10 @@
       };
       name.addEventListener('input', MG.debounce(keepName, 500));
       name.addEventListener('change', keepName);
+      const SITE_HI = handInOf({ handIn: true });
       V.append(
-        h('header.ex-hhead', h('h2', 'Supervision work'), h('p', 'The work set for your supervisions. Write it here as you will write in the online exam: one question at a time, with a word count, a clock, a calculator and a page to check your answers before you submit them. Everything is saved as you type, in this browser. When you have finished a piece of work to hand in, submit it, download it as a Word document and send it to your supervisor.')),
-        h('div.ex-cand', h('label', h('span', 'Your name'), name), h('label', h('span', 'Candidate number'), num), h('p.hint', 'Your name goes on the Word document you hand in. In the exam itself you will use your candidate number instead of your name.'))
+        h('header.ex-hhead', h('h2', 'Supervision work'), h('p', `This is the work set for your supervisions. You write it here just as you will in the online exam, one question at a time, with a word count, a clock and a calculator, and with a page for checking your answers before you submit them. Everything is saved in this browser as you type. When you’ve finished a piece of work that has to be handed in, submit it, ${SITE_HI ? `then hand it in from its page. It goes straight to ${possessive(SITE_HI.to)} ${SITE_HI.drive}.` : 'then download it as a Word document and send it to your supervisor.'}`)),
+        h('div.ex-cand', h('label', h('span', 'Your name'), name), h('label', h('span', 'Candidate number'), num), h('p.hint', 'Your name goes on the Word document you hand in. In the real exam, you’ll use your candidate number instead.'))
       );
       const attempts = await this._attempts();
       // (the papers themselves, for the number of questions – information pages are not questions – and the marks)
@@ -2471,13 +2472,13 @@
         ps.forEach((p) => list.appendChild(card(p)));
         return list;
       };
-      if (!this.papers.length) V.appendChild(h('p.muted', this._indexError ? `The list of papers could not be loaded (${this._indexError}).` : 'There are no papers yet.'));
+      if (!this.papers.length) V.appendChild(h('p.muted', this._indexError ? `The list of papers couldn’t be loaded (${this._indexError}).` : 'There are no papers yet.'));
       const mine = this.papers.filter((p) => WEEK && p.week === WEEK).sort((a, b) => (b.required ? 1 : 0) - (a.required ? 1 : 0) || (a.order || 0) - (b.order || 0));
       const practice = this.papers.filter((p) => !p.week);
       const others = this.papers.filter((p) => p.week && p.week !== WEEK).sort((a, b) => a.week - b.week || (a.order || 0) - (b.order || 0));
       if (WEEK) {
         V.appendChild(h('h3', `Supervision ${WEEK}`));
-        V.appendChild(mine.length ? listOf(mine) : h('p.muted', 'The work for this supervision is not here yet.'));
+        V.appendChild(mine.length ? listOf(mine) : h('p.muted', 'The work for this supervision isn’t here yet.'));
       }
       if (practice.length) V.append(h('h3', WEEK ? 'Practice papers' : 'Papers'), listOf(practice));
       if (others.length) {
@@ -2486,10 +2487,10 @@
       }
       const free = h('button.btn', { type: 'button' }, 'Write an essay…');
       free.addEventListener('click', () => this.newEssay());
-      V.append(h('h3', 'An essay of your own'), h('p.ex-sub2', 'Give it a title, and if you like a word limit and a time limit: to practise writing to time.'), free);
+      V.append(h('h3', 'An essay of your own'), h('p.ex-sub2', 'Give it a title and, if you like, a word limit and a time limit, so that you can practise writing to time.'), free);
       // the attempts
       V.appendChild(h('h3', 'My attempts'));
-      if (!attempts.length) V.appendChild(h('p.muted', 'None yet. Your attempts are kept in Files, in the folder essays.'));
+      if (!attempts.length) V.appendChild(h('p.muted', 'None yet. Your attempts are kept in Files, in the essays folder.'));
       else {
         const tb = h('tbody');
         attempts.forEach(({ path, att, error }) => {
@@ -2498,7 +2499,7 @@
             return;
           }
           const answered = this._answeredCount(att), total = this._questions(att).filter((q) => q.type !== 'info').length;
-          const status = att.submitted ? `Submitted ${fmtWhen(att.submitted)}` : att.timeUp ? 'Time is up – not submitted' : 'In progress';
+          const status = att.submitted ? `Submitted ${fmtWhen(att.submitted)}` : att.timeUp ? 'Time’s up, but not submitted yet' : 'In progress';
           const acts = h('td.ex-acts');
           const add = (label, fn, cls) => {
             const b = h('button.btn.small' + (cls || ''), { type: 'button' }, label);
@@ -2513,7 +2514,7 @@
         });
         V.appendChild(h('div.ex-tablewrap', h('table.ex-list', h('thead', h('tr', h('th', 'Paper'), h('th', 'Status'), h('th', 'Answers'), h('th', h('span.sr-only', 'Actions')))), tb)));
       }
-      V.appendChild(h('p.hint', 'Supervision work copies the way the online exam system works, so that you get used to it before your exams. It is not the real system, and nothing is sent to your supervisor from here: download your work as a Word document and send it yourself.'));
+      V.appendChild(h('p.hint', `Supervision work copies the way the online exam system works, so that you get used to it before your exams. It isn’t the real exam system, though. ${SITE_HI ? `Your work stays in this browser unless you hand it in, and then it goes to ${possessive(SITE_HI.to)} ${SITE_HI.drive}.` : 'Nothing is sent to your supervisor from here, so download your work as a Word document and send it yourself.'}`));
     }
     async _delete(path, att) {
       if (!(await MG.confirmBox('Delete this attempt?', `<p>Delete your attempt at <b>${esc(att.paper.title)}</b> (${esc(fmtWhen(att.started))})? Its answers will be lost.</p>`, 'Delete', { danger: true }))) return;
@@ -2548,7 +2549,7 @@
       const qs = paper.questions.filter((q) => q.type !== 'info');
       const marks = qs.reduce((s, q) => s + (+q.marks || 0), 0);
       const dl = h('dl.ex-facts',
-        h('dt', 'Time allowed'), h('dd', paper.minutes ? `${paper.minutes} minutes` : paper.suggestedMinutes ? `No time limit. We suggest about ${paper.suggestedMinutes} minutes: the clock at the top shows how long you have been writing.` : 'No time limit'),
+        h('dt', 'Time allowed'), h('dd', paper.minutes ? `${paper.minutes} minutes` : paper.suggestedMinutes ? `No time limit, but we suggest about ${paper.suggestedMinutes} minutes. The clock at the top shows how long you’ve been writing.` : 'No time limit'),
         h('dt', 'Questions'), h('dd', String(qs.length)),
         marks ? [h('dt', 'Marks'), h('dd', String(marks))] : null,
         h('dt', 'Spelling checker'), h('dd', paper.spellcheck ? 'On (you can switch it off)' : 'Off (you can switch it on)'));
@@ -2561,12 +2562,13 @@
         const again = h('button.btn', { type: 'button' }, 'Start again (a new attempt)');
         again.addEventListener('click', () => this._start(paper));
         const nq = this._questions(going.att).filter((q) => q.type !== 'info').length;
-        acts.append(h('p', `You have an attempt in progress, started ${fmtWhen(going.att.started)}: ${this._answeredCount(going.att)} of ${nq} ${nq === 1 ? 'question' : 'questions'} answered.`), c, again);
+        const na = this._answeredCount(going.att);
+        acts.append(h('p', `You have an attempt in progress, which you started at ${fmtWhen(going.att.started)}.${nq === 1 ? (na ? '' : ' You haven’t written anything in it yet.') : na ? ` So far you’ve answered ${na} of its ${nq} questions.` : ` You haven’t answered any of its ${nq} questions yet.`}`), c, again);
       } else {
         const sent = done && paper.week ? done : null;
         const s = h('button.btn' + (sent ? '' : '.primary'), { type: 'button' }, sent ? 'Start a new attempt' : 'Start');
         s.addEventListener('click', async () => {
-          if ((paper.required || paper.handIn) && !fullName() && MG.app.nameDialog) await MG.app.nameDialog({ title: 'Your name, for your essay', why: 'Your name goes at the top of the Word document you hand in, so that your supervisor knows whose work it is. It is kept in this browser only. (You can leave it out now, and add it before you download your work.)', cancel: 'Not now' });
+          if ((paper.required || paper.handIn) && !fullName() && MG.app.nameDialog) await MG.app.nameDialog({ title: 'Your name, for your essay', why: 'Your name goes at the top of the Word document you hand in, so that your supervisor knows whose work it is. It’s only kept in this browser. You can leave it out for now and add it later, before you hand your work in.', cancel: 'Not now' });
           this._start(paper);
         });
         if (sent) {
@@ -2589,7 +2591,7 @@
       const HI = handInOf(paper);
       const hand = HI ? h('div.ex-handin', h('h3', 'To hand in'), h('p', `Once you’ve submitted it, you hand it in from here, and it goes straight to ${possessive(HI.to)} ${HI.drive}.${HI.password ? ` You’ll need the hand-in password that ${HI.to} gave you, which isn’t on this site.` : ''}`))
         : handInHTML(paper) ? h('div.ex-handin', { html: '<h3>To hand in</h3>' + cleanTrusted(handInHTML(paper)) }) : null;
-      V.append(h('div.ex-startcard', h('p.ex-kicker', paper.week ? `Supervision ${paper.week}${paper.required ? ' · to hand in' : ' · optional'}` : 'Supervision work'), h('h2', paper.title), paper.description ? h('p', paper.description) : null, dl, ins, hand, paper.minutes ? h('p.hint', `The time starts when you press Start, and keeps running if you leave the page. ${paper.autoSubmit ? 'Your answers are submitted when the time is up.' : 'When the time is up your answers are locked, and you submit them.'}`) : null, acts, h('div.ex-startback', back)));
+      V.append(h('div.ex-startcard', h('p.ex-kicker', paper.week ? `Supervision ${paper.week}${paper.required ? ' · to hand in' : ' · optional'}` : 'Supervision work'), h('h2', paper.title), paper.description ? h('p', paper.description) : null, dl, ins, hand, paper.minutes ? h('p.hint', `The clock starts when you press Start, and it keeps running if you leave the page. ${paper.autoSubmit ? 'Your answers are submitted for you when the time is up.' : 'When the time is up, your answers are locked, and you can then submit them.'}`) : null, acts, h('div.ex-startback', back)));
     }
     _start(paper) {
       const now = this.now();
@@ -2626,10 +2628,10 @@
       const ok = h('button.btn.primary', { type: 'submit' }, 'Start writing');
       const cancel = h('button.btn', { type: 'button' }, 'Cancel');
       const form = h('form.ex-form',
-        h('label.wide', h('span', 'Title (the question you are answering)'), title),
+        h('label.wide', h('span', 'Title (the question you’re answering)'), title),
         h('label', h('span', 'Word limit'), words), h('label.check', hard, ' Stop me at the limit'),
         h('label', h('span', 'Time limit (minutes)'), mins), h('label.check', spell, ' Spelling checker on'),
-        h('label.check.wide', paste, ' Let me paste text from outside the exam (in an exam in Inspera’s exam browser you can paste only what you copied in the exam)'),
+        h('label.check.wide', paste, ' Let me paste text from outside the exam (in Inspera’s exam browser, you can only paste what you copied in the exam)'),
         h('div.prompt-actions', cancel, ok));
       const m = dialog('An essay of your own', form);
       cancel.addEventListener('click', () => m.close());
@@ -2657,7 +2659,7 @@
       try {
         att = await this._read(p);
       } catch (e) {
-        toast(`${esc(this.fs.pretty(p))} could not be opened: ${esc(e.message)}`, 'error');
+        toast(`${esc(this.fs.pretty(p))} couldn’t be opened: ${esc(e.message)}`, 'error');
         return;
       }
       this._saveNow();
@@ -2765,13 +2767,13 @@
         const S = +att.paper.suggestedMinutes || 0;
         const spent = mins < 1 ? 'under a minute' : plural(mins, 'minute');
         el.textContent = this.prefs.hideTime ? 'Time hidden' : S ? (mins < S ? `${mins} of about ${S} minutes` : `${spent} (about ${S} suggested)`) : `Writing for ${spent}`;
-        el.title = S ? `There is no time limit. We suggest about ${S} minutes, the time you would have in the exam. This counts the time you have spent writing.` : 'There is no time limit. This counts the time you have spent writing.';
+        el.title = S ? `There’s no time limit, but we suggest about ${S} minutes, which is the time you’d have in the exam. This clock counts the time you’ve spent writing.` : 'There’s no time limit. This clock counts the time you’ve spent writing.';
         el.className = 'ex-timer' + (S && mins >= S ? ' soon' : '');
         if (S && mins >= S && !att.suggestedReached) {
           att.suggestedReached = true;
           this._dirty = true;
           bus.emit('exam:suggested', { paper: att.paper.id, minutes: S });
-          toast(`<b>${S} minutes</b>: the time you would have for this in the exam. Finish your sentence and write your conclusion, or carry on if you need to: there is no time limit here.`, 'warn', 9000);
+          toast(`<b>That’s ${S} minutes</b>, the time you’d have for this in the exam. Finish your sentence and write your conclusion, or carry on if you need to, as there’s no time limit here.`, 'warn', 9000);
         }
         return;
       }
@@ -2789,7 +2791,7 @@
       this._lock(true);
       if (!already) bus.emit('exam:timeup', { paper: att.paper.id });
       // (the student may be in another tab, looking at a slide: say so there)
-      if (!already && !this.root.offsetParent) toast(`<b>Exam practice:</b> the time for “${esc(att.paper.title)}” is up.${att.paper.autoSubmit ? ' Your answers have been submitted.' : ''}`, 'warn', 9000);
+      if (!already && !this.root.offsetParent) toast(`<b>Time’s up</b> for “${esc(att.paper.title)}”.${att.paper.autoSubmit ? ' Your answers have been submitted.' : ' Go back to Supervision work to submit your answers.'}`, 'warn', 9000);
       this._write();
       if (att.paper.autoSubmit && !att.submitted) return this._submit(true);
       this.submissionPage();
@@ -2941,7 +2943,7 @@
         const note = h('span.ex-numnote', { 'aria-live': 'polite' });
         inp.addEventListener('blur', () => {
           const v = inp.value.trim();
-          note.textContent = v && !Number.isFinite(parseNumber(v)) ? 'This does not look like a number.' : '';
+          note.textContent = v && !Number.isFinite(parseNumber(v)) ? 'This doesn’t look like a number.' : '';
           this._saveNow();
         });
         wrap.appendChild(h('div.ex-numrow', h('label', inp, q.units ? h('span.ex-units', q.units) : null), note));
@@ -3063,8 +3065,8 @@
           b.addEventListener('click', () => MG.Calculator && MG.Calculator.toggle());
         } else if (r.type === 'slide') {
           const label = r.label || 'Slide';
-          b = h('button.ex-resbtn', { type: 'button', title: `${label}: opens the slide in the Microscope tab (come back to Exam practice afterwards)`, 'aria-label': `${label} (opens the Microscope)`, html: IC.slide + `<span>${esc(label)}</span>` });
-          b.addEventListener('click', () => (MG.actions && MG.actions.scope ? MG.actions.scope(r.spec) : toast('The microscope is not part of this page.', 'warn')));
+          b = h('button.ex-resbtn', { type: 'button', title: `${label}: opens the slide in the Microscope tab (come back to Supervision work afterwards)`, 'aria-label': `${label} (opens the Microscope)`, html: IC.slide + `<span>${esc(label)}</span>` });
+          b.addEventListener('click', () => (MG.actions && MG.actions.scope ? MG.actions.scope(r.spec) : toast('The microscope isn’t part of this page.', 'warn')));
         } else if (r.type === 'link' && /^https?:\/\//.test(r.url || '')) {
           const label = r.label || r.url;
           b = h('a.ex-resbtn', { href: r.url, target: '_blank', rel: 'noopener', title: label, 'aria-label': `${label} (opens in a new browser tab)`, html: IC.link + `<span>${esc(label)}</span>` });
@@ -3087,7 +3089,7 @@
       const a = this.att.answers[q.id] || {};
       const list = (this.att.backups[q.id] || []).slice().reverse();
       const body = h('div.ex-backups');
-      body.appendChild(h('p', 'A copy of your answer is kept every five minutes while you write, for this attempt. If something goes wrong, you can go back to one. Restoring a copy keeps your current answer as a copy first.'));
+      body.appendChild(h('p', 'While you write, a copy of your answer is kept every five minutes, for this attempt. If something goes wrong, you can go back to one of them. Restoring a copy saves your current answer as a copy first, so you won’t lose it.'));
       const now = h('button.btn.small', { type: 'button' }, 'Keep a copy now');
       now.addEventListener('click', () => {
         this._collect();
@@ -3218,12 +3220,12 @@
     keyboardHelp() {
       MG.modal('Keyboard help', `<ul class="ex-keys">
 <li>To get to the toolbar from your answer, press <kbd>Alt</kbd>+<kbd>F10</kbd> (on a Mac, <kbd>Fn</kbd>+<kbd>Option</kbd>+<kbd>F10</kbd>). Move along it with <kbd>←</kbd> and <kbd>→</kbd>, press <kbd>Enter</kbd> to use a button, and <kbd>Esc</kbd> to go back to your answer.</li>
-<li><kbd>Ctrl</kbd>+<kbd>B</kbd> bold, <kbd>Ctrl</kbd>+<kbd>I</kbd> italic, <kbd>Ctrl</kbd>+<kbd>U</kbd> underline (<kbd>⌘</kbd> on a Mac).</li>
-<li><kbd>Ctrl</kbd>+<kbd>Z</kbd> undo, <kbd>Ctrl</kbd>+<kbd>Y</kbd> redo; <kbd>Ctrl</kbd>+<kbd>C</kbd>, <kbd>Ctrl</kbd>+<kbd>X</kbd> and <kbd>Ctrl</kbd>+<kbd>V</kbd> copy, cut and paste.${this.att && this.att.paper.clipboard === 'any' ? '' : ' As in Inspera’s exam browser, you can paste only what you copied in this exam (from your answers or the questions): text copied anywhere else cannot be pasted in.'}</li>
-<li>In a list, <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> indent and outdent an item. Right-click in a table for its rows and columns.</li>
+<li><kbd>Ctrl</kbd>+<kbd>B</kbd>, <kbd>Ctrl</kbd>+<kbd>I</kbd> and <kbd>Ctrl</kbd>+<kbd>U</kbd> make text bold, italic or underlined. On a Mac, use <kbd>⌘</kbd> instead of <kbd>Ctrl</kbd>.</li>
+<li><kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes and <kbd>Ctrl</kbd>+<kbd>Y</kbd> redoes, and <kbd>Ctrl</kbd>+<kbd>C</kbd>, <kbd>Ctrl</kbd>+<kbd>X</kbd> and <kbd>Ctrl</kbd>+<kbd>V</kbd> copy, cut and paste.${this.att && this.att.paper.clipboard === 'any' ? '' : ' As in Inspera’s exam browser, you can only paste what you copied in this exam, from your answers or the questions. Text copied anywhere else can’t be pasted in.'}</li>
+<li>In a list, <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> indent and outdent an item. Right-click in a table to add or delete rows and columns.</li>
 <li>Double-click a formula or a drawing to change it. <kbd>Esc</kbd> leaves the expanded view.</li>
 <li><b>Insert picture</b> adds pictures from your computer, such as a photo of a diagram you drew on paper, and you can also drag a picture file into your answer. Type a caption under it if you like. To take a picture out, double-click it.</li>
-<li>The calculator: type a calculation and press <kbd>Enter</kbd>; <kbd>↑</kbd> brings back the earlier ones, <kbd>Esc</kbd> clears it.</li>
+<li>In the calculator, type a calculation and press <kbd>Enter</kbd>. <kbd>↑</kbd> brings back your earlier ones, and <kbd>Esc</kbd> clears it.</li>
 </ul>`);
     }
 
@@ -3252,7 +3254,7 @@
       const fl = qs.filter((x) => (att.answers[x.q.id] || {}).flag);
       if (kind === 'submission') {
         const box = h('div.ex-subhead');
-        if (att.timeUp && !att.submitted) box.appendChild(h('div.ex-timeup', { role: 'alert' }, h('b', 'Time is up.'), ' Your answers can no longer be changed. Press Submit now to hand them in.'));
+        if (att.timeUp && !att.submitted) box.appendChild(h('div.ex-timeup', { role: 'alert' }, h('b', 'Time is up.'), ' You can’t change your answers any more, but you can still submit them with Submit now.'));
         box.append(h('h2', 'Ready to submit?'), h('p', not.length ? `You have ${plural(not.length, 'unattempted question')}.` : 'You have attempted all questions in this test.'));
         const sub = h('button.btn.primary.ex-submit', { type: 'button', html: IC.send + '<span>Submit now</span>' });
         sub.addEventListener('click', () => this._confirmSubmit());
@@ -3301,7 +3303,7 @@
     async _confirmSubmit() {
       const n = this._questions().filter((q) => q.type !== 'info' && !this._attempted(q)).length;
       const HI = handInOf(this.att.paper);
-      const ok = await MG.confirmBox('Submit your answers?', `<p>${n ? `You have <b>${plural(n, 'unattempted question')}</b>. ` : ''}After you submit, you cannot change your answers in this attempt.</p>${HI ? `<p>Then you hand it in on the next page, and it goes straight to ${esc(possessive(HI.to))} ${esc(HI.drive)}.</p>` : ''}`, 'Submit now', { cancel: 'Go back' });
+      const ok = await MG.confirmBox('Submit your answers?', `<p>${n ? `You have <b>${plural(n, 'unattempted question')}</b>. ` : ''}Once you’ve submitted, you can’t change your answers in this attempt.</p>${HI ? `<p>Then you hand it in on the next page, and it goes straight to ${esc(possessive(HI.to))} ${esc(HI.drive)}.</p>` : ''}`, 'Submit now', { cancel: 'Go back' });
       if (ok) this._submit();
     }
     _submit(auto) {
@@ -3415,7 +3417,7 @@
           return;
         }
         const c = att.candidate || {};
-        if (!(c.name || fullName()) && MG.app.nameDialog) await MG.app.nameDialog({ title: 'Your name, for your essay', why: `Your name goes at the top of your essay and on its file, so that ${HI.to} knows whose work it is. It is kept in this browser only.`, cancel: 'Not now' });
+        if (!(c.name || fullName()) && MG.app.nameDialog) await MG.app.nameDialog({ title: 'Your name, for your essay', why: `Your name goes at the top of your essay and on its file, so that ${HI.to} knows whose work it is. It’s only kept in this browser.`, cancel: 'Not now' });
         if (!(c.name || fullName())) {
           say('no', 'Please add your name first, so that it goes on your essay. You’ll find <b>Your name</b> at the top of the page.');
           return;
@@ -3567,7 +3569,7 @@
         if (format === 'docx' || format === 'docx-file') {
           const c = att.candidate || {};
           // (work to hand in needs the student's name on it: ask for it if there is none)
-          if (format === 'docx' && (att.paper.required || att.paper.handIn) && !(c.name || fullName()) && MG.app.nameDialog) await MG.app.nameDialog({ title: 'Your name, for your essay', why: 'Your name goes at the top of the Word document, so that your supervisor knows whose work it is. It is kept in this browser only.', cancel: 'Download without it' });
+          if (format === 'docx' && (att.paper.required || att.paper.handIn) && !(c.name || fullName()) && MG.app.nameDialog) await MG.app.nameDialog({ title: 'Your name, for your essay', why: 'Your name goes at the top of the Word document, so that your supervisor knows whose work it is. It’s only kept in this browser.', cancel: 'Download without it' });
           const { blob } = await this._docx(att);
           if (format === 'docx-file') {
             const p = await MG.app.saveToFiles(base + '.docx', blob, { folder: '~/essays', ask: false });
@@ -3586,7 +3588,7 @@
         bus.emit('exam:download', { paper: att.paper.id, format });
       } catch (e) {
         console.error(e);
-        toast('The download could not be made: ' + esc(e.message || e), 'error');
+        toast('The download couldn’t be made: ' + esc(e.message || e), 'error');
       }
     }
     _print(att) {
@@ -3601,7 +3603,7 @@
           f.contentWindow.focus();
           f.contentWindow.print();
         } catch (e) {
-          toast('Printing did not start: use Download → Web page, open it and print it.', 'warn', 7000);
+          toast('Printing didn’t start. Instead, choose Download → Web page, then open the page and print it from there.', 'warn', 7000);
         }
         setTimeout(() => f.remove(), 60000);
       }, 250);

@@ -35,7 +35,7 @@
   window.addEventListener('storage', (e) => {
     if (warnedTabs || !e.key || !/:(progress|files)$/.test(e.key)) return;
     warnedTabs = true;
-    toast('This practical is also open in another tab or window. Please work in only one of them, so that your answers and files are not overwritten.', 'warn', 9000);
+    toast('This page is also open in another tab or window. Please only work in one of them, so that your answers and files don’t get overwritten.', 'warn', 9000);
   });
 
   /* ------------------------------------------------------------------
@@ -139,7 +139,7 @@
         const line = ds.term != null ? ds.term : ds.termRun;
         await busy(async () => {
           await MG.app.showWorkbench('terminal');
-          if (!MG.app.term) throw new Error('The terminal could not start.');
+          if (!MG.app.term) throw new Error('The terminal couldn’t start.');
           await MG.app.term.type(line, ds.termRun != null);
         });
       }
@@ -180,7 +180,7 @@
     $$('[data-task]').forEach((li) => {
       const id = li.dataset.task;
       const cb = h('input', { type: 'checkbox', 'aria-label': 'Mark as done' });
-      const lab = h('label.task-check', { title: 'Tick this when you have done it' }, cb, h('span', 'done'));
+      const lab = h('label.task-check', { title: 'Tick this when you’ve done it' }, cb, h('span', 'done'));
       li.prepend(lab);
       if (li.dataset.auto || li.dataset.check) lab.title = 'This ticks itself when you do the step, or you can tick it yourself';
       cb.addEventListener('change', () => setTask(id, cb.checked, false));
@@ -272,7 +272,7 @@
           body.appendChild(opts);
         }
       } else {
-        const inp = rec.type === 'short' ? h('input', { type: 'text', 'aria-label': 'Your answer', placeholder: q.dataset.placeholder || 'Your answer' }) : h('textarea', { 'aria-label': 'Your answer', placeholder: q.dataset.placeholder || 'Type your answer here (it is saved in this browser)' });
+        const inp = rec.type === 'short' ? h('input', { type: 'text', 'aria-label': 'Your answer', placeholder: q.dataset.placeholder || 'Your answer' }) : h('textarea', { 'aria-label': 'Your answer', placeholder: q.dataset.placeholder || 'Type your answer here (it’s saved in this browser)' });
         inp.value = saved.text || '';
         rec.input = inp;
         body.appendChild(inp);
@@ -491,7 +491,7 @@
     html += '</body></html>';
     const fname = 'my-answers' + (name ? '-' + name.replace(/[^a-z0-9]+/gi, '-') : '') + '.html';
     MG.downloadText(html, fname, 'text/html');
-    toast('Saved <b>' + esc(fname) + '</b>. You can open it in a web browser or in Word.' + (name ? '' : ' (To put your name on it, set your name with the button at the top of the page, then download it again.)'), null, name ? 4000 : 7000);
+    toast('Saved <b>' + esc(fname) + '</b>. You can open it in a web browser or in Word.' + (name ? '' : ' To put your name on it, add your name with the button at the top of the page and download it again.'), null, name ? 4000 : 7000);
     bus.emit('answers:export', {});
   }
   async function copyAnswers() {
@@ -505,7 +505,7 @@
         out += `${x.q.querySelector('.q-n').textContent} ${x.q.querySelector('.q-text') ? x.q.querySelector('.q-text').textContent : ''}\n${a.text || '(no answer)'}\n\n`;
       });
     });
-    (await MG.copyText(out)) ? toast('Your answers have been copied to the clipboard.') : toast('Your answers could not be copied to the clipboard.', 'error');
+    (await MG.copyText(out)) ? toast('Your answers have been copied to the clipboard.') : toast('Your answers couldn’t be copied to the clipboard.', 'error');
   }
   function resetProgress() {
     const extra = (MG.page && MG.page.resetNote) || '';

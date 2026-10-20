@@ -152,6 +152,10 @@ check(cards[:3] == ['s1-essay:To hand in', 's1-saqs:Optional', 's1-revision:Opti
 meta = p.js("() => document.querySelector('.ex-card[data-paper=\"s1-essay\"] .ex-cmeta').textContent")
 check('No time limit (about 40 minutes suggested)' in meta, f'the essay has no time limit, and suggests 40 minutes: {meta}')
 check(p.js("() => document.querySelector('.ex-card[data-paper=\"s1-revision\"] .ex-cmeta').textContent").find('marks') < 0, 'the revision titles carry no marks')
+home = p.js("() => document.querySelector('.ex-home').innerText")
+check('then hand it in from its page. It goes straight to Tim Hearn’s Google Drive.' in home and 'unless you hand it in, and then it goes to Tim Hearn’s Google Drive' in home
+      and 'send it to your supervisor' not in home and 'send it yourself' not in home,
+      f'Supervision work says that work is handed in from here, to Tim Hearn’s Google Drive (not sent by the student): {home[:160]!r}')
 check(wait_ticked('wk-name', 5), 'the name given on the landing page ticks wk-name')
 box = p.js("() => document.querySelector('#s1-week .handin-box').innerText")
 check('Discuss, with examples' in box and '40 minutes' in box and 'hand-in password that Tim Hearn gives you, and your essay then goes straight to his Google Drive' in box,
@@ -445,7 +449,7 @@ click('#s1-write button[data-exam="s1-essay"]')
 p.wait("() => document.querySelector('.ex-startcard h2') && document.querySelector('.ex-startcard h2').textContent === 'Supervision 1 essay'", timeout=30000)
 check(wait_ticked('es-open', 5), 'opening the essay ticks es-open')
 sc = p.js("() => document.querySelector('.ex-startcard').textContent")
-check('No time limit. We suggest about 40 minutes' in sc and 'To hand in' in sc and 'Tim Hearn' in sc and 'Supervision 1 · to hand in' in sc,
+check('No time limit, but we suggest about 40 minutes' in sc and 'To hand in' in sc and 'Tim Hearn' in sc and 'Supervision 1 · to hand in' in sc,
       f'its first page: no time limit, 40 minutes suggested, and how to hand it in: {sc[:240]!r}')
 check('Why like this?' in sc and 'online exam' in sc, 'and why it is written as in the exam')
 p.shot('s1-essay-start')

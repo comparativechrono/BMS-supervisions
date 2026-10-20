@@ -867,7 +867,7 @@ p.shot('exam-timeup')
 # ====================================================================== submitting
 P.click('.ex-submit')
 sleep(0.15)
-check(visible('.modal') and 'cannot change your answers' in text('.modal'), 'Submit now asks first')
+check(visible('.modal') and 'can’t change your answers' in text('.modal'), 'Submit now asks first')
 P.click('.modal button:has-text("Submit now")')
 p.wait("() => document.querySelector('.ex-receipt')")
 rh = text('.ex-receipt h2')

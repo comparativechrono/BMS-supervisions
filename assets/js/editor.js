@@ -768,7 +768,7 @@
       } else if (/\.circuit\.json$/i.test(n)) {
         add('circuit', 'chart', 'Open in Circuits', 'Circuits', 'Open the circuit in the Circuits tab, where you can change it and run it', () => MG.app.openFile(p));
       } else if (/\.exam\.json$/i.test(n)) {
-        add('exam', 'pencil', 'Open in Exam practice', 'Exam practice', 'Open these answers in the Exam practice tab', () => MG.app.openFile(p));
+        add('exam', 'pencil', 'Open in Supervision work', 'Supervision work', 'Open these answers in the Supervision work tab', () => MG.app.openFile(p));
       } else if (MG.app.isStructure && MG.app.isStructure(n)) {
         add('viewer', 'cube', 'Open in Molecules', 'Molecules', 'Show the molecule in 3D in the Molecules tab', () => MG.app.openFile(p));
       } else if (/\.(png|jpe?g|webp|gif)$/i.test(n)) {

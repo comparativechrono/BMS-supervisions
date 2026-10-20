@@ -350,7 +350,7 @@
       const cancel = h('button.btn', { type: 'button' }, opts.cancel || 'Cancel');
       const form = h(
         'form.user-form',
-        h('p', opts.why || 'Your name goes on the essays and answers that you download and hand in, and on the pictures you save, so that your supervisor knows whose work it is. It is kept in this browser only, and it is the same on every supervision’s page.'),
+        h('p', opts.why || 'Your name goes on the essays and answers you hand in or download, and on the pictures you save, so that your supervisor knows whose work it is. It’s only kept in this browser, and it’s the same on every supervision’s page.'),
         h('label.user-label', { for: 'userNameIn' }, 'Your name'),
         input,
         note,
