@@ -1982,7 +1982,10 @@
       t.innerHTML = frag;
       t.content.querySelectorAll('img.ex-image').forEach((im) => {
         const id = im.getAttribute('data-img');
-        if (this.o.images && !this.o.images.has(id) && CLIP.images[id]) this.o.images.add(CLIP.images[id], id);
+        if (this.o.images && !this.o.images.has(id) && CLIP.images[id]) {
+          const kept = this.o.images.add(CLIP.images[id], id);
+          if (kept && kept !== id) im.setAttribute('data-img', kept);
+        }
       });
       this._showPictures(t.content);
       const d = document.createElement('div');
@@ -2236,10 +2239,12 @@
       }
       return u;
     }
-    /** keeps a picture with the attempt → its id; null when there is no room (PIC.totalMB, after the pictures that
-        nothing uses any more have gone) */
+    /** keeps a picture with the attempt → its id (that of the same picture, when it is there already); null when
+        there is no room (PIC.totalMB, after the pictures that nothing uses any more have gone) */
     _addPicture(att, rec, id) {
       att.images = att.images || {};
+      const same = Object.keys(att.images).find((k) => att.images[k] && att.images[k].data.length === rec.data.length && att.images[k].data === rec.data);
+      if (same) return same;
       const total = () => Object.values(att.images).reduce((n, x) => n + ((x && x.data) || '').length, 0);
       const max = PIC.totalMB * 1048576 * (4 / 3);
       if (total() + rec.data.length > max) {
