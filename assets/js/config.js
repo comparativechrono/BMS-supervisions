@@ -35,16 +35,22 @@ window.MG_CONFIG = {
   spellcheckDefault: false,
   autosaveSeconds: 5,
 
-  /* Where students hand in the work they submit in Supervision work: a Dropbox file request, to which they upload the
-     Word document of their essay (a paper with "handIn": true uses it; a paper can name its own). The request is
-     protected by a password that the supervisor gives the students: it is not on this site, and it must not be put
-     here. url: the request's address; to: who it goes to; service: what it is called; password: whether students need
-     the password; title: the request's title, as Dropbox shows it. */
+  /* Where students hand in the work they submit in Supervision work (a paper with "handIn": true uses this; a paper
+     can name its own). The hand-in password is given to the students by their supervisor: it is not on this site, and
+     it must never be put here.
+     script: the address of the hand-in script (handin/Code.gs), published as a Google Apps Script web app from the
+       supervisor's Google account (handin/README.md says how). The site sends the Word document to it, with the
+       password that the student types; it checks the password, saves the document in the supervisor's Google Drive
+       and sends back a receipt. Leave it empty ('') until it is set up: students then hand in through Dropbox. When
+       you change it, run python3 build/make_page.py, because the chapters say how to hand in.
+     dropbox: a Dropbox file request, where students upload the Word document themselves, step by step: the way to
+       hand in when there is no script, or when the script can't be reached.
+     to: who the work goes to; password: whether students need a password; title: the Dropbox request's title. */
   handIn: {
-    url: 'https://www.dropbox.com/request/e790md8zp1o350ok02g9',
     to: 'Tim Hearn',
-    service: 'Dropbox',
     password: true,
+    script: '',
+    dropbox: 'https://www.dropbox.com/request/e790md8zp1o350ok02g9',
     title: 'BMS Supervision work 26-27'
   },
 

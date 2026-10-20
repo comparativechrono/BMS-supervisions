@@ -476,3 +476,13 @@ details.ex-others > .ex-papers { margin-top: 8px; }
   .ex-hi { padding: 12px 12px 10px; }
   .ex-hi-step { gap: 9px; }
 }
+/* (with the hand-in script: the password, and one button) */
+.ex-hi-form { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0 4px; }
+.ex-hi-pw { flex: 1 1 220px; min-width: 0; box-sizing: border-box; font: inherit; font-size: 1rem; padding: 8px 11px; border: 1px solid var(--line-2, #c9c3cf); border-radius: 8px; background: #fff; }
+.ex-hi-pw:focus { outline: 2px solid #e8c9d6; border-color: #8a1c4a; }
+.ex-hi-go { flex: none; }
+.ex-hi-msg { margin: 6px 0 2px; font-weight: 600; }
+.ex-hi-msg:empty { display: none; }
+.ex-hi-msg.no { color: var(--bad, #b42318); }
+.ex-hi-small { margin: 10px 0 0; font-size: 0.9rem; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.ex-hi-or { margin: 8px 0 0; font-size: 0.9rem; }
