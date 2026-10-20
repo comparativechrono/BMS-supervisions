@@ -1,0 +1,62 @@
+{
+ "id": "s1-saqs",
+ "week": 1,
+ "required": false,
+ "order": 2,
+ "title": "Supervision 1 short-answer questions",
+ "description": "Five short-answer questions (SAQs) on this week’s lectures, for practice: not to hand in.",
+ "minutes": null,
+ "suggestedMinutes": 50,
+ "autoSubmit": false,
+ "spellcheck": false,
+ "showWordCount": true,
+ "clipboard": "exam",
+ "instructions": "<p><b>Optional practice.</b> These short-answer questions go with this week’s lectures. Only the essay is to be handed in, but SAQs are good practice at writing short, focused answers, and good revision.</p><ul><li>There is no time limit; about <b>10 minutes for each</b> is a good aim.</li><li>Answer as many as you like: you can leave some blank and submit.</li><li>After you submit, <b>Review my answers</b> shows the points a good answer covers.</li></ul>",
+ "questions": [
+  {
+   "id": "saq1",
+   "type": "short",
+   "title": "Feedforward, negative feedback and thirst",
+   "text": "<p>Define ‘feedforward’ and ‘negative feedback’, and explain how these processes relate to thirst.</p>",
+   "marks": 5,
+   "lines": 10,
+   "guidance": "<ul><li><b>Negative feedback:</b> a change in a regulated variable is detected by a sensor and compared with a set point; the error signal drives an effector response that opposes the change.</li><li><b>Feedforward:</b> a response is set going in anticipation of a change – or as soon as its cause is detected – before an error signal appears in the regulated variable.</li><li><b>Thirst as negative feedback:</b> water loss (sweating, for example) raises plasma osmolarity; osmoreceptors in the hypothalamus (in areas without a blood–brain barrier) trigger thirst and ADH release; drinking and water retention bring osmolarity back down.</li><li><b>The problem of the delay:</b> water takes time to be absorbed from the gut, so if drinking went on until osmolarity was normal, we would over-drink and overshoot – negative feedback with a delay oscillates.</li><li><b>Thirst as feedforward:</b> receptors in the mouth, throat and stomach signal that water has been drunk and switch thirst off before the water is absorbed. Dogs with oesophageal fistulae (Bellows, 1938) drank about the right amount and stopped, then started again later, because the water never reached the gut. Drinking with meals is also anticipatory.</li></ul>"
+  },
+  {
+   "id": "saq2",
+   "type": "short",
+   "title": "Crossing cell membranes",
+   "text": "<p>What are the ways in which solutes can cross cell membranes, and how do they differ?</p>",
+   "marks": 5,
+   "lines": 10,
+   "guidance": "<ul><li><b>Simple diffusion through the lipid bilayer:</b> small, non-polar molecules (O₂, CO₂, steroids); passive, down the concentration gradient; no protein; not saturable; the rate depends on the gradient and on lipid solubility.</li><li><b>Channels</b> (ion channels, aquaporins): passive, down the electrochemical gradient; very fast; selective, and often gated (by voltage, ligands or stretch).</li><li><b>Facilitated diffusion carriers</b> (e.g. GLUT glucose transporters): passive; a change of shape moves the solute; specific and saturable (a maximum rate), and slower than channels.</li><li><b>Primary active transport</b> (e.g. the Na⁺/K⁺-ATPase, Ca²⁺-ATPases): uses ATP directly to move solutes against their gradients.</li><li><b>Secondary active transport</b>: uses the energy of another solute’s gradient, usually Na⁺ (made by the Na⁺/K⁺-ATPase): symporters (Na⁺–glucose, SGLT) and antiporters (Na⁺/Ca²⁺, Na⁺/H⁺ exchangers).</li><li><b>Vesicles:</b> endocytosis, exocytosis (as in the release of water-soluble hormones) and transcytosis, for large molecules.</li><li>A good answer compares them: the energy used, the direction relative to the gradient, specificity, saturation, speed and how each is regulated.</li></ul>"
+  },
+  {
+   "id": "saq3",
+   "type": "short",
+   "title": "Designing an experiment on a hormone",
+   "text": "<p>What are the theoretical problems that you might encounter in designing and interpreting an experiment to investigate the effects of a hormone on the body?</p>",
+   "marks": 5,
+   "lines": 10,
+   "guidance": "<ul><li><b>Many targets:</b> receptors are found in many tissues, so a hormone has many effects, some of them indirect (through other hormones or the nervous system).</li><li><b>Feedback:</b> giving a hormone suppresses the body’s own production (negative feedback), and removing a gland removes more than one hormone (the adrenal gland: cortex and medulla) and upsets other axes.</li><li><b>Dose:</b> physiological concentrations are tiny (pg to ng per mL), so doses easily become pharmacological; receptors can be up- or down-regulated; carrier proteins mean free and total levels differ.</li><li><b>Time:</b> half-lives differ greatly (minutes for adrenaline, days for thyroxine); steroids act through gene expression, over hours to days; release is pulsatile; and most hormones have a <b>circadian rhythm</b> (ACTH and cortisol peak in the early morning), so the time of day of sampling and treatment matters, as can the season.</li><li><b>Measurement:</b> handling and blood sampling are themselves stressful and raise cortisol and adrenaline; assays and timing of samples; the blood–brain barrier (central against peripheral effects).</li><li><b>Interpretation:</b> controls (vehicle, sham operations), individual and species differences, and ethics.</li></ul>"
+  },
+  {
+   "id": "saq4",
+   "type": "short",
+   "title": "Control of the pituitary",
+   "text": "<p>How is the pituitary gland controlled?</p>",
+   "marks": 5,
+   "lines": 10,
+   "guidance": "<ul><li><b>Two parts, of different origins, controlled differently.</b></li><li><b>Posterior pituitary (neurohypophysis):</b> nerve terminals of neurons whose cell bodies are in the supraoptic and paraventricular nuclei of the hypothalamus (the hypothalamic–hypophysial tract). ADH (vasopressin) and oxytocin are made in the cell bodies and released from the terminals when action potentials arrive, so control is by the neurons’ activity: osmoreceptors for ADH; suckling and stretch of the cervix for oxytocin (positive feedback in the Ferguson reflex).</li><li><b>Anterior pituitary (adenohypophysis):</b> glandular tissue controlled by hypothalamic releasing and inhibiting hormones (CRH, TRH, GnRH, GHRH; somatostatin; dopamine, which inhibits prolactin), released into the capillaries of the median eminence and carried by the portal vessels to the trophs of the anterior pituitary.</li><li><b>Feedback:</b> long-loop negative feedback from the hormones of the peripheral glands (cortisol, thyroid hormones, sex steroids) on the hypothalamus and pituitary; short-loop and ultra-short-loop feedback.</li><li><b>Other influences:</b> circadian rhythms from the SCN (the morning peak of ACTH), stress, pulsatile release and higher brain areas.</li></ul>"
+  },
+  {
+   "id": "saq5",
+   "type": "short",
+   "title": "Addison’s disease and Conn’s syndrome",
+   "text": "<p>What is Addison’s disease? What is Conn’s syndrome?</p>",
+   "marks": 5,
+   "lines": 10,
+   "guidance": "<ul><li><b>Addison’s disease</b> is primary adrenal insufficiency: the adrenal cortex is destroyed (most often by autoimmune disease; also tuberculosis and other causes), so too little cortisol and aldosterone are made.</li><li>Its consequences include tiredness, weakness, weight loss, low blood glucose, low blood pressure (especially on standing), low Na⁺ and high K⁺ in the plasma, salt craving and dehydration, and darker skin. The skin darkens because low cortisol removes the negative feedback on the pituitary, so ACTH (a POMC derivative) is high. A stress can bring on an adrenal crisis. It is treated by replacing the hormones.</li><li><b>Conn’s syndrome</b> is primary hyperaldosteronism: too much aldosterone from the zona glomerulosa, usually from an adrenal adenoma, made regardless of the renin–angiotensin system.</li><li>Its consequences: Na⁺ and water retention and so high blood pressure, K⁺ loss (low plasma K⁺: weakness, cramps), metabolic alkalosis, and suppressed renin (negative feedback). It is treated with drugs that block mineralocorticoid receptors (spironolactone) or by removing the adenoma.</li></ul>"
+  }
+ ]
+}

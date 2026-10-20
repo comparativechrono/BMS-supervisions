@@ -465,6 +465,7 @@
   function studentName() {
     if (state.name) return state.name;
     const U = MG.user;
+    if (U && U.fullName && U.fullName()) return U.fullName();
     return U && U.name && U.name() && U.name() !== U.DEFAULT ? U.name() : '';
   }
   function exportAnswers() {

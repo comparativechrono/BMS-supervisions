@@ -7,6 +7,9 @@
    "title": "Getting to know exam practice",
    "kind": "practice",
    "minutes": 20,
+   "suggestedMinutes": null,
+   "week": null,
+   "required": false,
    "questions": 3,
    "description": "A short paper to try everything out: an information page, a short essay, a calculation and a multiple-choice question.",
    "order": 1
@@ -17,6 +20,9 @@
    "title": "Practice essay (45 minutes)",
    "kind": "practice",
    "minutes": 45,
+   "suggestedMinutes": null,
+   "week": null,
+   "required": false,
    "questions": 1,
    "description": "One essay of up to 1000 words, written to time, as in an exam. Your answer is submitted when the time is up.",
    "order": 2
@@ -27,8 +33,50 @@
    "title": "Calculations",
    "kind": "practice",
    "minutes": 40,
+   "suggestedMinutes": null,
+   "week": null,
+   "required": false,
    "questions": 8,
    "description": "Eight calculations of the lab and of physiology: magnification, dilutions, cell counts, flow and resistance, time constants and the Nernst equation.",
+   "order": 3
+  },
+  {
+   "id": "s1-essay",
+   "file": "s1-essay.json",
+   "title": "Supervision 1 essay",
+   "kind": "practice",
+   "minutes": null,
+   "suggestedMinutes": 40,
+   "week": 1,
+   "required": true,
+   "questions": 1,
+   "description": "Discuss, with examples, why negative feedback mechanisms are more common than positive feedback mechanisms in animal physiology.",
+   "order": 1
+  },
+  {
+   "id": "s1-saqs",
+   "file": "s1-saqs.json",
+   "title": "Supervision 1 short-answer questions",
+   "kind": "practice",
+   "minutes": null,
+   "suggestedMinutes": 50,
+   "week": 1,
+   "required": false,
+   "questions": 5,
+   "description": "Five short-answer questions (SAQs) on this week’s lectures, for practice: not to hand in.",
+   "order": 2
+  },
+  {
+   "id": "s1-revision",
+   "file": "s1-revision.json",
+   "title": "Essay titles for revision",
+   "kind": "practice",
+   "minutes": null,
+   "suggestedMinutes": null,
+   "week": 1,
+   "required": false,
+   "questions": 4,
+   "description": "Four more essay titles from this week’s lectures: note them for revision, and write any of them here as practice.",
    "order": 3
   }
  ]

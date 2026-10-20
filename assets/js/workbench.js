@@ -17,7 +17,7 @@
   const narrow = () => window.matchMedia('(max-width: 1000px)').matches;
   let ready = false;
 
-  const TAB_NAME = { scope: 'Microscope', anatomy: 'Anatomy', viewer: 'Molecules', recorder: 'Recorder', bath: 'Organ bath', flow: 'Diagrams', circuit: 'Circuits', sims: 'Simulations', exam: 'Exam practice', rstudio: 'RStudio', editor: 'Files' };
+  const TAB_NAME = { scope: 'Microscope', anatomy: 'Anatomy', viewer: 'Molecules', recorder: 'Recorder', bath: 'Organ bath', flow: 'Diagrams', circuit: 'Circuits', sims: 'Simulations', exam: 'Supervision work', rstudio: 'RStudio', editor: 'Files' };
   MG.app.tabName = TAB_NAME;
 
   /* ------------------------------------------------------------------
@@ -313,72 +313,72 @@
   }
 
   /* ------------------------------------------------------------------
-     The button with the person's name, at the top: R's USER and the terminal's prompt show it in place of
-     "user". The name is kept in this browser only.
+     The button with the student's name, at the top: the name goes on the essays and answers they download and hand
+     in, and on the pictures they save. It is kept in this browser only, for the whole site (every supervision's page),
+     and R and the terminal use a form of it without spaces (Ada.Lovelace) in place of "user".
      ------------------------------------------------------------------ */
   function initUser() {
     const btn = $('#userBtn');
     if (!btn) return;
     const label = btn.querySelector('.user-name');
     const show = () => {
-      const n = MG.user.name(), plain = n === MG.user.DEFAULT;
-      if (label) label.textContent = n;
-      btn.title = plain ? 'Set your name in the workbench, so that it shows it instead of “user”' : `Your name in the workbench: ${n} (click to change it)`;
-      btn.setAttribute('aria-label', plain ? 'Your name in the workbench: user (click to set your own)' : `Your name in the workbench: ${n}`);
+      const n = MG.user.fullName();
+      if (label) label.textContent = n || 'Your name';
+      btn.classList.toggle('noname', !n);
+      btn.title = n ? `Your name, on the work you hand in: ${n} (click to change it)` : 'Add your name, so that the essays and answers you hand in show it';
+      btn.setAttribute('aria-label', n ? `Your name: ${n}` : 'Add your name');
     };
     show();
     bus.on('user:name', show);
-    btn.addEventListener('click', nameDialog);
+    window.addEventListener('storage', show);
+    btn.addEventListener('click', () => nameDialog());
   }
-  function nameDialog() {
-    const D = MG.user.DEFAULT, cur = MG.user.name();
-    const host = (MG.app.term && MG.app.term.hostname) || MG.config.hostname || 'workbench';
-    const m = MG.modal('Your name in the workbench', '');
-    const input = h('input.prompt-input#userNameIn', { type: 'text', value: cur === D ? '' : cur, placeholder: D, maxlength: '40', spellcheck: 'false', autocomplete: 'off', autocapitalize: 'off', 'aria-describedby': 'userNameNote' });
-    const preview = h('code.user-prompt');
-    const note = h('p.user-note#userNameNote', { 'aria-live': 'polite' });
-    const save = h('button.btn.primary', { type: 'submit' }, 'Save');
-    const reset = h('button.btn', { type: 'button' }, `Use “${D}”`);
-    const cancel = h('button.btn', { type: 'button' }, 'Cancel');
-    const form = h(
-      'form.user-form',
-      h('p', 'The workbench shows your name instead of ', h('code', D), ': on the pictures and measurements you save from the microscope, and in R (', h('code', 'Sys.getenv("USER")'), '; an R session that is already running keeps the name it started with). Exam practice has a box of its own for a candidate number. Your name is kept in this browser only, and your home folder stays ', h('code', MG.app.HOME || '/home/user'), '.'),
-      h('label.user-label', { for: 'userNameIn' }, 'Your name'),
-      input,
-      note,
-      h('div.prompt-actions', reset, h('span.grow'), cancel, save)
-    );
-    m.box.querySelector('.modal-b').appendChild(form);
-    let chosen = cur;
-    const update = () => {
-      const v = input.value.trim();
-      const n = v === '' ? D : v === 'root' ? '' : MG.user.valid(v) ? v : MG.user.suggest(v);
-      note.classList.toggle('bad', !n);
-      if (v === 'root') note.textContent = 'root is the name of the administrator here, so please choose another name.';
-      else if (!n) note.textContent = 'A name must begin with a letter and can contain only letters, digits, dots, hyphens and underscores (no spaces), for example ada, ada.lovelace or a_lovelace.';
-      else if (v && n !== v) note.textContent = `A name can’t contain spaces or other special characters, so it will be ${n}.`;
-      else note.textContent = '';
-      chosen = n;
-      save.disabled = !n;
-    };
-    input.addEventListener('input', update);
-    update();
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!chosen || !MG.user.set(chosen)) return;
-      m.close();
-      toast(chosen === D ? `The workbench shows <b>${D}</b> again.` : `Saved. The workbench now calls you <b>${esc(chosen)}</b>.`, 'ok', 3500);
-    });
-    reset.addEventListener('click', () => {
-      input.value = '';
+  /** asks for the student's name → a promise of the name kept ('' if none) */
+  function nameDialog(opts = {}) {
+    return new Promise((resolve) => {
+      const cur = MG.user.fullName();
+      let done = false;
+      const finish = (v) => {
+        if (done) return;
+        done = true;
+        resolve(v);
+      };
+      const m = MG.modal(opts.title || 'Your name', '', { onClose: () => finish(MG.user.fullName()) });
+      const input = h('input.prompt-input#userNameIn', { type: 'text', value: cur, placeholder: 'For example, Ada Lovelace', maxlength: String(MG.user.MAX), spellcheck: 'false', autocomplete: 'name', 'aria-describedby': 'userNameNote' });
+      const note = h('p.user-note#userNameNote', { 'aria-live': 'polite' });
+      const save = h('button.btn.primary', { type: 'submit' }, 'Save');
+      const cancel = h('button.btn', { type: 'button' }, opts.cancel || 'Cancel');
+      const form = h(
+        'form.user-form',
+        h('p', opts.why || 'Your name goes on the essays and answers that you download and hand in, and on the pictures you save, so that your supervisor knows whose work it is. It is kept in this browser only, and it is the same on every supervision’s page.'),
+        h('label.user-label', { for: 'userNameIn' }, 'Your name'),
+        input,
+        note,
+        h('div.prompt-actions', h('span.grow'), cancel, save)
+      );
+      m.box.querySelector('.modal-b').appendChild(form);
+      const update = () => {
+        const v = input.value.trim();
+        save.disabled = !v && !cur;
+        note.textContent = v ? '' : cur ? 'Save an empty box to remove your name.' : '';
+      };
+      input.addEventListener('input', update);
       update();
-      input.focus();
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const v = MG.user.setFullName(input.value);
+        // (R and the terminal: the same name, without spaces)
+        MG.user.set(v ? MG.user.suggest(v) || MG.user.DEFAULT : MG.user.DEFAULT);
+        m.close();
+        toast(v ? `Saved. Your work will show the name <b>${esc(v)}</b>.` : 'Your name has been removed.', 'ok', 3500);
+        finish(v);
+      });
+      cancel.addEventListener('click', () => m.close());
+      setTimeout(() => {
+        input.focus();
+        input.select();
+      }, 30);
     });
-    cancel.addEventListener('click', () => m.close());
-    setTimeout(() => {
-      input.focus();
-      input.select();
-    }, 30);
   }
   MG.app.nameDialog = nameDialog;
   MG.actions.username = () => nameDialog();

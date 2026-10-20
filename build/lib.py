@@ -57,7 +57,7 @@ def q(qid, text, model, accept=None, hint=None, placeholder=None):
 
 def mcq(qid, text, options, model=None):
     """options: list of (html, correct, why)"""
-    labs = ''.join(f'<label{" data-correct" if ok else ""} data-why="{esc(why)}"><input type="radio"> {opt}</label>' for opt, ok, why in options)
+    labs = ''.join(f'<label{" data-correct" if ok else ""} data-why="{esc(why)}"><input type="radio"> <span>{opt}</span></label>' for opt, ok, why in options)
     m = f'\n  <div class="q-model">{model}</div>' if model else ''
     return f'<div class="q" data-q="{esc(qid)}" data-type="mcq">\n  <div class="q-text">{text}</div>\n  <div class="mcq">{labs}</div>{m}\n</div>'
 
@@ -142,7 +142,7 @@ def circuitrun(label='run it'):
 
 
 def exam(paper, label='open the paper'):
-    """a button that opens a paper of exam practice (its id), or 'free' for a free essay"""
+    """a button that opens a paper of Supervision work (its id), or 'free' for a free essay"""
     return _btn('exam', paper, label)
 
 

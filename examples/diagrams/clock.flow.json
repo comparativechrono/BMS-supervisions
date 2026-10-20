@@ -1,0 +1,150 @@
+{
+ "format": "bms-flow-1",
+ "title": "A clock made of negative feedback",
+ "description": "The circadian clock of a cell, in its simplest form: CLOCK and BMAL1 switch on the Per and Cry genes; their mRNA is made into PER and CRY proteins, which, hours later, go back into the nucleus and switch their own genes off. Because both steps take hours, the loop never settles: it oscillates, with a period of about a day, all by itself. Light (the zeitgeber) is cut off at first, as in a cave, so the clock free-runs; unblock its arrow to entrain the clock to 24 hours. Change the delays to change the period, or knock out a box to stop the clock.",
+ "group": "Clocks",
+ "order": 1,
+ "nodes": [
+  {
+   "id": "bmal",
+   "text": "CLOCK and BMAL1",
+   "role": "stimulus",
+   "shape": "flag",
+   "color": "green",
+   "x": 120,
+   "y": 150,
+   "w": 170,
+   "h": 52,
+   "kind": "step",
+   "start": 0,
+   "size": 1,
+   "unit": "",
+   "plot": false
+  },
+  {
+   "id": "genes",
+   "text": "Per and Cry genes (mRNA)",
+   "role": "quantity",
+   "shape": "round",
+   "color": "blue",
+   "x": 400,
+   "y": 150,
+   "w": 200,
+   "h": 56,
+   "rest": 0,
+   "unit": "",
+   "tau": 2,
+   "plot": true
+  },
+  {
+   "id": "protein",
+   "text": "PER and CRY proteins",
+   "role": "quantity",
+   "shape": "round",
+   "color": "purple",
+   "x": 400,
+   "y": 360,
+   "w": 200,
+   "h": 56,
+   "rest": 0,
+   "unit": "",
+   "tau": 3,
+   "plot": true
+  },
+  {
+   "id": "light",
+   "text": "Light (zeitgeber)",
+   "role": "stimulus",
+   "shape": "flag",
+   "color": "yellow",
+   "x": 690,
+   "y": 150,
+   "w": 170,
+   "h": 52,
+   "kind": "wave",
+   "start": 6,
+   "size": 0.5,
+   "period": 24,
+   "unit": "",
+   "plot": true
+  },
+  {
+   "id": "note-nucleus",
+   "text": "In the nucleus: CLOCK and BMAL1 switch the genes on",
+   "role": "label",
+   "shape": "label",
+   "color": "white",
+   "x": 400,
+   "y": 60,
+   "w": 300,
+   "h": 40
+  },
+  {
+   "id": "note-cave",
+   "text": "The light’s arrow is blocked: the clock is in a cave (unblock it to give it days and nights)",
+   "role": "label",
+   "shape": "label",
+   "color": "white",
+   "x": 690,
+   "y": 260,
+   "w": 230,
+   "h": 70
+  },
+  {
+   "id": "note-delays",
+   "text": "Each step takes hours: the delays make the loop oscillate",
+   "role": "label",
+   "shape": "label",
+   "color": "white",
+   "x": 130,
+   "y": 255,
+   "w": 190,
+   "h": 56
+  }
+ ],
+ "edges": [
+  {
+   "id": "on",
+   "from": "bmal",
+   "to": "genes",
+   "sign": "+",
+   "gain": 1,
+   "label": "switch on"
+  },
+  {
+   "id": "made",
+   "from": "genes",
+   "to": "protein",
+   "sign": "+",
+   "gain": 1,
+   "delay": 4,
+   "label": "made into protein",
+   "bend": 120
+  },
+  {
+   "id": "back",
+   "from": "protein",
+   "to": "genes",
+   "sign": "-",
+   "gain": 5,
+   "delay": 4,
+   "label": "back into the nucleus",
+   "bend": 120
+  },
+  {
+   "id": "entrain",
+   "from": "light",
+   "to": "genes",
+   "sign": "+",
+   "gain": 1,
+   "label": "light (via the eyes)",
+   "blocked": true
+  }
+ ],
+ "sim": {
+  "duration": 240,
+  "timeUnit": "h",
+  "clampZero": true,
+  "changeAt": 0
+ }
+}

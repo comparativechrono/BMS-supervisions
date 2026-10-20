@@ -127,6 +127,34 @@
       }
     }
   };
+  /* the same for the whole site, not one page: the student's name, and what each paper of the supervisions says about
+     the work handed in (the landing page shows it). "bmssup:fullName" */
+  const sitePfx = () => (CFG.storePrefix || 'genomics') + ':';
+  const siteStore = {
+    get(key, fallback) {
+      try {
+        const v = window.localStorage.getItem(sitePfx() + key);
+        return v == null ? fallback : JSON.parse(v);
+      } catch (e) {
+        return fallback;
+      }
+    },
+    set(key, value) {
+      try {
+        window.localStorage.setItem(sitePfx() + key, JSON.stringify(value));
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
+    remove(key) {
+      try {
+        window.localStorage.removeItem(sitePfx() + key);
+      } catch (e) {
+        /* ignore */
+      }
+    }
+  };
 
   /* ---------- the name of the person at the workbench ----------
      The terminal's user is "user" (user@workbench:~$), unless the person has put in a name of their own – the button
@@ -139,11 +167,25 @@
     DEFAULT: USER0,
     /** a name that can be a user's name here: a letter or _ first, then letters, digits, . _ -, at most 32; not root */
     valid: (n) => typeof n === 'string' && NAME_RE.test(n) && n !== 'root',
-    /** the name the person chose, or "user" */
+    /** the name the person chose, or "user" (the same on every page of the site) */
     name() {
-      const n = store.get('userName', '');
+      const n = siteStore.get('userName', '');
       return user.valid(n) ? n : USER0;
     },
+    /** the student's own name as they write it ("Ada Lovelace"), for the work they hand in: '' if none */
+    fullName() {
+      const n = siteStore.get('fullName', '');
+      return typeof n === 'string' ? n.trim().slice(0, user.MAX) : '';
+    },
+    setFullName(n) {
+      const old = user.fullName();
+      n = String(n == null ? '' : n).replace(/\s+/g, ' ').trim().slice(0, user.MAX);
+      if (n) siteStore.set('fullName', n);
+      else siteStore.remove('fullName');
+      if (n !== old) bus.emit('user:name', { name: user.name(), fullName: n, old });
+      return n;
+    },
+    MAX: 60,
     /** the name that the commands see just now: "user" while the AI agent runs a command */
     login() {
       return MG.app && MG.app.term && MG.app.term.agentCmd ? USER0 : user.name();
@@ -159,8 +201,8 @@
       const old = user.name();
       n = n == null || n === '' ? USER0 : String(n);
       if (!user.valid(n)) return false;
-      if (n === USER0) store.remove('userName');
-      else store.set('userName', n);
+      if (n === USER0) siteStore.remove('userName');
+      else siteStore.set('userName', n);
       if (n !== old) bus.emit('user:name', { name: n, old });
       return true;
     },
@@ -428,7 +470,7 @@
   };
 
   Object.assign(MG, {
-    esc, h, $, $$, bus, store, toast, debounce, clamp, fmt, user,
+    esc, h, $, $$, bus, store, siteStore, toast, debounce, clamp, fmt, user,
     fetchWithTimeout, fetchJSON, fetchText, firstOk,
     downloadBlob, downloadText, copyText,
     AA3, AA3_NICE, AA1_NAME, niceRes

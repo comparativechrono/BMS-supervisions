@@ -8,7 +8,7 @@ Run:  python3 test/t_tabs.py   (screenshots in test/out/tabs-*.png)"""
 import time
 from h import Page, check, done
 
-TABS = ['scope', 'anatomy', 'viewer', 'recorder', 'bath', 'flow', 'circuit', 'sims', 'exam', 'rstudio', 'editor']
+TABS = ['exam', 'scope', 'anatomy', 'viewer', 'recorder', 'bath', 'flow', 'circuit', 'sims', 'rstudio', 'editor']
 STATE = """() => { const bar = document.querySelector('.wb-tabs'), W = innerWidth;
   const tabs = [...document.querySelectorAll('.wb-tab[data-wb]')].map((t) => { const r = t.getBoundingClientRect(), ic = t.querySelector('.ic').getBoundingClientRect(), l = t.querySelector('.lbl');
     return { id: t.dataset.wb, on: t.classList.contains('on'), left: r.left, right: r.right, ic: ic.width, icIn: ic.left >= r.left - 0.5 && ic.right <= r.right + 0.5, lbl: l.getBoundingClientRect().width, cut: l.scrollWidth > l.clientWidth + 1 }; });

@@ -129,7 +129,7 @@ class Page:
         self.p.on('console', lambda m: self.logs.append(f'[{m.type}] {m.text}'))
         self.p.on('pageerror', lambda e: self.errors.append(str(e)))
 
-    def open(self, page='index.html', wait='window.MG_READY === true', timeout=60000):
+    def open(self, page='workbench.html', wait='window.MG_READY === true', timeout=60000):
         self.p.goto(self.base + page)
         if wait:
             self.p.wait_for_function(wait, timeout=timeout)

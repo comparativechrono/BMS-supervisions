@@ -3,7 +3,7 @@
 A short tour of the tools of the workbench, using examples that are not taken from the course's lectures: the microscope
 (a slide of the kidney and of the liver), measuring and counting (a stage micrometer, an eyepiece graticule, renal
 corpuscles, magnification and scale bars, a haemocytometer), anatomy in 3D, molecules in 3D, recordings, the organ bath,
-flow diagrams that run, circuits, simulations, exam practice and R. Each chapter shows how the tools link together:
+flow diagrams that run, circuits, simulations, supervision work and R. Each chapter shows how the tools link together:
 measurements and counts from the microscope, the recorder and the organ bath are read by R, pictures go to Files, and
 essays are downloaded as Word documents. The chapters of the Anatomy, Recorder, Organ bath and Simulations tabs are kept
 in files of their own (ch_anatomy.py, ch_recorder.py, ch_organbath.py and ch_sims.py); ALL() puts them in order."""
@@ -47,7 +47,7 @@ def tabs_figure():
         ('Diagrams', 'Flow diagrams of how the body controls itself – boxes, and arrows that increase (+) or decrease (−) – which you can run to see how things change with time.'),
         ('Circuits', 'Electrical circuits, and the circuit models of physiology, built and run as on a lab bench, with meters and traces.'),
         ('Simulations', 'Interactive simulations from PhET of the science behind physiology: neurons, membranes, pH, solutions, light and more.'),
-        ('Exam practice', 'An essay editor that works like the online exam system: a timer, a word count, a calculator, flags, and downloads as Word documents.'),
+        ('Supervision work', 'The essays and questions set for your supervisions, in an editor that works like the online exam system: a clock, a word count, a calculator, flags, and downloads as Word documents.'),
         ('RStudio', 'R, for analysing data – including the measurements and counts that you make with the other tools.'),
         ('Files', 'Everything you save: measurements, counts, pictures, recordings, results, diagrams, circuits, essays and R scripts.'),
     ]
@@ -64,7 +64,7 @@ def ch_start(num):
 <h2 id="s-what">What’s in the workbench</h2>
 <p>The workbench on the right brings together the tools of a biomedical science practical. Each tab is a different tool:</p>
 {tabs_figure()}
-<p>The tools work together. The microscope, the recorder and the organ bath keep your measurements and results in files that R can read, and your pictures in <b>Files</b>; you can run a diagram or a circuit and keep its results; and the essays you write in <b>Exam practice</b> can be downloaded as Word documents. This short practical takes you round each of the tools, so that you know your way around before you use them in the practicals of the course.</p>
+<p>The tools work together. The microscope, the recorder and the organ bath keep your measurements and results in files that R can read, and your pictures in <b>Files</b>; you can run a diagram or a circuit and keep its results; and the essays you write in <b>Supervision work</b> can be downloaded as Word documents. This short practical takes you round each of the tools, so that you know your way around before you use them in the practicals of the course.</p>
 
 <h2 id="s-how">How this page works</h2>
 <ul>
@@ -254,7 +254,7 @@ def ch_circuits(num):
 
 def ch_exam(num):
     body = f'''
-<p>Your exams are written on a computer, in an online exam system (Inspera). The <b>Exam practice</b> tab works in the same way, so that you can get used to planning, writing and checking an essay in a browser – with a timer and a word limit – before it matters. Your practicals will set essays here too.</p>
+<p>Your exams are written on a computer, in an online exam system (Inspera). The <b>Supervision work</b> tab works in the same way, so that you can get used to planning, writing and checking an essay in a browser – with a clock and a word count – before it matters. Your supervisions set their essays here.</p>
 {callout("info", "What is the same, and what isn’t", "<p>The layout, the timer, the editor and its toolbar, flags, the calculator and the submission page work as they do in the exam system. As in the exam browser, you can copy and paste within the exam, but text copied from anywhere else can’t be pasted in – so write your answers here, not in another program. But this is practice: your answers are saved only in this browser, nobody marks them, and after you submit you can review them alongside the marking guidance and download them as a Word document.</p>")}
 
 <h2 id="e-paper">A short practice paper</h2>
@@ -274,7 +274,7 @@ def ch_exam(num):
 <h2 id="e-free">Essays of your own</h2>
 <p><b>Write an essay…</b>, on the list of papers, starts an essay with any title, with a word limit and a time limit if you like {exam("free", "show me")}. Your attempts and essays are kept in your <code>essays</code> folder, and open again from there.</p>
 '''
-    return chapter("exam", num, "Exam practice", "exam", "Writing answers as in the exam", 20, "Practise writing essays in the browser, as you will in the exam: a timer, a word count, the editor’s toolbar, flags, the calculator, and a Word document of your answers at the end.", body)
+    return chapter("exam", num, "Supervision work", "exam", "Writing answers as in the exam", 20, "Practise writing essays in the browser, as you will in the exam: a timer, a word count, the editor’s toolbar, flags, the calculator, and a Word document of your answers at the end.", body)
 
 
 # ---------------------------------------------------------------------------------------------------------------------

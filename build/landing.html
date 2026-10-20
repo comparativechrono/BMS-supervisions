@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{SITE_TITLE}} – {{COURSE}}</title>
+<meta name="description" content="Supervisions for {{COURSE}}: for each supervision, the essay to hand in, written as in the online exam, and short exercises in a browser-based workbench – a microscope, 3D anatomy, real recordings, an organ bath, diagrams that run and R. Nothing to install.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233b1c42'/%3E%3Ccircle cx='11' cy='11' r='5' fill='%23f2a7c3'/%3E%3Ccircle cx='21' cy='12' r='4' fill='%23c9b3ee'/%3E%3Ccircle cx='15' cy='21.5' r='5' fill='%23e48bb1'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/landing.css">
+</head>
+<body class="landing" data-page="home" data-title="{{SITE_TITLE}}">
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-brand">
+      <svg class="hero-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#5a2d63"/><circle cx="11" cy="11" r="5.2" fill="#f2a7c3"/><circle cx="11" cy="11" r="2" fill="#6d3f9e"/><circle cx="21.5" cy="12" r="4" fill="#c9b3ee"/><circle cx="21.5" cy="12" r="1.5" fill="#5b3a8c"/><circle cx="15" cy="21.5" r="5.2" fill="#e48bb1"/><circle cx="15" cy="21.5" r="2" fill="#6d3f9e"/></svg>
+      <p class="hero-course">{{COURSE}} · supervisions with {{SUPERVISOR}}</p>
+    </div>
+    <h1>{{SITE_TITLE}}</h1>
+    <p class="hero-lede">Each supervision has a page of its own. On it you will find the <b>essay to hand in</b>, which you write as you will in the online exam, and short exercises in the workbench: a microscope, the body in 3D, real recordings, an organ bath, diagrams that run, and R. Choose a supervision to start.</p>
+    <div class="hero-name" aria-live="polite">
+      <span class="hn-label">The work you hand in will show the name</span>
+      <b class="hn-name" data-student-name-text></b>
+      <button class="btn small hn-btn" type="button" data-name-btn>Add your name</button>
+    </div>
+  </div>
+</header>
+
+<main class="land">
+  <section class="tiles" aria-label="The supervisions">
+{{TILES}}
+  </section>
+
+  <section class="land-info">
+    <div class="info-box">
+      <h2>Before you start</h2>
+      <ul>
+        <li>Use a laptop or desktop computer with an up-to-date <b>Chrome, Edge, Firefox or Safari</b>. A wide screen helps, because the instructions sit beside the workbench. It also works on a tablet or a phone, although the screen is cramped.</li>
+        <li>Everything you do – your essays, ticks, answers and files – is saved <b>in this browser, on this computer</b>, and every supervision’s page shares your files. Use another computer, or a private window, and you start again.</li>
+        <li>Some lab and library computers clear the browser when you log out, so keep a copy of your work: <b>My files</b> downloads everything, and each essay downloads as a Word document.</li>
+      </ul>
+    </div>
+    <div class="info-box">
+      <h2>How the supervisions work</h2>
+      <ul>
+        <li>The work to hand in is in the first tab, <b>Supervision work</b>. Write it as in the exam: typed, in one go, with no notes and no pasting from elsewhere. Then submit it, <b>download it as a Word document</b> and send it to {{SUPERVISOR}}.</li>
+        <li>The instructions on the left take you through the week’s exercises. Their steps <b>tick themselves</b> as you do them, and every question has a <b>model answer</b> you can show once you have had a go.</li>
+        <li>Parts marked <b>If you have time</b> are extras. The other questions in Supervision work are for practice and revision: only the essay is to be handed in.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="land-foot">
+    <p>Supervision materials by {{SUPERVISOR}} for {{COURSE}}, built on the <a href="https://github.com/comparativechrono/BMS-workbench">BMS workbench</a>; this is not an official page of the University or the course. The workbench’s slides are from the GTEx project (CC BY 4.0), its 3D anatomy from Z-Anatomy (CC BY-SA 4.0), its recordings from PhysioNet (ODC-By) and its simulations from PhET Interactive Simulations, University of Colorado Boulder (CC BY 4.0). R runs in your browser thanks to webR. See the <a href="https://github.com/comparativechrono/BMS-supervisions">repository</a> for details.</p>
+  </footer>
+</main>
+
+{{REGISTRY}}
+<script src="assets/js/config.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/landing.js"></script>
+</body>
+</html>

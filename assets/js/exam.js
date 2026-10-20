@@ -15,6 +15,13 @@
      "description": "One line for the list of papers",
      "order": 3,                           the order in the list
      "minutes": 30,                        the time allowed (leave it out, or null, for no time limit)
+     "suggestedMinutes": 40,               with no time limit: the time we suggest; the clock at the top counts the
+                                           time spent writing (while the paper is open), and says when it is reached
+     "week": 1,                            the supervision it belongs to: on that supervision's page it is listed
+                                           first (papers with no week are practice papers, listed on every page)
+     "required": true,                     work to hand in (a "To hand in" badge, listed first); else optional
+     "handIn": "<p>…</p>",                 HTML: how to hand it in (on the first page and after submitting, beside
+                                           the button that downloads the Word document)
      "autoSubmit": false,                  true: the answers are submitted when the time is up
      "spellcheck": false,                  is the browser's spelling checker on at the start? (students can switch it)
      "showWordCount": true,                show "Words: …" under essays
@@ -64,6 +71,9 @@
      exam:saved    {path}                    the attempt is saved to its file
      exam:paste    {paper, q, refused}       something is pasted (or dropped) into the exam; refused: it was copied
                                              from outside the exam, so it was not let in
+     exam:suggested {paper, minutes}         the time spent writing reached the suggested time
+   What a student has done with a paper to hand in is also kept for the whole site (MG.siteStore 'paper:<id>':
+   {started, submitted, downloaded}), for the supervisions' landing page.
      (the calculator: calc:open {}, calc:result {expr, value})
 
    THE PROGRAM: MG.ExamApp(root, {fs}) → .ready (a promise), .shown(), .openPaper(id), .newEssay(), .openFile(path),
@@ -93,6 +103,16 @@
     return `${fmtClock(d)} on ${fmtDate(d)}`;
   };
   const plural = (n, w, ws) => `${n} ${n === 1 ? w : ws || w + 's'}`;
+  /** what a student has done with a paper (for the landing page): 'paper:<id>' in the site's store */
+  const mark = (id, what) => {
+    if (!MG.siteStore || !id) return;
+    const r = MG.siteStore.get('paper:' + id, {}) || {};
+    r[what] = new Date().toISOString();
+    MG.siteStore.set('paper:' + id, r);
+  };
+  /** the time a paper allows, or suggests: "40 minutes", "No time limit (about 40 minutes suggested)" */
+  const timeText = (p) => (p.minutes ? `${p.minutes} minutes` : p.suggestedMinutes ? `No time limit (about ${p.suggestedMinutes} minutes suggested)` : 'No time limit');
+  const fullName = () => (MG.user && MG.user.fullName ? MG.user.fullName() : '');
   /** "1 hour, 57 minutes remaining"; seconds in the last 5 minutes */
   function fmtRemaining(ms) {
     if (ms <= 0) return 'Time is up';
@@ -2007,40 +2027,66 @@
       this._savePrefs();
       const V = this.view;
       V.classList.add('ex-home');
-      const num = h('input', { type: 'text', value: this.prefs.candidate || '', maxlength: 20, autocomplete: 'off', spellcheck: 'false', placeholder: 'e.g. 1234A' });
-      const name = h('input', { type: 'text', value: this.prefs.name || '', maxlength: 60, autocomplete: 'off', placeholder: 'optional' });
-      const keep = () => {
+      const num = h('input', { type: 'text', value: this.prefs.candidate || '', maxlength: 20, autocomplete: 'off', spellcheck: 'false', placeholder: 'optional' });
+      const name = h('input', { type: 'text', value: fullName(), maxlength: 60, autocomplete: 'name', placeholder: 'e.g. Ada Lovelace' });
+      num.addEventListener('input', () => {
         this.prefs.candidate = num.value.trim();
-        this.prefs.name = name.value.trim();
         this._savePrefs();
+      });
+      // (the student's name is the site's: the same on every supervision's page, and on the button at the top)
+      const keepName = () => {
+        if (name.value.trim() === fullName()) return;
+        MG.user.setFullName(name.value);
+        if (MG.user.set && MG.user.suggest) MG.user.set(MG.user.suggest(name.value) || MG.user.DEFAULT);
       };
-      num.addEventListener('input', keep);
-      name.addEventListener('input', keep);
+      name.addEventListener('input', MG.debounce(keepName, 500));
+      name.addEventListener('change', keepName);
       V.append(
-        h('header.ex-hhead', h('h2', 'Exam practice'), h('p', 'Write answers as you will in an online exam: one question at a time, with a word count, a timer, a calculator and a page to check your answers before you submit them. Everything is saved as you type, in this browser.')),
-        h('div.ex-cand', h('label', h('span', 'Candidate number'), num), h('label', h('span', 'Name'), name), h('p.hint', 'They appear at the top of the exam and on your downloads. In a real exam you would use your candidate number.'))
+        h('header.ex-hhead', h('h2', 'Supervision work'), h('p', 'The work set for your supervisions. Write it here as you will write in the online exam: one question at a time, with a word count, a clock, a calculator and a page to check your answers before you submit them. Everything is saved as you type, in this browser. When you have finished a piece of work to hand in, submit it, download it as a Word document and send it to your supervisor.')),
+        h('div.ex-cand', h('label', h('span', 'Your name'), name), h('label', h('span', 'Candidate number'), num), h('p.hint', 'Your name goes on the Word document you hand in. In the exam itself you will use your candidate number instead of your name.'))
       );
       const attempts = await this._attempts();
       // (the papers themselves, for the number of questions – information pages are not questions – and the marks)
       await Promise.all(this.papers.map((p) => this._paper(p.id).then((x) => (p.full = x), () => null)));
       if (tok !== this._tok) return;
       const inProg = (id) => attempts.find((a) => a.att && a.att.paper.id === id && !a.att.submitted);
-      // the papers
-      const list = h('div.ex-papers');
-      if (!this.papers.length) list.appendChild(h('p.muted', this._indexError ? `The list of papers could not be loaded (${this._indexError}).` : 'There are no papers yet.'));
-      this.papers.forEach((p) => {
-        const going = inProg(p.id);
-        const b = h('button.btn' + (going ? '' : '.primary'), { type: 'button', 'aria-label': `${going ? 'Continue' : 'Start'}: ${p.title}` }, going ? 'Continue' : 'Start');
+      const handedIn = (id) => attempts.find((a) => a.att && a.att.paper.id === id && a.att.submitted);
+      // the papers: this supervision's first (the work to hand in before the rest), then the practice papers, then
+      // the other supervisions'
+      const WEEK = +(document.body && document.body.dataset.week) || 0;
+      const card = (p) => {
+        const going = inProg(p.id), done = handedIn(p.id);
+        const b = h('button.btn' + (going || done ? '' : '.primary'), { type: 'button', 'aria-label': `${going ? 'Continue' : 'Start'}: ${p.title}` }, going ? 'Continue' : done ? 'Open' : 'Start');
         b.addEventListener('click', () => this.openPaper(p.id));
         const qs = p.full ? p.full.questions.filter((q) => q.type !== 'info') : null;
         const nq = qs ? qs.length : p.questions || 0;
         const marks = qs ? qs.reduce((s, q) => s + (+q.marks || 0), 0) : 0;
-        const meta = [p.minutes ? `${p.minutes} minutes` : 'No time limit', plural(nq, 'question'), marks ? plural(marks, 'mark') : ''].filter(Boolean).join(' · ');
-        list.appendChild(h('div.ex-card', { dataset: { paper: p.id } }, h('h4', p.title), p.description ? h('p', p.description) : null, h('p.ex-cmeta', meta), h('div.ex-cact', b, going ? h('span.ex-pill', 'In progress') : null)));
-      });
+        const meta = [timeText(p.full || p), plural(nq, 'question'), marks ? plural(marks, 'mark') : ''].filter(Boolean).join(' · ');
+        const badge = p.week ? (p.required ? h('span.ex-badge.req', 'To hand in') : h('span.ex-badge.opt', 'Optional')) : null;
+        return h('div.ex-card' + (p.required ? '.ex-required' : ''), { dataset: { paper: p.id } }, badge, h('h4', p.title), p.description ? h('p', p.description) : null, h('p.ex-cmeta', meta),
+          h('div.ex-cact', b, going ? h('span.ex-pill', 'In progress') : null, done ? h('span.ex-pill.ok', `Submitted ${fmtDate(new Date(done.att.submitted))}`) : null));
+      };
+      const listOf = (ps) => {
+        const list = h('div.ex-papers');
+        ps.forEach((p) => list.appendChild(card(p)));
+        return list;
+      };
+      if (!this.papers.length) V.appendChild(h('p.muted', this._indexError ? `The list of papers could not be loaded (${this._indexError}).` : 'There are no papers yet.'));
+      const mine = this.papers.filter((p) => WEEK && p.week === WEEK).sort((a, b) => (b.required ? 1 : 0) - (a.required ? 1 : 0) || (a.order || 0) - (b.order || 0));
+      const practice = this.papers.filter((p) => !p.week);
+      const others = this.papers.filter((p) => p.week && p.week !== WEEK).sort((a, b) => a.week - b.week || (a.order || 0) - (b.order || 0));
+      if (WEEK) {
+        V.appendChild(h('h3', `Supervision ${WEEK}`));
+        V.appendChild(mine.length ? listOf(mine) : h('p.muted', 'The work for this supervision is not here yet.'));
+      }
+      if (practice.length) V.append(h('h3', WEEK ? 'Practice papers' : 'Papers'), listOf(practice));
+      if (others.length) {
+        const det = h('details.ex-others', h('summary', `The other supervisions’ papers (${others.length})`), listOf(others));
+        V.appendChild(det);
+      }
       const free = h('button.btn', { type: 'button' }, 'Write an essay…');
       free.addEventListener('click', () => this.newEssay());
-      V.append(h('h3', 'Practice papers'), list, h('h3', 'An essay of your own'), h('p.ex-sub2', 'Give it a title, and if you like a word limit and a time limit: for a weekly essay, or to practise writing to time.'), free);
+      V.append(h('h3', 'An essay of your own'), h('p.ex-sub2', 'Give it a title, and if you like a word limit and a time limit: to practise writing to time.'), free);
       // the attempts
       V.appendChild(h('h3', 'My attempts'));
       if (!attempts.length) V.appendChild(h('p.muted', 'None yet. Your attempts are kept in Files, in the folder essays.'));
@@ -2067,7 +2113,7 @@
         });
         V.appendChild(h('div.ex-tablewrap', h('table.ex-list', h('thead', h('tr', h('th', 'Paper'), h('th', 'Status'), h('th', 'Answers'), h('th', h('span.sr-only', 'Actions')))), tb)));
       }
-      V.appendChild(h('p.hint', 'Exam practice copies the way an online exam system works, so that you can get used to it. It is not the real system, and nothing is sent to your examiners: download your answers if you need to hand them in.'));
+      V.appendChild(h('p.hint', 'Supervision work copies the way the online exam system works, so that you get used to it before your exams. It is not the real system, and nothing is sent to your supervisor from here: download your work as a Word document and send it yourself.'));
     }
     async _delete(path, att) {
       if (!(await MG.confirmBox('Delete this attempt?', `<p>Delete your attempt at <b>${esc(att.paper.title)}</b> (${esc(fmtWhen(att.started))})? Its answers will be lost.</p>`, 'Delete', { danger: true }))) return;
@@ -2091,16 +2137,18 @@
       const attempts = await this._attempts();
       if (tok !== this._tok) return;
       const going = attempts.find((a) => a.att && a.att.paper.id === paper.id && !a.att.submitted);
+      // (the last attempt submitted: a supervision's paper offers it again, to download and hand in)
+      const done = attempts.find((a) => a.att && a.att.paper.id === paper.id && a.att.submitted);
       bus.emit('exam:open', { paper: paper.id, title: paper.title });
-      this._startPage(paper, going);
+      this._startPage(paper, going, done);
     }
-    _startPage(paper, going) {
+    _startPage(paper, going, done) {
       const V = this.view;
       V.classList.add('ex-startpage');
       const qs = paper.questions.filter((q) => q.type !== 'info');
       const marks = qs.reduce((s, q) => s + (+q.marks || 0), 0);
       const dl = h('dl.ex-facts',
-        h('dt', 'Time allowed'), h('dd', paper.minutes ? `${paper.minutes} minutes` : 'No time limit'),
+        h('dt', 'Time allowed'), h('dd', paper.minutes ? `${paper.minutes} minutes` : paper.suggestedMinutes ? `No time limit. We suggest about ${paper.suggestedMinutes} minutes: the clock at the top shows how long you have been writing.` : 'No time limit'),
         h('dt', 'Questions'), h('dd', String(qs.length)),
         marks ? [h('dt', 'Marks'), h('dd', String(marks))] : null,
         h('dt', 'Spelling checker'), h('dd', paper.spellcheck ? 'On (you can switch it off)' : 'Off (you can switch it on)'));
@@ -2115,13 +2163,26 @@
         const nq = this._questions(going.att).filter((q) => q.type !== 'info').length;
         acts.append(h('p', `You have an attempt in progress, started ${fmtWhen(going.att.started)}: ${this._answeredCount(going.att)} of ${nq} ${nq === 1 ? 'question' : 'questions'} answered.`), c, again);
       } else {
-        const s = h('button.btn.primary', { type: 'button' }, 'Start');
-        s.addEventListener('click', () => this._start(paper));
-        acts.append(s);
+        const sent = done && paper.week ? done : null;
+        const s = h('button.btn' + (sent ? '' : '.primary'), { type: 'button' }, sent ? 'Start a new attempt' : 'Start');
+        s.addEventListener('click', async () => {
+          if ((paper.required || paper.handIn) && !fullName() && MG.app.nameDialog) await MG.app.nameDialog({ title: 'Your name, for your essay', why: 'Your name goes at the top of the Word document you hand in, so that your supervisor knows whose work it is. It is kept in this browser only. (You can leave it out now, and add it before you download your work.)', cancel: 'Not now' });
+          this._start(paper);
+        });
+        if (sent) {
+          // (a supervision's paper that has been submitted: its Word document, to hand in, and what was submitted)
+          const words = this._questions(sent.att).filter((q) => q.type === 'essay' || q.type === 'short').reduce((n, q) => n + ((sent.att.answers[q.id] || {}).words || 0), 0);
+          const word = h('button.btn.primary', { type: 'button', html: IC.download + '<span>Download the Word document</span>' });
+          word.addEventListener('click', () => this.download(sent.att, 'docx'));
+          const see = h('button.btn', { type: 'button' }, 'See what you submitted');
+          see.addEventListener('click', () => this.openFile(sent.path));
+          acts.append(h('p', `You submitted this at ${fmtWhen(sent.att.submitted)}${words ? ` (${plural(words, 'word')})` : ''}.`), word, see, s);
+        } else acts.append(s);
       }
       const ins = h('div.ex-instr');
       ins.innerHTML = paper.instructions ? cleanTrusted(paper.instructions) : '';
-      V.append(h('div.ex-startcard', h('p.ex-kicker', 'Exam practice'), h('h2', paper.title), paper.description ? h('p', paper.description) : null, dl, ins, paper.minutes ? h('p.hint', `The time starts when you press Start, and keeps running if you leave the page. ${paper.autoSubmit ? 'Your answers are submitted when the time is up.' : 'When the time is up your answers are locked, and you submit them.'}`) : null, acts, h('div.ex-startback', back)));
+      const hand = paper.handIn ? h('div.ex-handin', { html: '<h3>To hand in</h3>' + cleanTrusted(paper.handIn) }) : null;
+      V.append(h('div.ex-startcard', h('p.ex-kicker', paper.week ? `Supervision ${paper.week}${paper.required ? ' · to hand in' : ' · optional'}` : 'Supervision work'), h('h2', paper.title), paper.description ? h('p', paper.description) : null, dl, ins, hand, paper.minutes ? h('p.hint', `The time starts when you press Start, and keeps running if you leave the page. ${paper.autoSubmit ? 'Your answers are submitted when the time is up.' : 'When the time is up your answers are locked, and you submit them.'}`) : null, acts, h('div.ex-startback', back)));
     }
     _start(paper) {
       const now = this.now();
@@ -2129,7 +2190,7 @@
       const att = {
         format: 'bms-exam-attempt-1',
         paper,
-        candidate: { number: this.prefs.candidate || '', name: this.prefs.name || '' },
+        candidate: { number: this.prefs.candidate || '', name: fullName() || this.prefs.name || '' },
         started: new Date(now).toISOString(),
         deadline: paper.minutes ? new Date(now + paper.minutes * 60000).toISOString() : null,
         submitted: null,
@@ -2142,6 +2203,7 @@
       this.path = path;
       this.att = att;
       this._write();
+      if (paper.week) mark(paper.id, 'started');
       bus.emit('exam:start', { paper: paper.id });
       this.play(att, path);
     }
@@ -2252,6 +2314,8 @@
       this._renderResources();
       this._status('saved');
       // the clock and autosave
+      this._lastTick = null;
+      this._lastMins = null;
       this._tickNow();
       this._tick = setInterval(() => this._tickNow(), 1000);
       this._auto = setInterval(() => this._saveNow(), Math.max(2, +CFG.autosaveSeconds || 5) * 1000);
@@ -2280,8 +2344,27 @@
         return;
       }
       if (left == null) {
-        el.textContent = 'No time limit';
-        el.className = 'ex-timer';
+        // (the time spent writing: while the attempt is open, in view and the page is visible)
+        const att = this.att, now = Date.now();
+        const live = this.root.offsetParent && document.visibilityState !== 'hidden';
+        if (live && this._lastTick) att.activeMs = (att.activeMs || 0) + Math.min(5000, Math.max(0, now - this._lastTick));
+        this._lastTick = now;
+        const mins = Math.floor((att.activeMs || 0) / 60000);
+        if (mins !== this._lastMins) {
+          this._lastMins = mins;
+          this._dirty = true;
+        }
+        const S = +att.paper.suggestedMinutes || 0;
+        const spent = mins < 1 ? 'under a minute' : plural(mins, 'minute');
+        el.textContent = this.prefs.hideTime ? 'Time hidden' : S ? (mins < S ? `${mins} of about ${S} minutes` : `${spent} (about ${S} suggested)`) : `Writing for ${spent}`;
+        el.title = S ? `There is no time limit. We suggest about ${S} minutes, the time you would have in the exam. This counts the time you have spent writing.` : 'There is no time limit. This counts the time you have spent writing.';
+        el.className = 'ex-timer' + (S && mins >= S ? ' soon' : '');
+        if (S && mins >= S && !att.suggestedReached) {
+          att.suggestedReached = true;
+          this._dirty = true;
+          bus.emit('exam:suggested', { paper: att.paper.id, minutes: S });
+          toast(`<b>${S} minutes</b>: the time you would have for this in the exam. Finish your sentence and write your conclusion, or carry on if you need to: there is no time limit here.`, 'warn', 9000);
+        }
         return;
       }
       el.textContent = this.prefs.hideTime ? 'Time hidden' : fmtRemaining(left);
@@ -2817,6 +2900,7 @@
       this._dirty = true;
       this._write();
       if (MG.project && MG.project.flush) MG.project.flush();
+      if (att.paper.week) mark(att.paper.id, 'submitted');
       bus.emit('exam:submit', { paper: att.paper.id, answered: this._answeredCount(att), total: this._questions(att).filter((q) => q.type !== 'info').length });
       this.receipt(att, this.path);
     }
@@ -2844,13 +2928,22 @@
       const back = h('button.btn', { type: 'button', html: IC.back + '<span>All papers</span>' });
       back.addEventListener('click', () => this.home());
       const essays = this._questions(att).filter((q) => q.type === 'essay' || q.type === 'short');
+      let hand = null;
+      if (att.paper.handIn) {
+        const word = h('button.btn.primary', { type: 'button', html: IC.download + '<span>Download the Word document</span>' });
+        word.addEventListener('click', () => this.download(att, 'docx'));
+        hand = h('div.ex-handin', { html: '<h3>Now hand it in</h3>' + cleanTrusted(att.paper.handIn) });
+        hand.appendChild(h('p', word));
+        dl.classList.remove('primary');
+      }
       V.appendChild(h('div.ex-receipt',
         h('div.ex-tick', { 'aria-hidden': 'true', html: IC.check }),
         h('h2', `You submitted at ${fmtClock(when)} on ${fmtDate(when)}`),
         h('p', h('b', att.paper.title), ` · ${this._answeredCount(att)} of ${total} ${total === 1 ? 'question' : 'questions'} answered${att.autoSubmitted ? ' · submitted when the time ran out' : ''}`),
         essays.length ? h('p.muted', essays.map((q) => `${q.title || 'Essay'}: ${plural((att.answers[q.id] || {}).words || 0, 'word')}`).join(' · ')) : null,
+        hand,
         h('div.ex-recacts', dl, save, rev, again, back),
-        h('p.hint', `Your attempt is kept in Files: ${this.fs.pretty(path)}. Nothing has been sent anywhere: to hand your answers in, download them.`)));
+        h('p.hint', `Your attempt is kept in Files: ${this.fs.pretty(path)}. Nothing has been sent anywhere: to hand your work in, download it and send it yourself.`)));
     }
     _downloadMenu(anchor, att) {
       MG.popmenu(anchor, [
@@ -2862,15 +2955,17 @@
     }
     _fileBase(att) {
       const c = att.candidate || {};
-      return [slug(att.paper.title), c.number ? slug(c.number) : ''].filter(Boolean).join('-');
+      const name = c.name || fullName();
+      return [slug(att.paper.title), name ? slug(name) : '', c.number ? slug(c.number) : ''].filter(Boolean).join('-');
     }
     /** the submission as HTML (the body: headings, the questions, the answers) */
     exportBody(att, opts = {}) {
       const c = att.candidate || {};
-      const who = [c.number && `Candidate ${c.number}`, c.name].filter(Boolean).join(' · ');
+      const who = [c.name || fullName(), c.number && `Candidate ${c.number}`].filter(Boolean).join(' · ');
       let x = `<h1 class="title">${esc(att.paper.title)}</h1>`;
       if (who) x += `<p class="meta">${esc(who)}</p>`;
-      x += `<p class="meta">Started ${esc(fmtWhen(att.started))}${att.submitted ? ' · submitted ' + esc(fmtWhen(att.submitted)) : ' · not submitted'}. Exam practice, BMS workbench.</p>`;
+      const spent = att.activeMs ? ` · about ${plural(Math.max(1, Math.round(att.activeMs / 60000)), 'minute')} spent writing` : '';
+      x += `<p class="meta">Started ${esc(fmtWhen(att.started))}${att.submitted ? ' · submitted ' + esc(fmtWhen(att.submitted)) : ' · not submitted'}${esc(spent)}. ${att.paper.week ? 'Supervision ' + esc(String(att.paper.week)) + ', ' : ''}BMS supervisions.</p>`;
       this._questions(att).forEach((q, i) => {
         if (q.type === 'info') return;
         const n = this._questions(att).slice(0, i + 1).filter((z) => z.type !== 'info').length;
@@ -2920,13 +3015,16 @@
         if (format === 'docx' || format === 'docx-file') {
           if (!MG.Docx) await MG.loadScript('assets/js/docx.js');
           const c = att.candidate || {};
-          const blob = await MG.Docx.fromHTML(this.exportBody(att), { title: att.paper.title, creator: [c.number, c.name].filter(Boolean).join(' ') });
+          // (work to hand in needs the student's name on it: ask for it if there is none)
+          if (format === 'docx' && (att.paper.required || att.paper.handIn) && !(c.name || fullName()) && MG.app.nameDialog) await MG.app.nameDialog({ title: 'Your name, for your essay', why: 'Your name goes at the top of the Word document, so that your supervisor knows whose work it is. It is kept in this browser only.', cancel: 'Download without it' });
+          const blob = await MG.Docx.fromHTML(this.exportBody(att), { title: att.paper.title, creator: [c.name || fullName(), c.number].filter(Boolean).join(' ') });
           if (format === 'docx-file') {
             const p = await MG.app.saveToFiles(base + '.docx', blob, { folder: '~/essays', ask: false });
             if (p) bus.emit('exam:download', { paper: att.paper.id, format: 'docx-file', path: p });
             return p;
           }
-          MG.downloadBlob(blob, base + '.docx');
+          MG.downloadBlob(blob, this._fileBase(att) + '.docx');
+          if (att.paper.week) mark(att.paper.id, 'downloaded');
         } else if (format === 'html') {
           MG.downloadText(this.exportDocument(att), base + '.html', 'text/html');
         } else if (format === 'txt') {

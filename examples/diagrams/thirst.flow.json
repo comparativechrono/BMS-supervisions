@@ -1,0 +1,196 @@
+{
+ "format": "bms-flow-1",
+ "title": "Thirst: feedback and feed-forward",
+ "description": "Osmoregulation by drinking. Sweating raises the osmolarity of the extracellular fluid; osmoreceptors in the hypothalamus compare it with its set point (300 mOsm/L) and make you thirsty, and you drink. But the water you drink only reaches your blood after it has been absorbed from the gut, about 15 minutes later: with negative feedback alone, you go on drinking for all that time, and dilute yourself (a delayed negative feedback loop overshoots). Unblock the feed-forward arrow from the receptors in the mouth and stomach, which tell the brain that water has been drunk before it has been absorbed (Bellows 1938, in dogs), and run it again.",
+ "group": "Feedback",
+ "order": 5,
+ "nodes": [
+  {
+   "id": "sweat",
+   "text": "Sweating (water lost)",
+   "role": "stimulus",
+   "shape": "flag",
+   "color": "orange",
+   "x": 110,
+   "y": 130,
+   "w": 170,
+   "h": 52,
+   "kind": "pulse",
+   "start": 10,
+   "size": 10,
+   "length": 20,
+   "unit": "",
+   "plot": true
+  },
+  {
+   "id": "osm",
+   "text": "ECF osmolarity",
+   "role": "quantity",
+   "shape": "round",
+   "color": "blue",
+   "x": 350,
+   "y": 130,
+   "w": 170,
+   "h": 56,
+   "rest": 300,
+   "unit": "mOsm/L",
+   "tau": 8,
+   "plot": true
+  },
+  {
+   "id": "cmp",
+   "text": "Σ",
+   "role": "comparator",
+   "shape": "circle",
+   "color": "white",
+   "x": 580,
+   "y": 130,
+   "w": 56,
+   "h": 56
+  },
+  {
+   "id": "sp",
+   "text": "Set point",
+   "role": "setpoint",
+   "shape": "rect",
+   "color": "grey",
+   "x": 760,
+   "y": 130,
+   "w": 120,
+   "h": 48,
+   "rest": 300,
+   "unit": "mOsm/L",
+   "plot": false
+  },
+  {
+   "id": "drink",
+   "text": "Thirst and drinking",
+   "role": "quantity",
+   "shape": "round",
+   "color": "red",
+   "x": 580,
+   "y": 310,
+   "w": 180,
+   "h": 56,
+   "rest": 0,
+   "unit": "",
+   "tau": 2,
+   "plot": true
+  },
+  {
+   "id": "mouth",
+   "text": "Mouth and stomach receptors",
+   "role": "quantity",
+   "shape": "round",
+   "color": "purple",
+   "x": 850,
+   "y": 310,
+   "w": 190,
+   "h": 56,
+   "rest": 0,
+   "unit": "",
+   "tau": 2,
+   "plot": false
+  },
+  {
+   "id": "note-osmo",
+   "text": "Osmoreceptors in the hypothalamus compare osmolarity with its set point",
+   "role": "label",
+   "shape": "label",
+   "color": "white",
+   "x": 580,
+   "y": 40,
+   "w": 280,
+   "h": 44
+  },
+  {
+   "id": "note-gut",
+   "text": "Water reaches the blood only after it is absorbed from the gut",
+   "role": "label",
+   "shape": "label",
+   "color": "white",
+   "x": 250,
+   "y": 330,
+   "w": 220,
+   "h": 56
+  },
+  {
+   "id": "note-ff",
+   "text": "Feed-forward (blocked at first): unblock it and run again",
+   "role": "label",
+   "shape": "label",
+   "color": "white",
+   "x": 850,
+   "y": 430,
+   "w": 230,
+   "h": 44
+  }
+ ],
+ "edges": [
+  {
+   "id": "e-sweat",
+   "from": "sweat",
+   "to": "osm",
+   "sign": "+",
+   "gain": 1
+  },
+  {
+   "id": "e-sense",
+   "from": "osm",
+   "to": "cmp",
+   "sign": "+",
+   "gain": 1,
+   "label": "osmoreceptors"
+  },
+  {
+   "id": "e-sp",
+   "from": "sp",
+   "to": "cmp",
+   "sign": "-",
+   "gain": 1
+  },
+  {
+   "id": "e-thirst",
+   "from": "cmp",
+   "to": "drink",
+   "sign": "+",
+   "gain": 1.5,
+   "label": "thirst"
+  },
+  {
+   "id": "e-water",
+   "from": "drink",
+   "to": "osm",
+   "sign": "-",
+   "gain": 1,
+   "delay": 15,
+   "label": "water absorbed",
+   "bend": -60
+  },
+  {
+   "id": "e-mouth",
+   "from": "drink",
+   "to": "mouth",
+   "sign": "+",
+   "gain": 1,
+   "label": "water drunk",
+   "bend": 50
+  },
+  {
+   "id": "e-ff",
+   "from": "mouth",
+   "to": "drink",
+   "sign": "-",
+   "gain": 3,
+   "label": "feed-forward",
+   "dashed": true,
+   "blocked": true,
+   "bend": 90
+  }
+ ],
+ "sim": {
+  "duration": 150,
+  "timeUnit": "min",
+  "clampZero": true
+ }
+}

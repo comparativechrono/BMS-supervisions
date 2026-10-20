@@ -1,16 +1,18 @@
 /* =====================================================================
-   Settings for the BMS workbench.
+   Settings for the BMS supervisions (built on the BMS workbench).
    You can change these settings by editing this file and uploading it
    again; nothing else needs to change.
    ===================================================================== */
 window.MG_CONFIG = {
-  courseTitle: 'BMS workbench',
-  courseSubtitle: 'The microscope, anatomy, recordings, the organ bath, models, exam practice and R, in your browser',
+  /* (the title and subtitle of each page are written by build/make_page.py, from build/supervisions.py) */
+  courseTitle: null,
+  courseSubtitle: null,
 
-  /* The prefix for everything the page saves in the browser (files, answers, essays and settings). Practicals made
-     from this workbench that are hosted at the same address (for example, GitHub Pages sites of one account) and have
-     the same prefix share the student's files and essays; give a practical its own prefix to keep them apart. */
-  storePrefix: 'bmswb',
+  /* The prefix for everything the pages save in the browser (files, answers, essays and settings). All the pages of
+     this site share it, so a student's files and essays are the same on every supervision's page. It is not the BMS
+     workbench's (bmswb), so that the two sites keep their files apart although GitHub Pages serves them from the same
+     address. */
+  storePrefix: 'bmssup',
   hostname: 'workbench',
 
   /* Model answers are shown with a "Show answer" button under each question. Set this to false to hide

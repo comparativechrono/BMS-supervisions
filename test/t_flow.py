@@ -365,7 +365,7 @@ for ex in p.js("async () => (await MG.app.flow._examples()).map(e => e.id)"):
         continue
     p.js(f"() => {F}.run()")
     r = p.js(f"() => {{ const r = {F}.result; return {{ run: !!r.runaway, osc: r.oscillating.length, settled: r.settled }}; }}")
-    want = {'positive-feedback-clotting': (True, 0), 'delay-oscillation': (False, 2)}.get(ex, (False, 0))
+    want = {'positive-feedback-clotting': (True, 0), 'delay-oscillation': (False, 2), 'clock': (False, 2)}.get(ex, (False, 0))
     check(r['run'] == want[0] and (r['osc'] > 0) == (want[1] > 0), f'example {ex} runs as it should ({r})')
     if ex == 'negative-feedback-temperature':
         t = p.js(f"() => {F}.result.finals.temp")

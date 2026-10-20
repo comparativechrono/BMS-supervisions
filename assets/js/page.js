@@ -54,7 +54,7 @@
     return fs;
   }
 
-  MG.page.firstBench = 'scope';
+  MG.page.firstBench = 'exam';
   MG.page.init = async function () {
     MG.app.fs = await setupFs();
     MG.project.persist();
@@ -122,7 +122,7 @@
     },
     exam: async (pane) => {
       const root = pane.querySelector('#examRoot');
-      loading(root, 'exam practice');
+      loading(root, 'Supervision work');
       await loadAll(['assets/js/calc.js', 'assets/js/exam.js']);
       root.innerHTML = '';
       MG.app.exam = new MG.ExamApp(root, { fs: MG.app.fs });
@@ -199,7 +199,7 @@
     const ed = await tab('editor', 'editor');
     await ed.openFile(path, opts);
   };
-  /** open a file where it belongs: a diagram in Diagrams, a circuit in Circuits, answers in Exam practice, a structure
+  /** open a file where it belongs: a diagram in Diagrams, a circuit in Circuits, answers in Supervision work, a structure
       in the 3D viewer, the rest in Files */
   MG.app.openFile = async (path, opts = {}) => {
     const p = MG.app.fs.resolve(path);
@@ -324,7 +324,7 @@
      data-flow-run                      run the simulation of the open diagram
      data-circuit="example:ID | ~/path" open a circuit
      data-circuit-run                   run the open circuit
-     data-exam="paper-id"               open a paper of exam practice ("" or "free": a blank essay)
+     data-exam="paper-id"               open a paper of Supervision work ("" or "free": a blank essay)
      data-calc                          open the calculator
      data-anat="spec"  data-anat-find="spec"   the Anatomy tab: show a system or structure / ask the student to find
                                         one and click on it (the specs: anatomy.js)
@@ -412,6 +412,15 @@
     return txt != null && new RegExp(arg.slice(cut + 1), 'm').test(txt);
   };
   MG.checks.installed = (t, d, pkg) => MG.R.userlib.list().includes(pkg);
+  /* the student has given their name (for the work they hand in) */
+  MG.checks.named = () => !!(MG.user && MG.user.fullName && MG.user.fullName());
+  /* what the student has done with a paper of Supervision work (paper:s1-essay.submitted; started, submitted or
+     downloaded), as exam.js keeps it for the landing page */
+  MG.checks.paper = (t, d, arg) => {
+    const [id, what] = String(arg || '').split('.');
+    const r = MG.siteStore && MG.siteStore.get('paper:' + id, null);
+    return !!(r && r[what || 'submitted']);
+  };
   MG.checks.bench = (t, d, name) => MG.app.currentBench === name;
   /* the slide open in the microscope (scope:adrenal-gland) */
   MG.checks.slide = (t, d, id) => !!MG.app.scope && MG.app.scope.current && MG.app.scope.current() === id;
@@ -436,9 +445,9 @@
       'How this page works',
       `<ul>
 <li>The <b>instructions</b> are on the left and the <b>workbench</b> is on the right. Drag the divider between them to change their widths; the button at the top left (or <kbd>Ctrl</kbd>+<kbd>\\</kbd>) hides the instructions so that the workbench fills the window.</li>
-<li>The workbench has eleven tabs. ${ic('scope')} <b>Microscope</b> is a virtual microscope with slides of human tissues: change the objective, measure, count, label and take pictures. ${ic('anatomy')} <b>Anatomy</b> shows the human body in 3D, system by system: click a structure to see its name and what it is, isolate it, cut sections and label what is shown. ${ic('viewer')} <b>Molecules</b> shows proteins and other molecules in 3D. ${ic('recorder')} <b>Recorder</b> plays back real recordings of people – the ECG, heart sounds, blood pressure, breathing, muscle and the brain – as a chart recorder does: zoom, play, and measure intervals and rates with the calipers. ${ic('bath')} <b>Organ bath</b> is a simulated isolated tissue: add drugs, watch it contract or relax, and build concentration–response curves that R analyses. ${ic('flow')} <b>Diagrams</b> draws flow diagrams of physiological control and can run them as a simulation. ${ic('circuit')} <b>Circuits</b> builds and runs electrical circuits, including the circuit models of physiology. ${ic('sims')} <b>Simulations</b> has interactive simulations from PhET (University of Colorado Boulder): the action potential, membrane transport, gases, pH, solutions and Beer’s law, lenses and colour vision. ${ic('exam')} <b>Exam practice</b> is an essay editor that works like the online exam system, with a word count, a timer and a calculator. ${ic('rstudio')} <b>RStudio</b> is for analysing data in R, and ${ic('editor')} <b>Files</b> holds everything you save.</li>
+<li>The workbench has eleven tabs. ${ic('exam')} <b>Supervision work</b>, the first, is where the work set for your supervision is: the essay you hand in, and other questions, written as in the online exam, with a word count, a clock and a calculator, and downloaded as a Word document to hand in. ${ic('scope')} <b>Microscope</b> is a virtual microscope with slides of human tissues: change the objective, measure, count, label and take pictures. ${ic('anatomy')} <b>Anatomy</b> shows the human body in 3D, system by system: click a structure to see its name and what it is, isolate it, cut sections and label what is shown. ${ic('viewer')} <b>Molecules</b> shows proteins and other molecules in 3D. ${ic('recorder')} <b>Recorder</b> plays back real recordings of people – the ECG, heart sounds, blood pressure, breathing, muscle and the brain – as a chart recorder does: zoom, play, and measure intervals and rates with the calipers. ${ic('bath')} <b>Organ bath</b> is a simulated isolated tissue: add drugs, watch it contract or relax, and build concentration–response curves that R analyses. ${ic('flow')} <b>Diagrams</b> draws flow diagrams of physiological control and can run them as a simulation. ${ic('circuit')} <b>Circuits</b> builds and runs electrical circuits, including the circuit models of physiology. ${ic('sims')} <b>Simulations</b> has interactive simulations from PhET (University of Colorado Boulder): the action potential, membrane transport, gases, pH, solutions and Beer’s law, lenses and colour vision. ${ic('rstudio')} <b>RStudio</b> is for analysing data in R, and ${ic('editor')} <b>Files</b> holds everything you save.</li>
 <li>When there isn’t room for all the tabs’ names – on a phone or a tablet, or beside the instructions in a smaller window – the tabs show only their icons (the ones above), and the open tab keeps its name. On a phone, the workbench opens over the instructions with the <b>Workbench</b> button, and the ✕ at the right of its tabs goes back to the instructions.</li>
-<li>The tabs work together: measurements and counts from the microscope, measurements from the recorder and the organ bath, pictures you take, and the results of diagrams and circuits are saved in <b>Files</b>, where R can read them; and the buttons in the instructions open slides, models, recordings, tissues, simulations, diagrams, circuits and papers for you.</li>
+<li>The tabs work together: measurements and counts from the microscope, measurements from the recorder and the organ bath, pictures you take, and the results of diagrams and circuits are saved in <b>Files</b>, where R can read them; and the buttons in the instructions open papers, slides, models, recordings, tissues, simulations, diagrams and circuits for you.</li>
 <li>The steps of each activity are ticked automatically when you do them (they are marked <b>✓ spotted</b>), and you can also tick them yourself.</li>
 <li>Your ticks and answers, your essays and your files are saved in this browser, so they will still be there if you reload the page. <b>My answers</b> downloads your answers, <b>My files</b> downloads all your files as a .zip file, and each essay can be downloaded as a Word document. Some lab computers clear the browser’s storage when you log out, so download your work before you leave.</li>
 <li>The slides, the 3D models, the recordings, the simulations and R itself are downloaded from the internet as you use them; R is about 30 MB the first time RStudio starts.</li>

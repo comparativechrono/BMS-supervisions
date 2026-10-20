@@ -39,8 +39,9 @@
      flow:edit    {nodes, edges, name}      the diagram changed (half a second after the last change)
      flow:node    {text, role}              a box was added
      flow:edge    {sign, from, to}          an arrow was added (sign '+', '-' or '0'; from, to: the texts of its boxes)
-     flow:run     {name, nodes, edges, duration, oscillates, oscillation, oscillating, runaway, blocked, knocked,
-                   settled}                 a run: oscillation 'growing' | 'steady' | 'dying away' (or ''), oscillating
+     flow:run     {name, nodes, edges, duration, oscillates, oscillation, period, oscillating, runaway, blocked, knocked,
+                   settled}                 a run: oscillation 'growing' | 'steady' | 'dying away' (or ''), period the
+                                            time from one peak to the next of the first box that oscillates, oscillating
                                             the names of the boxes that went up and down, blocked and knocked the
                                             numbers of blocked arrows and of knocked-out or fixed boxes
      flow:save    {path, name}              the diagram was saved in a file
@@ -475,7 +476,11 @@
           const amps = [];
           for (let q = 1; q < ext.length; q++) amps.push(Math.abs(ext[q].v - ext[q - 1].v));
           const r = amps[amps.length - 1] / Math.max(1e-12, amps[0]);
-          oscillating.push({ id: n.id, trend: r > 1.2 ? 'growing' : r < 0.8 ? 'dying away' : 'steady', cycles: Math.floor(ext.length / 2) });
+          // the period: the mean time from one peak to the next, over the last (up to) four peaks
+          const peaks = ext.filter((e) => e.type === 'max').map((e) => times[e.i]);
+          const last = peaks.slice(-4);
+          const period = last.length >= 2 ? (last[last.length - 1] - last[0]) / (last.length - 1) : null;
+          oscillating.push({ id: n.id, trend: r > 1.2 ? 'growing' : r < 0.8 ? 'dying away' : 'steady', cycles: Math.floor(ext.length / 2), period });
         }
         const last = s[s.length - 1], before = s[Math.floor(s.length * 0.9)];
         let lo2 = Infinity, hi2 = -Infinity;
@@ -2172,7 +2177,7 @@
         this._snapOnce('changeAt');
         D.sim.changeAt = Math.max(0, v);
         this._changed({ side: false, key: 'changeAt' });
-      }, { min: 0 }), 'When knock-outs, fixed levels and blocked arrows take effect, so that the graphs show the normal state first.', 'changeAt'));
+      }, { min: 0 }), 'When knock-outs and fixed levels take effect, so that the graphs show the normal state first. (A blocked arrow is cut from the start of the run.)', 'changeAt'));
       B.append(h('div.fl-fl.fl-gap', 'How to'));
       B.append(h('ul.fl-tips',
         h('li', { html: '<b>Add a box:</b> double-click an empty part, or use <b>Box</b>.' }),
@@ -2220,6 +2225,7 @@
         duration: res.duration,
         oscillates: res.oscillating.length > 0,
         oscillation: res.oscillating.length ? res.oscillating[0].trend : '',
+        period: res.oscillating.length && res.oscillating[0].period != null ? Math.round(res.oscillating[0].period * 10) / 10 : null,
         runaway: !!res.runaway,
         blocked: res.blocked,
         knocked: res.knocked,
@@ -2302,9 +2308,12 @@
       const msgs = [];
       if (res.stale) msgs.push('The diagram has changed since this run: press Run again.');
       if (res.runaway) msgs.push(`${nm(res.runaway.id)} ran away: positive feedback kept pushing it further, so at ${fmt(res.runaway.t)} ${tu} the simulation stopped it at ten times its usual size.`);
-      if (res.oscillating.length) msgs.push(`${res.oscillating.map((o) => nm(o.id)).join(', ')} went up and down (an oscillation that is ${res.oscillating[0].trend}).`);
+      if (res.oscillating.length) {
+        const per = res.oscillating[0].period;
+        msgs.push(`${res.oscillating.map((o) => nm(o.id)).join(', ')} went up and down (an oscillation that is ${res.oscillating[0].trend}${per != null ? `, with a period of ${fmt(Math.round(per * 10) / 10)} ${tu} from one peak to the next` : ''}).`);
+      }
       if (!res.runaway && !res.oscillating.length) msgs.push(res.settled ? `Run for ${fmt(res.duration)} ${tu}: everything settled to a steady level.` : `Run for ${fmt(res.duration)} ${tu}: still changing at the end – try running it for longer.`);
-      if (res.knocked || res.blocked) msgs.push(`Changes start at ${fmt(res.changeAt)} ${tu}.`);
+      if (res.knocked) msgs.push(`Changes start at ${fmt(res.changeAt)} ${tu}.`);
       if (res.algebraicLoop) msgs.push('(Some comparators feed each other directly; the simulation used their values from a moment before.)');
       this.runMsg.textContent = msgs.join(' ');
       this.runMsg.classList.toggle('warn', !!res.runaway || !!res.stale);
@@ -2369,7 +2378,7 @@
         for (const v of ticks) svg.appendChild(S('line', { x1: L, x2: L + pw, y1: Y(v), y2: Y(v), stroke: '#e6eaf0' }));
         // the resting level
         svg.appendChild(S('line', { x1: L, x2: L + pw, y1: Y(r0), y2: Y(r0), stroke: '#b9c2ce', 'stroke-dasharray': '3 3' }));
-        if (res.knocked || res.blocked) svg.appendChild(S('line', { x1: X(res.changeAt), x2: X(res.changeAt), y1: y0, y2: y1, stroke: '#c9a6e6', 'stroke-dasharray': '2 3' }));
+        if (res.knocked) svg.appendChild(S('line', { x1: X(res.changeAt), x2: X(res.changeAt), y1: y0, y2: y1, stroke: '#c9a6e6', 'stroke-dasharray': '2 3' }));
         let d = '';
         const n2 = s.length;
         for (let q = 0; q < n2; q++) d += (q ? 'L' : 'M') + X(res.times[q]).toFixed(1) + ',' + Y(s[q]).toFixed(1);

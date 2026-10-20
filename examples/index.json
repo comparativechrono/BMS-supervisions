@@ -10,6 +10,14 @@
    "order": 0
   },
   {
+   "id": "clock",
+   "file": "diagrams/clock.flow.json",
+   "title": "A clock made of negative feedback",
+   "description": "The circadian clock of a cell, in its simplest form: CLOCK and BMAL1 switch on the Per and Cry genes; their mRNA is made into PER and CRY proteins, which, hours later, go back into the nucleus and switch their own genes off. Because both steps take hours, the loop never settles: it oscillates, with a period of about a day, all by itself. Light (the zeitgeber) is cut off at first, as in a cave, so the clock free-runs; unblock its arrow to entrain the clock to 24 hours. Change the delays to change the period, or knock out a box to stop the clock.",
+   "group": "Clocks",
+   "order": 1
+  },
+  {
    "id": "negative-feedback-temperature",
    "file": "diagrams/negative-feedback-temperature.flow.json",
    "title": "Negative feedback: body temperature",
@@ -47,6 +55,14 @@
    "title": "Blood glucose: insulin and glucagon",
    "description": "Glucose absorbed after a meal raises blood glucose. The β cells of the pancreas respond with more insulin, which lowers glucose; the α cells make less glucagon, which would raise it. Two negative feedback loops work together. Try knocking out insulin (as in type 1 diabetes).",
    "group": "Hormones",
+   "order": 5
+  },
+  {
+   "id": "thirst",
+   "file": "diagrams/thirst.flow.json",
+   "title": "Thirst: feedback and feed-forward",
+   "description": "Osmoregulation by drinking. Sweating raises the osmolarity of the extracellular fluid; osmoreceptors in the hypothalamus compare it with its set point (300 mOsm/L) and make you thirsty, and you drink. But the water you drink only reaches your blood after it has been absorbed from the gut, about 15 minutes later: with negative feedback alone, you go on drinking for all that time, and dilute yourself (a delayed negative feedback loop overshoots). Unblock the feed-forward arrow from the receptors in the mouth and stomach, which tell the brain that water has been drunk before it has been absorbed (Bellows 1938, in dogs), and run it again.",
+   "group": "Feedback",
    "order": 5
   },
   {

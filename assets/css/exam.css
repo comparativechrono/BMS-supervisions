@@ -430,3 +430,17 @@
 .calc-k.eq { background: #0b6b8a; font-size: 1.05rem; }
 .calc-k.eq:hover { background: #0d7fa3; }
 .calc-k.mem { height: 26px; background: #2f2236; font-size: 0.74rem; color: #d9c8df; }
+
+/* ---------------- the supervisions: work to hand in, by supervision ---------------- */
+.ex-badge { align-self: flex-start; font-size: 0.72rem; font-weight: 750; letter-spacing: 0.03em; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; }
+.ex-badge.req { background: #8a1c4a; color: #fff; }
+.ex-badge.opt { background: var(--ex-acc-soft); color: var(--ex-acc); }
+.ex-card.ex-required { border: 2px solid #8a1c4a; box-shadow: 0 2px 10px rgba(138, 28, 74, 0.12); }
+.ex-pill.ok { background: #e3f4ea; color: #146c43; }
+details.ex-others { margin: 16px 0 4px; }
+details.ex-others > summary { cursor: pointer; font-weight: 650; color: var(--ex-ink); padding: 4px 0; }
+details.ex-others > .ex-papers { margin-top: 8px; }
+.ex-handin { text-align: left; margin: 16px 0 8px; padding: 12px 16px; border-left: 4px solid #8a1c4a; background: #fbf2f6; border-radius: 0 10px 10px 0; line-height: 1.55; }
+.ex-handin h3 { margin: 0 0 6px; font-size: 1rem; color: #8a1c4a; }
+.ex-handin p { margin: 6px 0; }
+.ex-handin ol, .ex-handin ul { margin: 6px 0; padding-left: 1.3em; }

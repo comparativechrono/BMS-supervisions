@@ -1,0 +1,27 @@
+{
+ "id": "s1-essay",
+ "week": 1,
+ "required": true,
+ "order": 1,
+ "title": "Supervision 1 essay",
+ "description": "Discuss, with examples, why negative feedback mechanisms are more common than positive feedback mechanisms in animal physiology.",
+ "minutes": null,
+ "suggestedMinutes": 40,
+ "autoSubmit": false,
+ "spellcheck": false,
+ "showWordCount": true,
+ "clipboard": "exam",
+ "handIn": "<ol><li>When you have submitted your essay, click <b>Download the Word document</b>. The file is named after the essay and you, and your name is at the top of it.</li><li>Send it to <b>Tim Hearn</b> before your supervision.</li></ol><p class=\"muted\">Your essay is also kept in this browser (in Files → <code>essays</code>), and the first page of this paper lets you download it again.</p>",
+ "instructions": "<p><b>This is the work to hand in for Supervision 1.</b> Write it here, in one sitting, as you will write your essays in the online exam.</p><p><b>Why like this?</b> Your BMS exams are taken on a computer, in an online exam system. Writing your supervision essays in the same way – typed, in one go, without notes, and without pasting anything from elsewhere – makes the exam feel familiar, and lets your supervisor see how you write under exam conditions, which is what the feedback is for.</p><ul><li><b>Time:</b> there is no time limit, but give yourself <b>about 40 minutes</b>. The clock at the top counts the time you spend writing, and tells you when you reach 40 minutes. Spend the first few minutes planning (on paper if you like).</li><li><b>Pasting:</b> as in the exam, you can copy and paste within your essay, but not text copied from anywhere else. Write everything in your own words.</li><li><b>Saving:</b> your essay is saved as you type, in this browser. You can leave and come back to it.</li><li><b>When you have finished:</b> go to the submission page (the last tile at the bottom), check your essay and submit it.</li></ul>",
+ "questions": [
+  {
+   "id": "essay",
+   "type": "essay",
+   "title": "Negative and positive feedback",
+   "marks": 25,
+   "lines": 22,
+   "text": "<p>Discuss, with examples, why negative feedback mechanisms are more common than positive feedback mechanisms in animal physiology.</p><p class=\"muted\">Write in continuous prose: an introduction, paragraphs that each make one point, and a conclusion. Use examples from the lectures, and explain how each one supports your argument.</p>",
+   "guidance": "<p><b>Read this after you have written your essay</b>, to look back at it before your supervision. It is not a model essay: it is the ground a good answer covers, and the questions it asks.</p><p><b>What the title asks.</b> “Why” asks for an explanation and an argument, not a list of feedback loops. “With examples” asks for specific, accurate examples, each linked to the point it supports. “Discuss” invites you to weigh the claim: in what sense is negative feedback “more common”, and are there complications?</p><ul><li><b>Definitions.</b> In negative feedback, a change in a regulated variable is detected (a sensor), compared with a set point, and the error signal drives a response (an effector) that <i>opposes</i> the change. In positive feedback the response <i>reinforces</i> the change. The difference between regulated and controlled variables helps here.</li><li><b>Negative feedback is stabilising, and homeostasis needs stability.</b> Cells work only in a narrow range of conditions, so the internal environment (Claude Bernard’s <i>milieu intérieur</i>) must be held relatively constant against disturbances: core temperature, plasma osmolarity (osmoreceptors, ADH and thirst), blood glucose (insulin and glucagon), arterial pressure (the baroreceptor reflex), and the hormone axes, such as the long-loop feedback of cortisol on the hypothalamus and anterior pituitary, or of thyroid hormones on TRH and TSH.</li><li><b>Positive feedback is unstable</b>: left to itself it runs away, so it cannot hold a variable steady. It is used where a fast, all-or-none or self-completing change is needed, and it is always brought to an end: the rising phase of the action potential (ended by Na⁺-channel inactivation and K⁺ channels), parturition and the Ferguson reflex (oxytocin; ended by delivery), urination, blood clotting (limited by anticoagulant mechanisms) and the LH surge before ovulation.</li><li><b>So positive feedback is usually brief and embedded</b> in systems that are otherwise under negative feedback, which is part of why it is less common.</li><li><b>Evaluation.</b> Negative feedback has limits: it acts only after an error has appeared, and with a delay it overshoots and oscillates (the drinking problem of the first lecture). Feed-forward control helps: receptors in the mouth and stomach switch off thirst before the water is absorbed (Bellows, 1938), and circadian rhythms prepare the body for predictable daily events. Set points can move (fever; the daily rhythm of body temperature), not every animal regulates every variable (conformers such as the naked mole-rat), and “more common” is hard to count. You could even note that the circadian clock is a negative feedback loop built, with a long delay, to oscillate.</li></ul><p><b>Against the core criteria:</b> does each paragraph make clear how its example answers <i>why</i>? Is there a position, stated early and built on? Do you assess your examples (how strong, how typical) rather than only describe them? Does the conclusion pull the argument together?</p>"
+  }
+ ]
+}

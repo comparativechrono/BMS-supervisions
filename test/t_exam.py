@@ -114,7 +114,8 @@ def no_errors(what):
 # ====================================================================== the papers (the files themselves)
 index = json.load(open(os.path.join(SITE, 'exams', 'index.json'), encoding='utf-8'))
 papers = {x['id']: json.load(open(os.path.join(SITE, 'exams', x['file']), encoding='utf-8')) for x in index['papers']}
-check(set(papers) == {'tour', 'practice-essay', 'calculations'}, f'three papers are listed in exams/index.json: {sorted(papers)}')
+check({'tour', 'practice-essay', 'calculations'} <= set(papers), f'the three practice papers are listed in exams/index.json: {sorted(papers)}')
+check(all(papers[k].get('week') for k in set(papers) - {'tour', 'practice-essay', 'calculations'}), 'the other papers belong to a supervision (week)')
 for pid, paper in papers.items():
     qs = paper['questions']
     ids = [q['id'] for q in qs]
@@ -152,15 +153,22 @@ check(abs(t['questions'][2]['answer'] - 3.0e3 / (20e3 / 50)) < 1e-9, 'the answer
 
 # ====================================================================== the start view
 p.js("() => MG.app.showWorkbench('exam')")
-p.wait(f"() => {E} && document.querySelectorAll('.ex-card').length === 3", timeout=30000)
-cards = p.js("() => Array.from(document.querySelectorAll('.ex-card')).map(c => [c.querySelector('h4').textContent, c.querySelector('.ex-cmeta').textContent])")
+p.wait(f"() => {E} && document.querySelectorAll('.ex-card').length >= 3", timeout=30000)
+# (the workbench's guide is no supervision's page: the practice papers are listed, and the supervisions' papers are kept
+# out of the way, in a closed list of their own)
+cards = p.js("() => Array.from(document.querySelectorAll('.ex-card')).filter(c => !c.closest('details')).map(c => [c.querySelector('h4').textContent, c.querySelector('.ex-cmeta').textContent])")
+others = p.js("() => Array.from(document.querySelectorAll('details.ex-others .ex-card')).map(c => c.dataset.paper)")
+check(others == ['s1-essay', 's1-saqs', 's1-revision'] and not p.js("() => document.querySelector('details.ex-others').open"),
+      f'the supervisions’ papers are listed apart, closed: {others}')
 check(cards == [['Getting to know exam practice', '20 minutes · 3 questions · 13 marks'], ['Practice essay (45 minutes)', '45 minutes · 1 question · 25 marks'],
                 ['Calculations', '40 minutes · 8 questions · 16 marks']], f'the papers are listed with their time, questions and marks: {cards}')
 check(has('.ex-home button.btn') and 'None yet' in text('.ex-home'), 'there is a free essay, and no attempts yet')
-P.fill('.ex-cand input >> nth=0', 'B4827')
-P.fill('.ex-cand input >> nth=1', 'Ada Lovelace')
+# (the name comes first: it goes on the work handed in, and every page of the site shares it)
+P.fill('.ex-cand input >> nth=0', 'Ada Lovelace')
+P.locator('.ex-cand input >> nth=0').blur()
+P.fill('.ex-cand input >> nth=1', 'B4827')
 sleep()
-check(p.js("() => MG.store.get('exam').candidate") == 'B4827' and p.js("() => MG.store.get('exam').name") == 'Ada Lovelace', 'the candidate number and name are kept')
+check(p.js("() => MG.store.get('exam').candidate") == 'B4827' and p.js("() => MG.user.fullName()") == 'Ada Lovelace', 'the candidate number is kept, and the name is the site’s')
 p.shot('exam-home')
 
 # ====================================================================== paper 1: the start page
@@ -767,13 +775,13 @@ def download(label, name):
 
 
 dpath, dname = download('Word document', 'exam-tour.docx')
-check(dname == 'getting-to-know-exam-practice-b4827.docx', f'the Word file is named after the paper and the candidate: {dname}')
+check(dname == 'getting-to-know-exam-practice-ada-lovelace-b4827.docx', f'the Word file is named after the paper and the candidate: {dname}')
 z = zipfile.ZipFile(dpath)
 names = z.namelist()
 doc = z.read('word/document.xml').decode('utf-8')
 plain = re.sub(r'<[^>]+>', '', doc)
 check(all(n in names for n in ['[Content_Types].xml', 'word/document.xml', 'word/styles.xml', 'word/numbering.xml', 'word/media/image1.png']), f'the .docx has its parts: {names}')
-check('Getting to know exam practice' in plain and 'Alveoli are' in plain and 'Saved before the reload' in plain and 'B4827' in plain, 'the Word file has the title, the candidate and the answer')
+check('Getting to know exam practice' in plain and 'Alveoli are' in plain and 'Saved before the reload' in plain and 'B4827' in plain and 'Ada Lovelace' in plain, 'the Word file has the title, the candidate and the answer')
 bold = re.findall(r'<w:r><w:rPr>(?:(?!</w:rPr>).)*<w:b/>(?:(?!</w:rPr>).)*</w:rPr><w:t[^>]*>([^<]*)</w:t>', doc)
 check('thin' in bold, f'"thin" is a bold run: {bold[:8]}')
 check('<w:i/>' in doc and '<w:u w:val="single"/>' in doc and '<w:vertAlign w:val="subscript"/>' in doc and '<w:vertAlign w:val="superscript"/>' in doc,
@@ -810,8 +818,8 @@ sleep(0.6)
 check(p.js("() => { const f = document.querySelector('.ex-printframe'); return !!f && f.contentDocument.body.textContent.includes('Alveoli are thin'); }"), 'Print, or save as PDF prints the submission (a page of its own)')
 check(ev('exam:download', "d.format === 'pdf'") == 1 and ev('exam:download', "d.format === 'html'") == 1 and ev('exam:download', "d.format === 'txt'") == 1, 'exam:download fired for each format')
 P.click('.ex-recacts button:has-text("Save a Word copy")')
-p.wait("() => MG.app.fs.exists('~/essays/getting-to-know-exam-practice-b4827.docx')", timeout=10000)
-check(ev('exam:download', "d.format === 'docx-file' && d.path === '/home/user/essays/getting-to-know-exam-practice-b4827.docx'") == 1, 'Save a Word copy in my files saves it in ~/essays')
+p.wait("() => MG.app.fs.exists('~/essays/getting-to-know-exam-practice-ada-lovelace-b4827.docx')", timeout=10000)
+check(ev('exam:download', "d.format === 'docx-file' && d.path === '/home/user/essays/getting-to-know-exam-practice-ada-lovelace-b4827.docx'") == 1, 'Save a Word copy in my files saves it in ~/essays')
 # the review
 P.click('.ex-recacts button:has-text("Review my answers")')
 p.wait("() => document.querySelector('.ex-review')")
@@ -905,7 +913,7 @@ P.check(f'{DLG} label:has-text("Let me paste text from outside the exam") input'
 P.click(f'{DLG} button:has-text("Start writing")')
 p.wait("() => document.querySelector('.ex-area') && document.querySelector('.ex-qt').textContent.startsWith('How do')")
 fe = [text('.ex-timer'), words_text(), text('.ex-qt')]
-check(fe == ['No time limit', 'Words: 0/200', 'How do red blood cells carry oxygen?'], f'a free essay: its title, no time limit, a word limit of 200: {fe}')
+check(fe == ['Writing for under a minute', 'Words: 0/200', 'How do red blood cells carry oxygen?'], f'a free essay: its title, no time limit (the clock counts the time spent writing), a word limit of 200: {fe}')
 fe = [att('a.paper.id'), ev('exam:start', "d.paper === 'essay-how-do-red-blood-cells-carry-oxygen'"), p.js(f"() => {E}.path")]
 check(fe == ['essay-how-do-red-blood-cells-carry-oxygen', 1, '/home/user/essays/essay-how-do-red-blood-cells-carry-oxygen-1.exam.json'], f'it is an attempt of its own: {fe}')
 caret_end()
@@ -955,7 +963,7 @@ check(not p.js("() => MG.app.fs.exists('~/essays/essay-how-do-red-blood-cells-ca
 with P.expect_download() as d:
     P.click('.ex-list tbody tr:has-text("Calculations") button:has-text("Download")')
     P.click('.popmenu button:has-text("Plain text")')
-check(d.value.suggested_filename == 'calculations-b4827.txt', f'an attempt can be downloaded from the list: {d.value.suggested_filename}')
+check(d.value.suggested_filename == 'calculations-ada-lovelace-b4827.txt', f'an attempt can be downloaded from the list: {d.value.suggested_filename}')
 # a file opened from Files goes to its place
 p.js("() => MG.app.openFile('~/essays/tour-1.exam.json')")
 p.wait("() => document.querySelector('.ex-receipt')")
