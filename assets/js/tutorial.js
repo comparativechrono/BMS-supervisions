@@ -394,7 +394,8 @@
       }
     });
     rec.fb.className = 'q-feedback ' + (ok ? 'ok' : 'no');
-    rec.fb.textContent = ok ? '✓ Correct' : '✗ Not quite – ' + (rec.q.dataset.hint || 'check again');
+    const hint = (rec.q.dataset.hint || '').trim();
+    rec.fb.textContent = ok ? '✓ Correct' : '✗ Not quite. ' + (hint ? hint.charAt(0).toUpperCase() + hint.slice(1) + (/[.!?]$/.test(hint) ? '' : '.') : 'Have another look and try again.');
     rec.q.classList.toggle('answered', ok);
     state.answers[rec.id] = Object.assign(state.answers[rec.id] || {}, { text: rec.input.value, correct: ok, done: ok });
     save();
@@ -413,7 +414,12 @@
     label.classList.add(right ? 'right' : 'wrong');
     rec.fb.className = 'q-feedback ' + (right ? 'ok' : 'no');
     const why = label.dataset.why || '';
-    rec.fb.textContent = (right ? '✓ Correct. ' : '✗ Not quite. ') + why;
+    // (an option's own feedback starts with its verdict – "Yes.", "No.", "Not quite." – so the tick or the cross is
+    // all that is shown before it; a screen reader hears the verdict as well)
+    const verdict = right ? 'Correct.' : 'Not quite.';
+    rec.fb.textContent = '';
+    if (why) rec.fb.append(right ? '✓ ' : '✗ ', h('span.sr-only', verdict + ' '), why);
+    else rec.fb.textContent = (right ? '✓ ' : '✗ ') + verdict;
     rec.q.classList.toggle('answered', right);
     state.answers[rec.id] = { choice: chosen.value, correct: right, done: right, text: label.textContent.trim() };
     save();

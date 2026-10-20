@@ -1852,7 +1852,7 @@
       const list = Array.from(files || []);
       const isPic = (f) => /^image\//.test(f.type || '') || /\.(png|jpe?g|gif|webp|bmp|heic|heif|avif)$/i.test(f.name || '');
       const pics = list.filter(isPic);
-      if (!pics.length) return this._note('Only pictures can be added to an answer, such as PNG, JPEG, GIF or WebP files.', 8000);
+      if (!pics.length) return this._note('Only pictures, such as PNG, JPEG, GIF or WebP files, can be added to an answer.', 8000);
       const room = PIC.perAnswer - this.area.querySelectorAll('img.ex-image').length;
       if (room <= 0) return this._note(`An answer can have up to ${PIC.perAnswer} pictures.`, 8000);
       const notes = [];
@@ -3303,7 +3303,7 @@
     async _confirmSubmit() {
       const n = this._questions().filter((q) => q.type !== 'info' && !this._attempted(q)).length;
       const HI = handInOf(this.att.paper);
-      const ok = await MG.confirmBox('Submit your answers?', `<p>${n ? `You have <b>${plural(n, 'unattempted question')}</b>. ` : ''}Once you’ve submitted, you can’t change your answers in this attempt.</p>${HI ? `<p>Then you hand it in on the next page, and it goes straight to ${esc(possessive(HI.to))} ${esc(HI.drive)}.</p>` : ''}`, 'Submit now', { cancel: 'Go back' });
+      const ok = await MG.confirmBox('Submit your answers?', `<p>${n ? `You haven’t answered <b>${plural(n, 'question')}</b>. ` : ''}Once you’ve submitted, you can’t change your answers in this attempt.</p>${HI ? `<p>Then you hand it in on the next page, and it goes straight to ${esc(possessive(HI.to))} ${esc(HI.drive)}.</p>` : ''}`, 'Submit now', { cancel: 'Go back' });
       if (ok) this._submit();
     }
     _submit(auto) {
@@ -3445,6 +3445,8 @@
           pw.focus();
         } else if (r.error === 'network') {
           say('no', `Your essay couldn’t be sent, because ${esc(where)} didn’t respond. Check that you’re online and try again.${still}`);
+        } else if (r.error === 'size') {
+          say('no', `${esc(r.message)} Please download a copy (below) and send it to ${esc(HI.to)} another way.`);
         } else {
           // (the hand-in's own messages say what to do: wait, try again, or tell the supervisor)
           say('no', `${esc(r.message || 'Your essay couldn’t be handed in. Try again in a moment.')}${still}`);
@@ -3468,7 +3470,7 @@
         body = JSON.stringify({ v: 1, password, paper: att.paper.id, week: att.paper.week || 0, title: att.paper.title, name: c.name || fullName(), number: c.number || '',
           words, submitted: att.submitted, site: location.origin + location.pathname, file: { name, type: DOCX_TYPE, data: await base64Of(blob) } });
       } catch (e) {
-        return { ok: false, error: 'local', message: 'Your essay couldn’t be made into a Word document (' + (e.message || e) + ').' };
+        return { ok: false, error: 'local', message: 'Your essay couldn’t be made into a Word document (' + (e.message || e) + '). Try again in a moment.' };
       }
       const ctl = typeof AbortController === 'function' ? new AbortController() : null;
       const timer = ctl ? setTimeout(() => ctl.abort(), 60000) : null;
@@ -3487,7 +3489,7 @@
         } catch (e) {
           r = null;
         }
-        return r && typeof r === 'object' ? r : { ok: false, error: 'reply', message: `The hand-in sent back a reply that couldn’t be read (${res.status}). Please try again in a moment.` };
+        return r && typeof r === 'object' ? r : { ok: false, error: 'reply', message: `The hand-in service sent back a reply that couldn’t be read (${res.status}). Please try again in a moment.` };
       } finally {
         if (timer) clearTimeout(timer);
       }

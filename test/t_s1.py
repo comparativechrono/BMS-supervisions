@@ -451,7 +451,7 @@ check(wait_ticked('es-open', 5), 'opening the essay ticks es-open')
 sc = p.js("() => document.querySelector('.ex-startcard').textContent")
 check('No time limit, but we suggest about 40 minutes' in sc and 'To hand in' in sc and 'Tim Hearn' in sc and 'Supervision 1 · to hand in' in sc,
       f'its first page: no time limit, 40 minutes suggested, and how to hand it in: {sc[:240]!r}')
-check('Why like this?' in sc and 'online exam' in sc, 'and why it is written as in the exam')
+check('Why write it like this?' in sc and 'online exam' in sc, 'and why it is written as in the exam')
 p.shot('s1-essay-start')
 click('.ex-startacts .btn.primary')
 p.wait("() => document.querySelector('.ex-area')", timeout=30000)
@@ -624,8 +624,15 @@ def handin(script):
     msg = send(None, 'busy')
     check(msg == 'The hand-in is busy. Try again in a moment. ' + STILL, f'the hand-in’s own messages are passed on: {msg!r}')
     msg = send(None, 'garbled')
-    check(msg == 'The hand-in sent back a reply that couldn’t be read (502). Please try again in a moment. ' + STILL, f'and an answer that isn’t the hand-in’s is caught: {msg!r}')
+    check(msg == 'The hand-in service sent back a reply that couldn’t be read (502). Please try again in a moment. ' + STILL, f'and an answer that isn’t the hand-in’s is caught: {msg!r}')
     check(not state().get('handedIn') and not ticked('es-send') and len(S.replies) == 2, 'none of them hands it in')
+    # an essay too big to hand in (pictures): trying again can't help, so the page says to send a copy another way
+    calls = len(S.calls)
+    p.js(f"() => {{ const e = {E}; e._docxReal = e._docx; e._docx = async () => ({{ blob: new Blob([new Uint8Array(11 * 1048576)]), name: 'big.docx' }}); }}")
+    msg = send(None)
+    p.js(f"() => {{ const e = {E}; e._docx = e._docxReal; delete e._docxReal; }}")
+    check(msg == 'With its pictures, your essay is too big to hand in (11.0 MB, and the limit is 10 MB). Please download a copy (below) and send it to Tim Hearn another way.'
+          and len(S.calls) == calls, f'an essay too big to hand in isn’t sent, and the page says to send a copy another way: {msg!r}')
     # on a phone (where the workbench opens over the instructions), the password and the button fit
     P.set_viewport_size({'width': 390, 'height': 844})
     p.js("() => document.body.classList.add('bench-open')")

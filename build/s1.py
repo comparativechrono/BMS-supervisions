@@ -69,7 +69,7 @@ def ch_week(num):
 <li>The steps in each activity tick themselves off as you do them (<span class="auto-tag">✓ spotted</span>), and you can also tick them yourself. Buttons like {bench("exam", "show me")} do something for you, such as opening a diagram, a slide or a recording, or typing a line of R.</li>
 <li>Have a go at each question before you look at its <b>model answer</b> (<b>Show answer</b>). The multiple-choice questions tell you straight away whether you’re right, and why.</li>
 <li>Sections headed <b>If you have time</b> are extras, and they don’t count towards finishing the page.</li>
-<li>Everything you do is saved in this browser, on this computer. You can download your answers with <b>My answers</b> at the top of the page, and your essay downloads as a Word document.</li>
+<li>Everything you do is saved in this browser, on this computer. You can download your answers with <b>My answers</b> at the top of the page, and your essay as a Word document.</li>
 <li>If you haven’t used the workbench before, the <a href="workbench.html" target="_blank" rel="noopener">workbench guide</a> shows you how each of its tabs works.</li>
 </ul>
 '''
@@ -90,13 +90,13 @@ def ch_clock(num):
     task("ck-th-ff", 'The grey arrow labelled <i>feed-forward</i>, which comes from receptors in the mouth and stomach, is blocked at the moment. Right-click it (or press and hold it), choose <b>Unblock this arrow</b>, and run the diagram again.', auto="flow:run name~thirst blocked=0"),
 ])}
 {q("ck-q-thirst", "With negative feedback alone, what happened to the osmolarity once you started to drink, and why? What did the feed-forward arrow change?",
-   "With negative feedback alone, the osmolarity overshot. Sweating had raised it to about 309 mOsm/L. Once you started drinking, it fell to about 291, roughly as far below the set point as it had been above it, before settling back at 300. The water takes about 15 minutes to be absorbed, and all that time the osmoreceptors are still reporting a high osmolarity, so you keep drinking. By the time the water reaches your blood, you’ve drunk too much. That’s typical of negative feedback with a delay: it overshoots, and it can oscillate. With feed-forward, receptors in the mouth and stomach signal that you’ve drunk water before it has been absorbed, and they switch thirst off for a while. You drink less, and the overshoot almost disappears (the lowest point is about 298 mOsm/L). Bellows (1938) saw exactly this in dogs with oesophageal fistulae, whose water never reached the stomach. They drank about the right amount and then stopped, but only for a while.")}
+   "With negative feedback alone, the osmolarity overshot. Sweating had raised it to about 309 mOsm/L. Once you started drinking, it fell to about 291, roughly as far below the set point as it had been above it, before settling back at 300. The water takes about 15 minutes to be absorbed, and all that time the osmoreceptors are still reporting a high osmolarity, so you keep drinking. By the time the water reaches your blood, you’ve drunk too much. That’s typical of negative feedback with a delay: it overshoots, and it can oscillate. With feed-forward, receptors in the mouth and stomach signal that you’ve drunk water before it has been absorbed, and they switch thirst off for a while. You drink less, and the overshoot almost disappears (the lowest point is about 298 mOsm/L). Bellows (1938) saw this in dogs with oesophageal fistulae, whose water never reached the stomach. They drank about the right amount and then stopped, but only for a while.")}
 
 <h2 id="ck-clock">A clock in every cell</h2>
-<p>Almost every cell in your body has a clock of its own, built from a negative feedback loop of genes and proteins (a <em>transcription–translation feedback loop</em>). Two proteins, CLOCK and BMAL1, switch on the <i>Per</i> and <i>Cry</i> genes. Their mRNA is translated into the PER and CRY proteins, which go back into the nucleus hours later and switch their own genes off. Once those proteins have been broken down, the genes come back on and the cycle begins again.</p>
+<p>Almost every cell in your body has a clock of its own, built from a negative feedback loop of genes and proteins (a <em>transcription–translation feedback loop</em>). Two proteins, CLOCK and BMAL1, switch on the <i>Per</i> and <i>Cry</i> genes. The mRNA from these genes is translated into the PER and CRY proteins, which go back into the nucleus hours later and switch their own genes off. Once those proteins have been broken down, the genes come back on and the cycle begins again.</p>
 {callout("concept", "Why a slow loop makes a clock", "<p>Without delays, negative feedback settles at a steady level. Every step of this loop takes hours, though: transcription, translation, the changes made to the proteins, and their journey back into the nucleus. By the time the proteins switch their genes off, far too many of them have been made. And by the time they’ve gone, the genes have been off for too long. So the loop keeps overshooting, first one way and then the other. In other words, it oscillates, with a period of about a day that’s set mainly by its delays.</p>")}
 {activity("Run the clock", [
-    task("ck-open", f'Open the clock {flow("example:clock", "show me")}. If it asks whether you want to leave the thirst diagram, there’s no need to save it. The arrow from <i>Light</i> is blocked, so the clock is in a cave, with no daylight to set it.', auto="flow:open example=clock"),
+    task("ck-open", f'Open the clock {flow("example:clock", "show me")}. If it asks whether you want to leave the thirst diagram, choose <b>Go on without saving</b>. The arrow from <i>Light</i> is blocked, so the clock is in a cave, with no daylight to set it.', auto="flow:open example=clock"),
     task("ck-run", f'Run it {flowrun("show me")}. The message under the diagram tells you the period of the oscillation, measured from one peak to the next.', auto="flow:run name~clock oscillates=true blocked>0"),
 ])}
 {q("ck-q-period", "What is the period of the clock in the cave, in hours?",
@@ -117,8 +117,8 @@ def ch_clock(num):
 ])}
 {q("ck-q-light", "Out of the cave, what was the period? What does light do to the clock, and why does the clock need it?",
    "24 hours. Light resets, or <em>entrains</em>, the clock every day, so it keeps to 24 hours and stays in step with the Sun. That makes light the clock’s main <i>zeitgeber</i> (“time-giver”). A clock with a period of 24.6 hours that was never reset would drift by about 36 minutes a day, and within a few weeks it would be telling you that midnight was noon. In mammals, light reaches the master clock in the SCN through the eyes, and you’ll follow its path in the next chapter. Many people who are totally blind have clocks that free-run, drifting in and out of step with the day.")}
-{callout("info", "A Nobel Prize for the loop", "<p>In 2017 Jeffrey Hall, Michael Rosbash and Michael Young won the Nobel Prize in Physiology or Medicine for working out how the clock works. They showed that the PER protein builds up at night, enters the nucleus and switches off its own gene, which is the loop you’ve just run. Clocks have been found in animals, plants, fungi and some bacteria. Their genes differ, but most are built around a delayed negative feedback loop like this one.</p>")}
-{callout("tip", "For your essay", "<p>A clock is negative feedback that’s <em>meant</em> to oscillate, because a long delay turns a loop that would hold things steady into one that keeps time. Thirst is negative feedback that would overshoot if feed-forward didn’t help it out. Both examples tell you something about what negative feedback does well, and where it falls short.</p>")}
+{callout("info", "A Nobel Prize for the loop", "<p>In 2017 Jeffrey Hall, Michael Rosbash and Michael Young won the Nobel Prize in Physiology or Medicine for discovering how the clock works. They showed that the PER protein builds up at night, enters the nucleus and switches off its own gene, which is the loop you’ve just run. Clocks have been found in animals, plants, fungi and some bacteria. Their genes differ, but most are built around a delayed negative feedback loop like this one.</p>")}
+{callout("tip", "For your essay", "<p>A clock is negative feedback that’s <em>meant</em> to oscillate. A long delay is what turns a loop that would hold things steady into one that keeps time. Thirst is negative feedback that would overshoot if feed-forward didn’t help it out. Both examples tell you something about what negative feedback does well, and where it falls short.</p>")}
 {optional(f"""
 {activity("A 24-hour clock in the cave", [
     task("ck-24", 'Block the arrow from <i>Light</i> again. Can you make the clock keep 24 hours in the cave, to within 0.2 hours? Try changing the delays on <i>made into protein</i> and <i>back into the nucleus</i>. What matters is the total delay around the loop.', auto="flow:run name~clock blocked>0 period>23.8 period<24.2"),
@@ -138,13 +138,13 @@ def ch_clock(num):
 def ch_where(num):
     body = f'''
 <h2 id="wh-brain">The master clock</h2>
-<p>The <b>suprachiasmatic nuclei</b> (SCN) are two small clusters of neurons at the bottom of the hypothalamus, one on each side of the third ventricle. They sit just above the <b>optic chiasm</b>, where the optic nerves meet and cross, which is where their name comes from (<i>supra</i> means “above”). They’re too small to appear in the model, but you can still find exactly where they are.</p>
+<p>The <b>suprachiasmatic nuclei</b> (SCN) are two small clusters of neurons at the bottom of the hypothalamus, one on each side of the third ventricle. They sit just above the <b>optic chiasm</b>, where the optic nerves meet and cross, and that’s how they got their name (<i>supra</i> means “above”). They’re too small to appear in the model, but you can still find exactly where they are.</p>
 {activity("Find the clock", [
     task("wh-glands", f'Show the endocrine glands with their labels {anat("endocrine+labels")}.', auto="anat:system id=endocrine on=true"),
     task("wh-hypo", 'Zoom in on the head and click on the two parts of the pituitary gland, the <b>adenohypophysis</b> (the anterior pituitary) and the <b>neurohypophysis</b> (the posterior pituitary). Then click on the <b>hypothalamus</b>, just above them.', auto="anat:select id=hypothalamus by=click||anat:select id=hypothalamus by=list"),
     task("wh-pineal", f'{anatfind("pineal-gland", "Find the pineal gland")}, which makes melatonin at night when the SCN tell it to.', auto="anat:find ok=true target~pineal"),
-    task("wh-adrenal", f'{anatfind("suprarenal-gland", "Find a suprarenal gland")} (an adrenal gland), which sits on top of a kidney. The clock reaches it through the pituitary, so ACTH, and with it cortisol, rise in the early morning before you wake.', auto="anat:find ok=true target~suprarenal"),
-    task("wh-chiasm", f'{anatfind("optic-chiasm", "Find the optic chiasm")}. The brain is shown with it, so look at it from below (<b>View</b> ▸ <i>Inferior</i>, or press <kbd>6</kbd>). The SCN lie just above the chiasm.', auto="anat:find ok=true target~optic-chiasm"),
+    task("wh-adrenal", f'{anatfind("suprarenal-gland", "Find a suprarenal gland")} (an adrenal gland), which sits on top of a kidney. The clock reaches it through the pituitary. ACTH rises in the early morning, before you wake, and cortisol rises with it.', auto="anat:find ok=true target~suprarenal"),
+    task("wh-chiasm", f'{anatfind("optic-chiasm", "Find the optic chiasm")}. It’s shown along with the brain, so you’ll need to look from below (<b>View</b> ▸ <i>Inferior</i>, or press <kbd>6</kbd>). The SCN lie just above the chiasm.', auto="anat:find ok=true target~optic-chiasm"),
     task("wh-cut", f'Cut the head in two {anat("brain+endocrine:hypothalamus+section:sagittal@0.5@left")}. You’ll see that the hypothalamus, the pituitary on its stalk and the pineal gland all lie close to the midline.', auto="anat:section axis=sagittal"),
 ])}
 {q("wh-q-light", "Light sets the clock. Can you trace its path? Which cells in the eye pick it up, which route does the signal take, and where does it end up?",
@@ -159,7 +159,7 @@ def ch_where(num):
     task("wh-med", f'{scopefind("adrenal-gland:medulla", "Find the medulla")}, which makes adrenaline.', auto="scope:find slide=adrenal-gland target=medulla ok=true"),
 ])}
 {q("wh-q-pit", "Why does the posterior pituitary look so different from the anterior pituitary?",
-   "The posterior pituitary is nervous tissue, an extension of the hypothalamus. It’s made of the axons and nerve terminals of neurons whose cell bodies lie in the supraoptic and paraventricular nuclei, with glial cells (pituicytes) among them, so it looks pale and fibrous, with few nuclei. Its nerve terminals release ADH and oxytocin into the blood. The anterior pituitary, on the other hand, is a gland. It’s made of clusters and cords of endocrine cells, with many nuclei and stained cytoplasm, lying between wide capillaries (sinusoids). These bring the releasing hormones of the hypothalamus down the portal vessels.")}
+   "The posterior pituitary is nervous tissue, an extension of the hypothalamus. It’s made of the axons and nerve terminals of neurons whose cell bodies lie in the supraoptic and paraventricular nuclei, with glial cells (pituicytes) among them, so it looks pale and fibrous, with few nuclei. Its nerve terminals release ADH and oxytocin into the blood. The anterior pituitary, on the other hand, is a gland. It’s made of clusters and cords of endocrine cells, with many nuclei and stained cytoplasm, lying between wide capillaries (sinusoids). The portal vessels bring the releasing hormones of the hypothalamus down to these capillaries.")}
 {mcq("wh-q-zone", "Cortisol rises in the early morning, before you wake, preparing you for the day. Which part of the adrenal gland makes it?", [
     ("The zona glomerulosa", False, "No. The outermost zone makes aldosterone, under the control of the renin–angiotensin system and the plasma K+ concentration."),
     ("The zona reticularis", False, "No. The innermost zone of the cortex mostly makes androgens, such as DHEA."),
@@ -170,20 +170,20 @@ def ch_where(num):
 <h2 id="wh-mol">Two hormones of the day and the night</h2>
 {activity("Melatonin and cortisol", [
     task("wh-mel", f'Open melatonin {viewer("clear; molecule melatonin; only ballstick; color cpk", "show me")}. The pineal gland makes it from tryptophan, by way of serotonin, and its level in the blood rises to about 80 pg/mL at night.', auto="viewer:molecule name=Melatonin"),
-    task("wh-cort", f'Now open cortisol {viewer("clear; molecule cortisol; only ballstick; color cpk", "show me")}, a steroid made from cholesterol.', auto="viewer:molecule name=Cortisol"),
+    task("wh-cort", f'Now open cortisol {viewer("clear; molecule cortisol; only ballstick; color cpk", "show me")}. It’s a steroid, made from cholesterol.', auto="viewer:molecule name=Cortisol"),
 ])}
 {mcq("wh-q-lipid", "Cortisol is a steroid, which makes it lipid-soluble. Which of these follows from that?", [
     ("It is stored in vesicles and released by exocytosis", False, "No. That’s how water-soluble hormones such as adrenaline are released. A lipid-soluble hormone would leak out of a vesicle through its membrane, so steroids are made as they’re needed and released straight away."),
-    ("It crosses the membranes of its target cells and binds to receptors inside them, which change gene transcription. Its effects therefore take hours to develop, and they last", True, "Yes. Steroid receptors are inside the cell, and once they’ve bound their hormone they act as transcription factors."),
+    ("It crosses the membranes of its target cells and binds to receptors inside them, which change gene transcription, so its effects take hours to develop and are long-lasting", True, "Yes. Steroid receptors are inside the cell, and once they’ve bound their hormone they act as transcription factors."),
     ("It is carried freely dissolved in the plasma", False, "No. Most of the cortisol in the blood is bound to carrier proteins (corticosteroid-binding globulin and albumin), and only the small free fraction can act."),
 ], model="Melatonin, an indoleamine, is lipid-soluble too, so it isn’t stored either. It leaves the pineal gland as soon as it’s made, which means its level in the blood follows how fast it’s being made: high at night and low by day. It acts mainly on receptors in the membranes of its target cells, including cells in the SCN, so melatonin feeds back on the clock as well.")}
 {optional(f"""
 {activity("Blue light, and the adrenal cortex", [
     task("wh-sim", f'The clock’s photopigment, melanopsin, is most sensitive to blue light at about 480 nm. Open the Color Vision simulation {sim("color-vision", "show me")}, go to its <b>Single Bulb</b> screen, and set the bulb to a single colour of about 480 nm.', auto="sim:open id=color-vision"),
-    task("wh-aldo", f'Open aldosterone {viewer("clear; molecule aldosterone; only ballstick; color cpk", "show me")}, which is made in the zona glomerulosa, and compare it with cortisol. Both are steroids made from cholesterol, and they differ in only a few groups of atoms.', auto="viewer:molecule name=Aldosterone"),
+    task("wh-aldo", f'Aldosterone is made in the zona glomerulosa. Open it {viewer("clear; molecule aldosterone; only ballstick; color cpk", "show me")} and compare it with cortisol. Both are steroids made from cholesterol, and they differ in only a few groups of atoms.', auto="viewer:molecule name=Aldosterone"),
 ])}
 {q("wh-q-screen", "Why might using a bright screen late in the evening make it harder to fall asleep?",
-   "Screens give out a lot of blue light, the colour melanopsin responds to best. Light in the evening reaches the SCN through the retinohypothalamic tract, where it suppresses the release of melatonin and shifts the clock later, so you feel sleepy later. Experiments where people read from a light-emitting screen for a few hours before bed have found exactly this: less melatonin, and a later clock. How much a screen matters depends on how bright it is and how long you look at it, though.")}
+   "Screens give out a lot of blue light, the colour melanopsin responds to best. Light in the evening reaches the SCN through the retinohypothalamic tract. That suppresses the release of melatonin and shifts the clock later, so you feel sleepy later. In experiments where people read from a light-emitting screen for a few hours before bed, they made less melatonin, and their clocks shifted later. How much a screen matters depends on how bright it is and how long you look at it, though.")}
 {mcq("wh-q-conn", "In Conn’s syndrome, which hormone is made in excess, and where?", [
     ("Cortisol, by the zona fasciculata", False, "No. Too much cortisol causes Cushing’s syndrome."),
     ("Aldosterone, by the zona glomerulosa", True, "Yes. It’s usually made by an adenoma, regardless of the renin–angiotensin system. Too much aldosterone makes the body hold on to Na+ and water and lose K+, so blood pressure rises and the plasma K+ concentration falls."),
@@ -228,7 +228,7 @@ DATA_CREDIT = ('<p>The data are from the MIT-BIH Normal Sinus Rhythm Database (v
 def ch_heart(num):
     body = f'''
 <h2 id="ht-rr">From beats to a heart rate</h2>
-<p>The data come from the <b>MIT-BIH Normal Sinus Rhythm Database</b>, a set of long-term ECGs from 18 adults. Each one was recorded over about a day while the person went about their life, and every beat has been labelled. A heart rate comes from the time between beats, the R–R interval. In beats per minute, it’s 60 divided by the R–R interval in seconds. Start by measuring one yourself.</p>
+<p>The data come from the <b>MIT-BIH Normal Sinus Rhythm Database</b>, a set of long-term ECGs from 18 adults. Each one was recorded over about a day while the person went about their life, and every beat has been labelled. A heart rate comes from the time between beats, the R–R interval. The heart rate in beats per minute is 60 divided by the R–R interval in seconds. Start by measuring one yourself.</p>
 {activity("Measure an R–R interval", [
     task("ht-open", f'Open an ECG {rec("ecg-normal@2,6", "show me")}. It shows four seconds of a normal heartbeat.', auto="rec:open id=ecg-normal"),
     task("ht-cal", f'Choose the <b>Calipers</b> {rectool("calipers", "show me")} and drag from the peak of one R wave (the tall spike) to the peak of the next. The bar above the trace shows the interval (Δt) and the heart rate that goes with it.', auto="rec:measure id=ecg-normal dt>0.5 dt<1.2"),
@@ -247,7 +247,7 @@ def ch_heart(num):
     task("ht-one", f'Pick out one person, a woman of 32: {rcode(R_ONE)}. Then plot her day: {rcode(R_PLOT1)}', auto="rstudio:plot"),
 ])}
 {q("ht-q-one", "Describe her day. When was her heart rate lowest, and when was it highest?",
-   "Her heart rate was low and steady through the night, at 61–65 beats per minute, and lowest at 05:00. It jumped from 63 to 77 at 08:00, around the time she got up, and stayed higher through the day, peaking in the afternoon at 88 (at 15:00). Then it fell through the evening, down to 65 by 23:00. The hour from 11:00 is missing.")}
+   "Her heart rate was low and steady through the night, at 61–65 beats per minute, and lowest at 05:00. It jumped from 63 to 77 at 08:00, around the time she got up, and stayed higher through the day, peaking at 88 at 15:00. Then it fell through the evening, down to 65 by 23:00. The hour from 11:00 is missing.")}
 {activity("Everyone’s average day", [
     task("ht-agg", f'Work out the mean of the 18 people for each hour: {rcode(R_AGG)}. Then have a look at it: {rcode("avg")}. The <code>aggregate()</code> function splits the heart rates up by hour and takes the mean of each group, leaving out the NAs.', auto="r:input kind=rstudio line~aggregate("),
     task("ht-plot", f'Plot it: {rcode(R_PLOT2)}', auto="r:input kind=rstudio line~plot(avg"),
@@ -258,8 +258,8 @@ def ch_heart(num):
    accept="num:5", placeholder="the hour")}
 {activity("Day against night", [
     task("ht-day", f'Work out the mean heart rate by day, from 08:00 to 20:00: {rcode(R_DAY)}', auto="r:input kind=rstudio line~day <-"),
-    task("ht-night", f'Then the mean at night, from midnight to 06:00: {rcode(R_NIGHT)}', auto="r:input kind=rstudio line~night <-"),
-    task("ht-diff", f'And the difference between them: {rcode(R_DIFF)}. (<code>na.rm = TRUE</code> tells <code>mean()</code> to leave out the NAs, because the mean of anything that includes an NA is NA.)', auto="r:input kind=rstudio line~day - night"),
+    task("ht-night", f'Then work out the mean at night, from midnight to 06:00: {rcode(R_NIGHT)}', auto="r:input kind=rstudio line~night <-"),
+    task("ht-diff", f'Finally, work out the difference: {rcode(R_DIFF)}. (<code>na.rm = TRUE</code> tells <code>mean()</code> to leave out the NAs, because the mean of anything that includes an NA is NA.)', auto="r:input kind=rstudio line~day - night"),
 ])}
 {q("ht-q-diff", "How much lower is the heart rate at night than by day, in beats per minute?",
    "About 17 beats per minute (82.5 by day against 65.6 at night), so the heart rate is about a fifth lower at night. Every one of the 18 people had a lower heart rate at night, by between 7 and 31 beats per minute.",
@@ -271,7 +271,7 @@ def ch_heart(num):
 ])}
 {optional(f"""
 {activity("How people differ, and a curve for the rhythm", [
-    task("ht-box", f'How much do people differ? Try {rcode(R_BOX)}. You get a box for each hour: the box covers the middle half of the 18 people, the line inside it is the median, and the whiskers show the range.', auto="r:input kind=rstudio line~boxplot("),
+    task("ht-box", f'How much do people differ? Try {rcode(R_BOX)}. You get a box for each hour: the box covers the middle half of the 18 people, the line inside it is the median, and the whiskers reach out to the furthest values within one and a half box-lengths of the box. Anything further out is drawn as a separate point.', auto="r:input kind=rstudio line~boxplot("),
     task("ht-cos", f'Circadian biologists often describe a rhythm by fitting a cosine curve to it, which they call a <em>cosinor</em>. Fit one: {rcode(R_FIT)}. Keep its coefficients: {rcode(R_COEF)}. Then work out the curve’s mean level (its <em>mesor</em>), its amplitude, and the hour of its peak: {rcode(R_COS)}', auto="r:input kind=rstudio line~atan2("),
     task("ht-curve", f'Plot the means again ({rcode(R_PLOT2, "show me")}) and draw the curve over them: {rcode(R_CURVE)}', auto="r:input kind=rstudio line~curve("),
 ])}
@@ -352,7 +352,7 @@ def better_essay():
 
 def ch_marking(num):
     body = f'''
-<p>When your supervisor gives you feedback on an essay, it’s against six <b>core criteria</b>. Each one describes a quality of a good essay and what would make it better, and examiners look for the same qualities.</p>
+<p>Each of the six <b>core criteria</b> describes a quality of a good essay and what would make it better, and examiners look for the same qualities.</p>
 {criteria_cards()}
 <p class="credit">The core criteria, and the comments below, come from the essay feedback form of <i>Assessment Plus: using assessment criteria to support student learning</i>, a HEFCE-funded consortium project (assessmentplus.net).</p>
 
@@ -375,7 +375,7 @@ def ch_marking(num):
     ("Your essay does not contain a point of view or position in relation to the title or question", True, "Yes. The essay never says why animals have circadian rhythms, and “there are lots of reasons” isn’t a position. Without one, the paragraphs can’t build towards anything."),
     ("Your essay contains some expression of a position, which could have been more explicitly developed and justified", False, "Close, but the essay doesn’t really take a position at all. It never says what the reasons are, let alone which one matters most."),
     ("Good, you have established a clear position in relation to the question, and developed that position throughout the essay", False, "No. There’s no position here to develop."),
-], model="<b>To put it right</b>, decide on your answer before you start writing, and say what it is early on. You might write: <i>“Animals have circadian rhythms chiefly because they let the body anticipate the predictable changes of each day.”</i> Then make each paragraph a step towards that answer. One could show that the rhythm is made within the body, the next how it prepares the body for the day, and another how good the evidence is that this helps. Finish with a conclusion that draws those steps together.")}
+], model="<b>To put it right</b>, decide on your answer before you start writing, and say what it is early on. You might write: <i>“Animals have circadian rhythms chiefly because they let the body anticipate the predictable changes of each day.”</i> Then make each paragraph a step towards that answer. The first might show that the rhythm is made within the body, the next how it prepares the body for the day, and the last how good the evidence is that this helps. Finish with a conclusion that draws those steps together.")}
 {mcq("mk-q4", "<b>Critical evaluation.</b> Paragraph 4 says that circadian rhythms “obviously evolved because they help animals to survive”. Which comment fits best?", [
     ("Your essay is too descriptive – there is not enough assessment of the value or significance of what you describe", False, "Partly, but paragraph 4 does make a judgement. The trouble is that it gives no reasons for it."),
     ("Your evaluative points could be more extensive, explicit, systematic, reasoned or justified", True, "Yes. “Obviously” asserts a judgement without justifying it. Whether rhythms help animals survive is a question that biologists have tested, and the evidence can be weighed."),
@@ -445,8 +445,8 @@ PLAG_MODEL = [
     '<tr><td>It first entered laboratories about 1900,</td><td>The fly came on the scene as an experimental tool at the beginning of the 20th century,</td></tr>'
     '<tr><td>revealed its talent for experimental genetics to Thomas Hunt Morgan and his students at Columbia University in the early 1910s,</td><td>was adopted by Thomas Hunt Morgan and his Columbia pupils at Columbia University around 1910,</td></tr>'
     '<tr><td>and after some ups and downs in status is still going strong almost a century later.</td><td>and (despite some fluctuations in attention paid to it) is still a widely used experimental system.</td></tr></table>',
-    'Here are Kohler’s ideas in his order, each with version 3’s wording for it: a remarkable history (“a rich and useful legacy”), arriving around 1900 (“at the turn of the century”), being taken up by Morgan and his students (“the organism of choice for Thomas Hunt Morgan and his Columbia University pupils”), ups and downs (“despite fluctuations in status”), and still going strong (“still central to the progress of genetics”).',
-    'It still gives the reference, though. An idea taken from a source needs one, even when every word is your own.',
+    'Version 3 follows Kohler’s ideas in the same order, just in different words: a remarkable history (“a rich and useful legacy”), arriving around 1900 (“at the turn of the century”), being taken up by Morgan and his students (“the organism of choice for Thomas Hunt Morgan and his Columbia University pupils”), ups and downs (“despite fluctuations in status”), and still going strong (“still central to the progress of genetics”).',
+    'Version 4 is acceptable, but notice that it still gives the reference. An idea taken from a source needs one, even when every word is your own.',
 ]
 
 
@@ -470,10 +470,10 @@ def ch_plag(num):
     ("Use it as it is, with the reference at the end of the paragraph", False, "No. A reference credits the idea, but words you’ve copied need quotation marks as well."),
     ("Put it in quotation marks and give the reference: <i>Drosophila</i> has had “a spectacularly successful and productive history” (Kohler, 1994)", True, "Yes. Copied words need quotation marks as well as a reference. Quotations are rare in science, though. Usually you’d put the idea in your own words and cite the source."),
 ])}
-<p class="credit">This exercise is the University’s own (<a href="http://www.biology.cam.ac.uk/exams/plagiarism" target="_blank" rel="noopener">www.biology.cam.ac.uk/exams/plagiarism</a>). Kohler’s book is a history of Thomas Hunt Morgan’s “fly room”. Decades later, <i>Drosophila</i> gave biology its first clock gene, <i>period</i> (see chapter 1).</p>
+<p class="credit">This exercise is the University’s own (<a href="http://www.biology.cam.ac.uk/exams/plagiarism" target="_blank" rel="noopener">www.biology.cam.ac.uk/exams/plagiarism</a>). Kohler’s book is a history of Thomas Hunt Morgan’s “fly room”, and about fifty years after Morgan’s work there, <i>Drosophila</i> gave biology its first clock gene, <i>period</i> (see chapter 1).</p>
 
 <h2 id="pl-paste">Why Supervision work won’t let you paste</h2>
-{callout("warn", "No pasting from anywhere else", f"<p>In the online exam you can’t paste in text that you copied from outside the exam, and Supervision work is just the same. Text copied from a website, your notes, an AI tool or these instructions won’t go into your essay. You can still copy and paste within your own essay, to move a sentence or a paragraph around.</p><p>That way every word of the essay you hand in is one you typed yourself, which is the best protection against plagiarising by accident. When you use someone’s finding or idea, put it in your own words and say whose it is, as in “Konopka and Benzer (1971) found…”. You’ll see this for yourself when you start your essay. {goto('s1-write', 'go to your essay')}</p>")}
+{callout("warn", "No pasting from anywhere else", f"<p>In the online exam you can’t paste in text that you copied from outside the exam, and Supervision work is just the same. Text copied from a website, your notes, an AI tool or these instructions won’t go into your essay, as you’ll see when you start writing. You can still copy and paste within your own essay, to move a sentence or a paragraph around.</p><p>That way every word of the essay you hand in is one you typed yourself, which is the best protection against plagiarising by accident. When you use someone’s finding or idea, put it in your own words and say whose it is, as in “Konopka and Benzer (1971) found…”. {goto('s1-write', 'go to your essay')}</p>")}
 '''
     return chapter("s1-plag", num, "Plagiarism", "exam", "Plagiarism, and why you can’t paste", 10,
                    "Using someone else’s words, ideas or structure without saying so is plagiarism, even if you’ve "
@@ -484,28 +484,28 @@ def ch_plag(num):
 # ---------------------------------------------------------------------------------------------------------------------
 def ch_write(num):
     hand_steps = [
-        task("es-send", f'Hand it in on the page that comes up next. Type the hand-in password that {SUPERVISOR} gave you and press <b>Hand it in</b>. Your essay goes straight to his Google Drive, and the page shows you a receipt once it has arrived.', auto="exam:handin paper=s1-essay step=confirmed", check="paper:s1-essay.handedIn"),
-        task("es-word", 'Keep a copy for yourself with <b>Download a copy for yourself</b>, under the password box (or <b>Download your copy</b> once it’s been handed in). It’s saved as a Word document in your Downloads folder.', auto="exam:download paper=s1-essay format=docx", check="paper:s1-essay.downloaded"),
+        task("es-send", f'Hand it in on the page that comes up next. Type in the hand-in password and press <b>Hand it in</b>. The page shows you a receipt once your essay has arrived.', auto="exam:handin paper=s1-essay step=confirmed", check="paper:s1-essay.handedIn"),
+        task("es-word", 'To keep a copy, press <b>Download a copy for yourself</b>, under the password box (once you’ve handed in, the button says <b>Download your copy</b>). The copy is saved as a Word document in your Downloads folder.', auto="exam:download paper=s1-essay format=docx", check="paper:s1-essay.downloaded"),
     ]
-    hand_note = callout("info", "Handing in", f"<p>Your essay goes straight from this page to {SUPERVISOR}’s Google Drive, and you don’t need a Google account for that. The hand-in password, which {SUPERVISOR} gives you, stops anyone else from handing work in, so please keep it to yourself. Once your essay has arrived, the page tells you so and gives you a receipt. If it can’t be handed in, the page will tell you why. If it still won’t go, download a copy and send it to {SUPERVISOR} some other way.</p>")
+    hand_note = callout("info", "Handing in", f"<p>Your essay goes straight from this page to {SUPERVISOR}’s Google Drive, and you don’t need a Google account for that. The hand-in password he gives you stops anyone else from handing work in, so please keep it to yourself. Once your essay has arrived, the page tells you so and gives you a receipt. If it can’t be handed in, the page will tell you why. If you try again and it still won’t go, download a copy and send it to him some other way.</p>")
     body = f'''
 <p class="essay-title">“{ESSAY}”</p>
 
 <h2 id="es-why">Why write it like this?</h2>
-<p>Your exams are taken on a computer, in an online exam system. You type your answers in one sitting, against the clock, without notes, and you can’t paste anything in. Supervision work is set up the same way. Writing your supervision essays like this means the exam will feel familiar long before the summer. You’ll find out how much you can plan and write in 40 minutes, and what it’s like to do it without your notes. And because your supervisor sees the essay you can actually write in that time, the feedback is about the essay you’d write in the exam, not one you’ve polished over a week. Just as in the exam, you submit it when you’ve finished and hand it in from the same page. From there it goes straight to {SUPERVISOR}’s Google Drive.</p>
+<p>Your exams are taken on a computer, in an online exam system. You type your answers in one sitting, against the clock, without notes, and you can’t paste anything in. Supervision work is set up the same way. Writing your supervision essays like this means you’ll be used to how the exam works long before the summer. You’ll find out how much you can plan and write in 40 minutes, and what it’s like to do it without your notes. And because your supervisor sees the essay you can actually write in that time, the feedback is about the essay you’d write in the exam, not one you’ve polished over a week. Just as in the exam, you submit it when you’ve finished. Here, you then hand it in from the same page.</p>
 
 <h2 id="es-before">Before you start</h2>
 <ul>
 <li>Read about how essays are marked {goto("s1-marking", "chapter 4")} and about plagiarism {goto("s1-plag", "chapter 5")}.</li>
 <li>Revise the lectures first if you like. Then put your notes away and find about 45 minutes when you won’t be interrupted.</li>
-<li>Have the <b>hand-in password</b> that {SUPERVISOR} gave you to hand, because you’ll need it at the end. It isn’t anywhere on this site.</li>
-<li>There’s no time limit, but give yourself about <b>40 minutes</b>, as you would in the exam. The clock at the top of the paper counts the time you spend writing and tells you when you reach 40 minutes. If you haven’t finished by then, write your conclusion. You can carry on if you need to, and the clock will show how long you took.</li>
+<li>Make sure you have the <b>hand-in password</b> that {SUPERVISOR} gave you, because you’ll need it at the end. You won’t find it anywhere on this site.</li>
+<li>There’s no time limit, but give yourself about <b>40 minutes</b>, as you would in the exam. The clock at the top of the paper counts the time you spend writing and tells you when you reach 40 minutes. If you haven’t finished by then, move on to your conclusion. You can go past 40 minutes if you need to, and the clock will show how long you took.</li>
 <li>Spend the first five minutes planning. What’s your answer to the question? Which examples support it, and in what order will you make your points? You can plan on paper, or in the answer box itself as long as you delete the plan before you submit.</li>
 <li>A diagram can help an essay, and you can add one here just as you can in the exam. Either draw it with <b>Insert drawing</b> (the pencil), or draw it on paper, take a photo, and add the photo with <b>Insert picture</b>. You can also drag a picture file into your essay. Type a caption underneath, and say in your text what the diagram shows. Your pictures go into the Word document along with your essay.</li>
 </ul>
 {activity("Write it, and hand it in", [
     task("es-open", f'Open the essay {exam("s1-essay", "show me")} and read its first page.', auto="exam:open paper=s1-essay"),
-    task("es-start", 'When you’re ready to write, press <b>Start</b>. If you haven’t added your name yet, it will ask for it so that it can go at the top of your essay.', auto="exam:start paper=s1-essay", check="paper:s1-essay.started"),
+    task("es-start", 'When you’re ready to write, press <b>Start</b>. If you haven’t added your name yet, you’ll be asked for it, so that it can go at the top of your essay.', auto="exam:start paper=s1-essay", check="paper:s1-essay.started"),
     task("es-paste", 'Before you start writing, try this. Copy a sentence from these instructions (<kbd>Ctrl</kbd>+<kbd>C</kbd>, or <kbd>⌘</kbd>+<kbd>C</kbd> on a Mac) and paste it into the box (<kbd>Ctrl</kbd>+<kbd>V</kbd>). It won’t go in.', auto="exam:paste paper=s1-essay refused=true"),
     task("es-write", 'Plan, then write. Aim for an introduction that says what your essay will argue, paragraphs that each make one point with examples, and a conclusion that draws them together.', auto="exam:words paper=s1-essay words>299"),
     task("es-submit", 'When you’ve finished, go to the submission page (the ✓ tile at the bottom right), check your essay and submit it.', auto="exam:submit paper=s1-essay", check="paper:s1-essay.submitted"),
