@@ -16,11 +16,10 @@ from lib import *
 
 ESSAY = ('Discuss, with examples, why negative feedback mechanisms are more common than positive feedback mechanisms in '
          'animal physiology.')
-SUPERVISOR = 'Tim Hearn'
 PLUM = '#8a1c4a'
 
 
-HANDIN_LINE = f'Once you’ve submitted it, <b>hand it in</b> from the same page before your supervision. You’ll need the hand-in password that <b>{SUPERVISOR}</b> gives you, and your essay then goes straight to his Google Drive.'
+HANDIN_LINE = 'Once you’ve submitted it, <b>hand it in</b> from the same page before your supervision. You’ll need the <b>hand-in password</b> I give you, and your essay then goes straight into my Google Drive.'
 
 
 def handin_box(buttons=True):
@@ -399,9 +398,9 @@ def ch_marking(num):
 {callout("tip", "Use the criteria on your own essay", "<p>In the last few minutes of your 40, read your essay through against the six criteria. Does every paragraph help to answer the question? Is each example linked to the point it supports? Do you take a position and build on it as the essay goes on? Do you weigh up your examples, rather than just describing them? Does each paragraph make one main point? And is the language formal and precise?</p>")}
 '''
     return chapter("s1-marking", num, "How essays are marked", "exam", "How essays are marked", 15,
-                   "Your supervisor gives feedback on essays against six core criteria. Here you’ll see what each one "
-                   "means, and how it applies to an example essay: the comments the essay would get, and how to put each "
-                   "problem right.", body)
+                   "When I give you feedback on an essay, I use six core criteria. Here you’ll see what each one means, "
+                   "and how they apply to an example essay, with the comments it would get and how to put each problem "
+                   "right.", body)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -487,18 +486,18 @@ def ch_write(num):
         task("es-send", f'Hand it in on the page that comes up next. Type in the hand-in password and press <b>Hand it in</b>. The page shows you a receipt once your essay has arrived.', auto="exam:handin paper=s1-essay step=confirmed", check="paper:s1-essay.handedIn"),
         task("es-word", 'To keep a copy, press <b>Download a copy for yourself</b>, under the password box (once you’ve handed in, the button says <b>Download your copy</b>). The copy is saved as a Word document in your Downloads folder.', auto="exam:download paper=s1-essay format=docx", check="paper:s1-essay.downloaded"),
     ]
-    hand_note = callout("info", "Handing in", f"<p>Your essay goes straight from this page to {SUPERVISOR}’s Google Drive, and you don’t need a Google account for that. The hand-in password he gives you stops anyone else from handing work in, so please keep it to yourself. Once your essay has arrived, the page tells you so and gives you a receipt. If it can’t be handed in, the page will tell you why. If you try again and it still won’t go, download a copy and send it to him some other way.</p>")
+    hand_note = callout("info", "Handing in", "<p>Your essay goes straight from this page into my Google Drive, and you don’t need a Google account for that. The hand-in password I give you stops anyone else from handing work in, so please keep it to yourself. Once your essay has arrived, the page tells you so and gives you a receipt. If it can’t be handed in, the page will tell you why. If you try again and it still won’t go, download a copy and send it to me some other way.</p>")
     body = f'''
 <p class="essay-title">“{ESSAY}”</p>
 
 <h2 id="es-why">Why write it like this?</h2>
-<p>Your exams are taken on a computer, in an online exam system. You type your answers in one sitting, against the clock, without notes, and you can’t paste anything in. Supervision work is set up the same way. Writing your supervision essays like this means you’ll be used to how the exam works long before the summer. You’ll find out how much you can plan and write in 40 minutes, and what it’s like to do it without your notes. And because your supervisor sees the essay you can actually write in that time, the feedback is about the essay you’d write in the exam, not one you’ve polished over a week. Just as in the exam, you submit it when you’ve finished. Here, you then hand it in from the same page.</p>
+<p>Your exams are taken on a computer, in an online exam system. You type your answers in one sitting, against the clock, without notes, and you can’t paste anything in. Supervision work is set up the same way. Writing your supervision essays like this means you’ll be used to how the exam works long before the summer. You’ll find out how much you can plan and write in 40 minutes, and what it’s like to do it without your notes. And because I see the essay you can actually write in that time, my feedback is about the essay you’d write in the exam, not one you’ve polished over a week. Just as in the exam, you submit it when you’ve finished. Here, you then hand it in from the same page.</p>
 
 <h2 id="es-before">Before you start</h2>
 <ul>
 <li>Read about how essays are marked {goto("s1-marking", "chapter 4")} and about plagiarism {goto("s1-plag", "chapter 5")}.</li>
 <li>Revise the lectures first if you like. Then put your notes away and find about 45 minutes when you won’t be interrupted.</li>
-<li>Make sure you have the <b>hand-in password</b> that {SUPERVISOR} gave you, because you’ll need it at the end. You won’t find it anywhere on this site.</li>
+<li>Make sure you have the <b>hand-in password</b> I gave you, because you’ll need it at the end. You won’t find it anywhere on this site.</li>
 <li>There’s no time limit, but give yourself about <b>40 minutes</b>, as you would in the exam. The clock at the top of the paper counts the time you spend writing and tells you when you reach 40 minutes. If you haven’t finished by then, move on to your conclusion. You can go past 40 minutes if you need to, and the clock will show how long you took.</li>
 <li>Spend the first five minutes planning. What’s your answer to the question? Which examples support it, and in what order will you make your points? You can plan on paper, or in the answer box itself as long as you delete the plan before you submit.</li>
 <li>A diagram can help an essay, and you can add one here just as you can in the exam. Either draw it with <b>Insert drawing</b> (the pencil), or draw it on paper, take a photo, and add the photo with <b>Insert picture</b>. You can also drag a picture file into your essay. Type a caption underneath, and say in your text what the diagram shows. Your pictures go into the Word document along with your essay.</li>
@@ -516,9 +515,9 @@ def ch_write(num):
    "There’s no single right answer here. What matters is your own answer, so bring it to your supervision. It might be about the content (an example you missed, or one you described without linking it to the question), about the argument (taking a clearer position from the start), or about your timing (more planning, or a shorter introduction).")}
 '''
     return chapter("s1-write", num, "Write your essay", "exam", "Write your essay, and hand it in", 45,
-                   f"This is the one piece of work to hand in this week. You write it in Supervision work, just as you’ll "
-                   f"write in the online exam, and then hand it in from the same page. It goes straight to {SUPERVISOR}’s "
-                   f"Google Drive.", body)
+                   "This is the one piece of work to hand in this week. You write it in Supervision work, just as you’ll "
+                   "write in the online exam, and then hand it in from the same page. It goes straight into my Google "
+                   "Drive.", body)
 
 
 # ---------------------------------------------------------------------------------------------------------------------

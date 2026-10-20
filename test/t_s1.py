@@ -158,8 +158,12 @@ check('then hand it in from its page. It goes straight to Tim Hearn’s Google D
       f'Supervision work says that work is handed in from here, to Tim Hearn’s Google Drive (not sent by the student): {home[:160]!r}')
 check(wait_ticked('wk-name', 5), 'the name given on the landing page ticks wk-name')
 box = p.js("() => document.querySelector('#s1-week .handin-box').innerText")
-check('Discuss, with examples' in box and '40 minutes' in box and 'hand-in password that Tim Hearn gives you, and your essay then goes straight to his Google Drive' in box,
+check('Discuss, with examples' in box and '40 minutes' in box and 'hand-in password I give you, and your essay then goes straight into my Google Drive' in box,
       f'This week shows the essay to hand in, the 40 minutes, and how it is handed in to Tim Hearn: {box[-160:]!r}')
+# (the chapters are Tim's own words, in the first person; the site's messages name him from config.js)
+words = p.js("() => [...document.querySelectorAll('.chapter')].map(c => c.textContent).join(' ')")
+check('my Google Drive' in words and 'I give you feedback' in words and 'Tim Hearn' not in words and 'your supervisor' not in words.lower(),
+      'the chapters speak in the first person (“my Google Drive”), and don’t call him Tim Hearn or “your supervisor”')
 p.shot('s1-week')
 no_errors('opening Supervision 1')
 
@@ -589,7 +593,7 @@ def handin(script):
     p.ctx.route('https://script.google.com/**', S)
     p.ctx.route('https://script.googleusercontent.com/**', lambda r: r.abort())
     hb = p.js(f"() => document.querySelector('{RX}') ? document.querySelector('{RX}').innerText : ''")
-    check('Now hand it in' in hb and 'Your essay goes straight from here to Tim Hearn’s Google Drive. Type in the hand-in password that Tim Hearn gave you, then press Hand it in.' in hb,
+    check('Now hand it in' in hb and 'Your essay goes straight from here to Tim Hearn’s Google Drive. Type in the hand-in password you were given, then press Hand it in.' in hb,
           f'the receipt hands the essay in from here, with the hand-in password: {hb[:220]!r}')
     hint = p.js("() => document.querySelector('.ex-receipt p.hint').textContent")
     check('When you hand it in, the Word document goes to Tim Hearn’s Google Drive and nowhere else.' in hint, f'and says where it goes: {hint!r}')

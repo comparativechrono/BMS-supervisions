@@ -2589,7 +2589,7 @@
       const ins = h('div.ex-instr');
       ins.innerHTML = paper.instructions ? cleanTrusted(paper.instructions) : '';
       const HI = handInOf(paper);
-      const hand = HI ? h('div.ex-handin', h('h3', 'To hand in'), h('p', `Once you’ve submitted it, you hand it in from here, and it goes straight to ${possessive(HI.to)} ${HI.drive}.${HI.password ? ` You’ll need the hand-in password that ${HI.to} gave you, which isn’t on this site.` : ''}`))
+      const hand = HI ? h('div.ex-handin', h('h3', 'To hand in'), h('p', `Once you’ve submitted it, you hand it in from here, straight to ${possessive(HI.to)} ${HI.drive}.${HI.password ? ' You’ll need the hand-in password you were given, which isn’t on this site.' : ''}`))
         : handInHTML(paper) ? h('div.ex-handin', { html: '<h3>To hand in</h3>' + cleanTrusted(handInHTML(paper)) }) : null;
       V.append(h('div.ex-startcard', h('p.ex-kicker', paper.week ? `Supervision ${paper.week}${paper.required ? ' · to hand in' : ' · optional'}` : 'Supervision work'), h('h2', paper.title), paper.description ? h('p', paper.description) : null, dl, ins, hand, paper.minutes ? h('p.hint', `The clock starts when you press Start, and it keeps running if you leave the page. ${paper.autoSubmit ? 'Your answers are submitted for you when the time is up.' : 'When the time is up, your answers are locked, and you can then submit them.'}`) : null, acts, h('div.ex-startback', back)));
     }
@@ -3453,7 +3453,7 @@
         }
       });
       box.append(h('h3.ex-hi-h', opts.title || 'Now hand it in'),
-        h('p.ex-hi-lede', `Your essay goes straight from here to ${where}.${HI.password ? ` Type in the hand-in password that ${HI.to} gave you, then press Hand it in.` : ''}`),
+        h('p.ex-hi-lede', `Your essay goes straight from here to ${where}.${HI.password ? ' Type in the hand-in password you were given, then press Hand it in.' : ''}`),
         form, msg,
         h('p.ex-hi-small', copy('Download a copy for yourself')));
       return box;
