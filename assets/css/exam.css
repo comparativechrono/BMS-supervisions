@@ -196,8 +196,12 @@
 .ex-area th, .ex-review th { background: var(--ex-acc-soft); font-weight: 700; text-align: left; }
 .ex-area img.ex-drawing, .ex-review img.ex-drawing { max-width: 100%; height: auto; border: 1px solid var(--ex-line); border-radius: 4px; vertical-align: top; background: #fff; }
 .ex-area img.ex-drawing { cursor: pointer; }
+/* pictures from the student's computer: on a line of their own, as wide as the answer at most */
+.ex-area img.ex-image, .ex-review img.ex-image { display: block; width: auto; height: auto; max-width: 100%; max-height: 60vh; margin: 6px 0; border: 1px solid var(--ex-line); border-radius: 4px; background: #fff; }
+.ex-area img.ex-image { cursor: pointer; }
 .ex-edfoot { display: flex; align-items: center; gap: 8px; padding: 0.3em 0.75em; border-top: 1px solid var(--ex-line); font-size: 0.82em; color: var(--ex-muted); min-height: 2em; position: sticky; bottom: calc(-1 * var(--ex-padbot, 0px)); z-index: 2; background: var(--ex-panel); border-radius: 0 0 8px 8px; }
 .ex-ednote { color: var(--ex-red); font-weight: 600; }
+.ex-ednote.ok { color: var(--good, #2c7a4b); }
 .ex-wc { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .ex-wc.over { color: var(--ex-red); font-weight: 800; }
 .ex-wc.under { color: #8a5a00; }

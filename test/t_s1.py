@@ -464,6 +464,17 @@ check('Few laboratory' not in p.js("() => document.querySelector('.ex-area').tex
 para = ('Negative feedback opposes a change in a regulated variable and so keeps the internal environment stable, which cells need '
         'because their enzymes and channels work only within narrow limits of temperature, osmolarity and pH. ')
 p.js("""(t) => { const A = document.querySelector('.ex-area'); A.focus(); document.execCommand('insertText', false, t); }""", (para * 9).strip())
+# a diagram, drawn on paper and added as a picture from the computer, with a caption
+DIAG = base64.b64decode(p.js("""() => { const c = document.createElement('canvas'); c.width = 480; c.height = 300; const g = c.getContext('2d');
+    g.strokeStyle = '#123'; g.lineWidth = 4; g.strokeRect(20, 20, 440, 260); g.font = '26px sans-serif'; g.fillStyle = '#123'; g.fillText('Set point → effector', 40, 90);
+    return c.toDataURL('image/png').split(',')[1]; }"""))
+with P.expect_file_chooser() as fc:
+    click('.ex-tb [data-cmd="picture"]')
+fc.value.set_files([{'name': 'feedback-loop.png', 'mimeType': 'image/png', 'buffer': DIAG}])
+p.wait("() => document.querySelectorAll('.ex-area img.ex-image').length === 1", timeout=20000)
+P.keyboard.type('Figure 1. A negative feedback loop.')
+check(p.js("() => document.querySelector('.ex-area img.ex-image').parentElement.nextElementSibling.textContent") == 'Figure 1. A negative feedback loop.',
+      'a diagram can be added to the essay as a picture, with a caption under it')
 time.sleep(1.6)
 check(wait_ticked('es-write', 5), f'writing more than 300 words ticks es-write ({p.js("() => document.querySelector(\'.ex-wc\').textContent")})')
 # the suggested time: the clock counts the time spent writing (here, a long session squeezed into a moment)
@@ -641,6 +652,8 @@ def handin(script):
     doc = essay_text(raw)
     check(NAME in doc and 'Discuss, with examples, why negative feedback' in doc and 'Negative feedback opposes a change' in doc,
           'the Word document has the student’s name, the title and the essay')
+    media = [n for n in zipfile.ZipFile(io.BytesIO(raw)).namelist() if n.startswith('word/media/image')]
+    check(media == ['word/media/image1.png'] and 'Figure 1. A negative feedback loop.' in doc, f'and its picture, with the caption: {media}')
     time.sleep(0.3)
     done_text = p.js(f"() => document.querySelector('{RX}').innerText")
     check('Handed in to Tim Hearn' in done_text and 'Received by Tim Hearn’s Google Drive at' in done_text and f'receipt {R["receipt"]}' in done_text

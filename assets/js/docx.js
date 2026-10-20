@@ -6,7 +6,8 @@
    class "title" becomes the document's title), paragraphs, line breaks,
    bold, italic, underline, subscript and superscript, bulleted and
    numbered lists (nested), indented paragraphs (data-indent), tables (a
-   header row in <th>), pictures (drawings, as PNG data) and formulas
+   header row in <th>), pictures (drawings and pictures added, as PNG or JPEG data, at most 6 inches wide and
+   8 inches high) and formulas
    (span.ex-formula with data-tex, written as text with real sub- and
    superscripts). Elements of class "qtext" are written in the style
    "Question text" (italic, grey). Paper size A4.
@@ -23,6 +24,7 @@
   const xe = (s) => String(s == null ? '' : s).replace(BAD, '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const EMU_PX = 9525; // English Metric Units in a CSS pixel (96 per inch)
   const MAX_W = 6 * 914400; // pictures at most 6 inches wide
+  const MAX_H = 8 * 914400; // and 8 inches high (an A4 page, inside its margins, is about 9.7)
 
   const BLOCK = new Set(['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'UL', 'OL', 'LI', 'TABLE', 'PRE', 'BLOCKQUOTE', 'HR', 'SECTION', 'ARTICLE', 'HEADER', 'FOOTER', 'FIGURE', 'DL', 'DT', 'DD']);
 
@@ -156,7 +158,7 @@
         }
         if (c.nodeType !== 1) continue;
         const tag = c.tagName;
-        if (!BLOCK.has(tag) && !(tag === 'IMG' && !pending.length && c.classList.contains('ex-drawing'))) {
+        if (!BLOCK.has(tag) && !(tag === 'IMG' && !pending.length && (c.classList.contains('ex-drawing') || c.classList.contains('ex-image')))) {
           pending.push(c);
           continue;
         }
@@ -254,8 +256,13 @@
         cy = Math.round((cy * MAX_W) / cx);
         cx = MAX_W;
       }
+      if (cy > MAX_H) {
+        cx = Math.round((cx * MAX_H) / cy);
+        cy = MAX_H;
+      }
       const id = this.docPr++;
-      return `<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:docPr id="${id}" name="Drawing ${id}"/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="${id}" name="${name}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>`;
+      const descr = img.getAttribute('alt') || '';
+      return `<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:docPr id="${id}" name="${img.classList.contains('ex-image') ? 'Picture' : 'Drawing'} ${id}"${descr ? ` descr="${xe(descr)}"` : ''}/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="${id}" name="${name}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>`;
     }
 
     /* ---- the package ---- */

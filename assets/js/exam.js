@@ -32,6 +32,8 @@
      "showWordCount": true,                show "Words: …" under essays
      "toolbar": "default",                 the essay toolbar: "default", "basic" (bold, italic, underline, lists,
                                            undo and redo) or "plain" (plain text); a question can have its own
+     "pictures": true,                     with the default toolbar, may students add pictures from their computer
+                                           (Insert picture)? (false: no; a question can have its own)
      "clipboard": "exam",                  "exam" (the default): as in Inspera's exam browser, only what was copied in
                                            the exam can be pasted into it; "any": anything can be pasted, as in an
                                            exam taken in an ordinary web browser
@@ -59,7 +61,8 @@
 
    ATTEMPTS (~/essays/<paper>-<n>.exam.json): {format, paper (a copy), candidate, started, deadline, submitted,
    timeUp, current, answers: {qid: {html, words} | {value} | {choice}, flag}, backups: {qid: [{time, html, words}]},
-   settings: {spellcheck}}.
+   images: {id: {type, data, w, h}} (the pictures added, each kept once: the answers hold <img class="ex-image"
+   data-img="id">), settings: {spellcheck}}.
 
    EVENTS (MG.bus), for the practicals' steps that tick themselves:
      exam:open     {paper, title}            a paper's first page, or an attempt, is opened
@@ -67,7 +70,8 @@
      exam:words    {paper, q, words}         the number of words of an answer (as the student types; debounced)
      exam:format   {cmd}                     a command of the editor's toolbar: bold, italic, underline, subscript,
                                              superscript, removeFormat, heading, copy, paste, undo, redo, ol, ul, indent,
-                                             outdent, special, table, drawing, formula, backup, restore, expand
+                                             outdent, special, table, drawing, picture, formula, backup, restore,
+                                             expand
      exam:flag     {paper, q, on}            a question is flagged or unflagged
      exam:nav      {paper, q}                another question (or 'submission', 'contents') is shown
      exam:timeup   {paper}                   the time allowed has run out
@@ -145,6 +149,89 @@
     r.readAsDataURL(blob);
   });
   const possessive = (who) => (/s$/.test(who) ? who + '’' : who + '’s');
+
+  /* ------------------------------------------------------------------
+     pictures: added to an answer from the student's computer (Insert picture, or a picture file dropped in), made
+     smaller in the browser, and kept once with the attempt – att.images: {id: {type, data (base64), w, h}}. An
+     answer (and its backup copies, and the editor's undo) holds only <img class="ex-image" data-img="id" width
+     height alt>: the editor shows the picture from a blob: address, and the downloads, the review and the hand-in
+     from its data (withPictures).
+     ------------------------------------------------------------------ */
+  const PIC = { maxSide: 1600, maxFileMB: 30, maxKB: 700, perAnswer: 10, totalMB: 15 };
+  const PIC_ID = /^[a-z0-9]{6,24}$/;
+  function newPicId() {
+    const a = new Uint8Array(10);
+    if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(a);
+    else a.forEach((x, i) => (a[i] = Math.floor(Math.random() * 256)));
+    return 'p' + Array.from(a, (b) => (b % 36).toString(36)).join('');
+  }
+  function b64ToBlob(data, type) {
+    const bin = atob(data);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new Blob([bytes], { type });
+  }
+  /** the pictures (ids) an answer's HTML uses, added to a set */
+  function picRefs(html, set) {
+    (String(html || '').match(/data-img="[a-z0-9]+"/g) || []).forEach((m) => set.add(m.slice(10, -1)));
+    return set;
+  }
+  /** a picture file → {type, data, w, h}: at most PIC.maxSide pixels on its longer side and PIC.maxKB in size, on
+      white (so that a transparent picture looks the same in Word); a PNG for a drawing or a screenshot that stays
+      small, else a JPEG. (Drawn as an <img>, so that a photo is the right way up.) */
+  async function preparePicture(file) {
+    const url = URL.createObjectURL(file);
+    try {
+      const img = await new Promise((ok, no) => {
+        const im = new Image();
+        im.onload = () => ok(im);
+        im.onerror = () => no(new Error('This picture could not be opened.'));
+        im.src = url;
+      });
+      const W0 = img.naturalWidth || 800, H0 = img.naturalHeight || 600;
+      const graphic = /png|gif|webp|bmp|svg/i.test(file.type || '');
+      let side = PIC.maxSide;
+      for (let tries = 0; tries < 5; tries++) {
+        const k = Math.min(1, side / Math.max(W0, H0));
+        const w = Math.max(1, Math.round(W0 * k)), hh = Math.max(1, Math.round(H0 * k));
+        const cv = document.createElement('canvas');
+        cv.width = w;
+        cv.height = hh;
+        const g = cv.getContext('2d');
+        g.fillStyle = '#ffffff';
+        g.fillRect(0, 0, w, hh);
+        g.imageSmoothingQuality = 'high';
+        g.drawImage(img, 0, 0, w, hh);
+        const blobOf = (type, q) => new Promise((ok) => cv.toBlob(ok, type, q));
+        const jpeg = await blobOf('image/jpeg', tries ? 0.75 : 0.85);
+        let out = jpeg;
+        if (graphic) {
+          const png = await blobOf('image/png');
+          if (png && png.size <= PIC.maxKB * 1024 && (!jpeg || png.size < 200 * 1024 || png.size <= jpeg.size * 1.5)) out = png;
+        }
+        if (!out) throw new Error('This picture could not be made smaller.');
+        if (out.size <= PIC.maxKB * 1024 || tries === 4) return { type: out.type, data: await base64Of(out), w, h: hh };
+        side = Math.round(Math.min(side, Math.max(W0, H0)) * 0.8);
+      }
+      throw new Error('This picture could not be made smaller.');
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+  /** an answer's HTML with its pictures' data in it (for the downloads, the review and the hand-in) */
+  function withPictures(html, att) {
+    if (!html || html.indexOf('ex-image') < 0) return html;
+    const t = document.createElement('template');
+    t.innerHTML = html;
+    t.content.querySelectorAll('img.ex-image').forEach((im) => {
+      const r = att && att.images && att.images[im.getAttribute('data-img')];
+      if (r) im.setAttribute('src', `data:${r.type};base64,${r.data}`);
+      else im.remove();
+    });
+    const d = document.createElement('div');
+    d.appendChild(t.content);
+    return d.innerHTML;
+  }
   /** the time a paper allows, or suggests: "40 minutes", "No time limit (about 40 minutes suggested)" */
   const timeText = (p) => (p.minutes ? `${p.minutes} minutes` : p.suggestedMinutes ? `No time limit (about ${p.suggestedMinutes} minutes suggested)` : 'No time limit');
   const fullName = () => (MG.user && MG.user.fullName ? MG.user.fullName() : '');
@@ -194,6 +281,7 @@
     indent: svg('<path d="M21 5H3M21 19H3M21 12h-9M4 9l3 3-3 3"/>'),
     table: svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16M15 4v16"/>'),
     draw: svg('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),
+    picture: svg('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 15.5l-5-5L5 20"/>'),
     expand: svg('<path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/>'),
     shrink: svg('<path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3"/>'),
     eraser: svg('<path d="M7 21h10M5.5 15.5l9-9a2 2 0 0 1 2.8 0l1.2 1.2a2 2 0 0 1 0 2.8L12 17H8z"/>'),
@@ -223,7 +311,7 @@
         return;
       }
       if (n.tagName === 'IMG') {
-        out += forCount ? ' ' : ' [drawing] ';
+        out += forCount ? ' ' : n.classList.contains('ex-image') ? ' [picture] ' : ' [drawing] ';
         return;
       }
       if (n.tagName === 'BR') {
@@ -289,16 +377,26 @@
         if (st.verticalAlign === 'sub') wrapWith('sub');
       });
       B.querySelectorAll('[data-unwrap]').forEach((el) => el.replaceWith(...Array.from(el.childNodes)));
-      // our own formulas and drawings may come back (copied from another answer); other pictures may not
-      B.querySelectorAll('img:not(.ex-drawing)').forEach((n) => n.remove());
+      // our own formulas, drawings and pictures may come back (copied from another answer); other pictures may not
+      B.querySelectorAll('img:not(.ex-drawing):not(.ex-image)').forEach((n) => n.remove());
     }
     let out = window.DOMPurify
-      ? window.DOMPurify.sanitize(B.innerHTML, { ALLOWED_TAGS: ALLOWED, ALLOWED_ATTR: ['class', 'data-tex', 'data-drawing', 'data-indent', 'src', 'alt', 'title', 'width', 'height', 'contenteditable'], ALLOW_DATA_ATTR: false })
+      ? window.DOMPurify.sanitize(B.innerHTML, { ALLOWED_TAGS: ALLOWED, ALLOWED_ATTR: ['class', 'data-tex', 'data-drawing', 'data-img', 'data-indent', 'src', 'alt', 'title', 'width', 'height', 'contenteditable'], ALLOW_DATA_ATTR: false })
       : B.innerHTML;
     const t = document.createElement('template');
     t.innerHTML = out;
     const R = t.content;
     R.querySelectorAll('img').forEach((im) => {
+      // a picture: only its id (the editor and the downloads find its data); a drawing: its PNG
+      if (im.classList.contains('ex-image') && PIC_ID.test(im.getAttribute('data-img') || '')) {
+        im.className = 'ex-image';
+        im.removeAttribute('src');
+        ['width', 'height'].forEach((k) => {
+          const v = +im.getAttribute(k);
+          if (!(v > 0 && v <= 10000)) im.removeAttribute(k);
+        });
+        return;
+      }
       if (!im.classList.contains('ex-drawing') || !/^data:image\/png;base64,/.test(im.getAttribute('src') || '')) im.remove();
       else im.className = 'ex-drawing';
     });
@@ -323,7 +421,7 @@
       }
     });
     R.querySelectorAll('[class]').forEach((x) => {
-      if (/^(ex-formula|ex-drawing|ex-table)$/.test(x.className)) return;
+      if (/^(ex-formula|ex-drawing|ex-image|ex-table)$/.test(x.className)) return;
       if (x.parentElement && x.parentElement.closest('.ex-formula')) return;
       x.removeAttribute('class');
     });
@@ -374,13 +472,13 @@
      menu) puts the text here and on the computer's clipboard, and a paste is let in when what it brings is what was
      copied here. (Copying out of the exam is not stopped: students may keep their writing.) A paper with
      "clipboard": "any" lets anything be pasted, as an exam taken in an ordinary web browser does. */
-  const CLIP = { text: '', html: '' };
+  const CLIP = { text: '', html: '', images: {} };
   const clipKey = (t) => String(t || '').replace(/\s+/g, '');
   function clipFromExam(text, html) {
     const k = clipKey(text);
     if (k) return k === clipKey(CLIP.text);
-    // (no text: a drawing copied in the exam)
-    const pics = String(html || '').match(/src="data:image\/[^"]{30,}"/g) || [];
+    // (no text: a drawing or a picture copied in the exam)
+    const pics = String(html || '').match(/src="data:image\/[^"]{30,}"|data-img="[a-z0-9]+"/g) || [];
     return pics.length > 0 && pics.every((x) => CLIP.html.includes(x));
   }
 
@@ -1029,7 +1127,9 @@
   let edCount = 0;
   class Editor {
     /* opts: html, words {min, max, hard}, showWords, spellcheck, lines, toolbar ('default'|'basic'|'plain'), readonly,
-       label, onInput(editor), onFormat(cmd), onBackup(), getBackups() → [...], restoreBackup(b), onExpand(on) */
+       label, onInput(editor), onFormat(cmd), onBackup(), getBackups() → [...], restoreBackup(b), onExpand(on), and
+       images – the attempt's pictures, when the answer may have them: {has(id), url(id) → a blob: address, add(picture,
+       id) → its id, or null when there is no room} */
     constructor(opts) {
       this.o = opts || {};
       this.id = 'exed' + ++edCount;
@@ -1096,6 +1196,7 @@
         btn('special', '<span class="ex-om">Ω</span>', 'Insert special character', () => this.command('special'));
         btn('table', IC.table, 'Table', () => this.command('table'));
         btn('drawing', IC.draw, 'Insert drawing', () => this.command('drawing'));
+        if (this.o.images) btn('picture', IC.picture, 'Insert picture (from your computer)', () => this.command('picture'));
         btn('formula', '<span class="ex-sig">Σ</span>', 'Edit formula', () => this.command('formula'));
         sep();
         btn('expand', IC.expand, 'Expand (full screen)', () => this.command('expand'));
@@ -1129,6 +1230,8 @@
         e.preventDefault();
         if (this.readonly) return;
         const cd = e.clipboardData;
+        // (a picture on the clipboard, on a paper that lets anything be pasted: as if it had been inserted)
+        if (cd && cd.files && cd.files.length && this.o.images && !cd.getData('text/plain')) return this._addPictures(cd.files);
         this.insertPasted(cd ? cd.getData('text/html') : '', cd ? cd.getData('text/plain') : '');
       });
       // (text dragged from one place in the answer to another: the browser moves it, and the word limit is checked)
@@ -1139,8 +1242,13 @@
         e.preventDefault();
         if (this.readonly) return;
         const dt = e.dataTransfer;
-        if (!dt || dt.files && dt.files.length) return this._note('Files and pictures cannot be put into an answer. Use the drawing tool for a diagram.');
+        if (!dt) return;
         const r = document.caretRangeFromPoint ? document.caretRangeFromPoint(e.clientX, e.clientY) : null;
+        // pictures from the computer: put in where they are dropped (the same as Insert picture)
+        if (dt.files && dt.files.length) {
+          if (!this.o.images) return this._note('Files and pictures cannot be put into this answer. Use the drawing tool for a diagram.');
+          return this._addPictures(dt.files, r && this.area.contains(r.startContainer) ? r : null);
+        }
         if (r) {
           const s = window.getSelection();
           s.removeAllRanges();
@@ -1151,9 +1259,11 @@
       A.addEventListener('dblclick', (e) => {
         const f = e.target.closest && e.target.closest('.ex-formula');
         const d = e.target.closest && e.target.closest('img.ex-drawing');
+        const pic = e.target.closest && e.target.closest('img.ex-image');
         if (this.readonly) return;
         if (f && A.contains(f)) this._editFormula(f);
         else if (d && A.contains(d)) this._editDrawing(d);
+        else if (pic && A.contains(pic)) this._removePicture(pic);
       });
       A.addEventListener('contextmenu', (e) => {
         const cell = e.target.closest && e.target.closest('td,th');
@@ -1218,10 +1328,15 @@
     getHTML() {
       const A = this.area;
       if (!A.textContent.trim() && !A.querySelector('img,.ex-formula,table')) return '';
-      return A.innerHTML;
+      if (!A.querySelector('img.ex-image')) return A.innerHTML;
+      // (a picture is kept by its id: its data is kept once, with the attempt)
+      const c = A.cloneNode(true);
+      c.querySelectorAll('img.ex-image').forEach((im) => im.removeAttribute('src'));
+      return c.innerHTML;
     }
     setHTML(html, initial) {
       this.area.innerHTML = html ? cleanHTML(html) : '';
+      this._showPictures();
       this._range = null;
       this.hist = [{ html: this.area.innerHTML, sel: null }];
       this.hi = 0;
@@ -1401,10 +1516,11 @@
       this.el.classList.add('ex-limit-flash');
       this._note(`You have reached the limit of ${this._limit()} words.`);
     }
-    _note(text) {
+    _note(text, ms, ok) {
       this.note.textContent = text;
+      this.note.classList.toggle('ok', !!ok);
       clearTimeout(this._nt);
-      this._nt = setTimeout(() => (this.note.textContent = ''), 5000);
+      this._nt = setTimeout(() => (this.note.textContent = ''), ms || 5000);
     }
     _keydown(e) {
       const mod = e.ctrlKey || e.metaKey;
@@ -1528,6 +1644,7 @@
         if (d) return this._editDrawing(d);
         return drawingDialog(null, (x) => x && this._insertHTML(this._drawingHTML(x) + '<br>', 'drawing'));
       }
+      if (cmd === 'picture') return this._choosePictures();
       if (cmd === 'backup') {
         this._format('backup');
         return this.o.onBackups && this.o.onBackups();
@@ -1711,6 +1828,167 @@
         this._format('drawing');
       });
     }
+
+    /* ---------- pictures (from the student's computer) ---------- */
+    _choosePictures() {
+      if (!this.o.images) return;
+      this._keepRange();
+      const range = this._range ? this._range.cloneRange() : null;
+      const inp = h('input', { type: 'file', accept: 'image/*', multiple: true, hidden: true });
+      inp.addEventListener('change', () => {
+        const files = Array.from(inp.files || []);
+        inp.remove();
+        if (files.length) this._addPictures(files, range);
+      });
+      inp.addEventListener('cancel', () => inp.remove());
+      // (in the page while it is open: some browsers only open a chooser that is)
+      this.el.appendChild(inp);
+      inp.click();
+    }
+    /** pictures (files) into the answer, where the cursor is (or range): made smaller, kept with the attempt, each on
+        a line of its own, with the cursor on a new line after them for a caption */
+    async _addPictures(files, range) {
+      if (this.readonly || !this.o.images) return;
+      const list = Array.from(files || []);
+      const isPic = (f) => /^image\//.test(f.type || '') || /\.(png|jpe?g|gif|webp|bmp|heic|heif|avif)$/i.test(f.name || '');
+      const pics = list.filter(isPic);
+      if (!pics.length) return this._note('Only pictures can be added to an answer: PNG, JPEG, GIF or WebP files.', 8000);
+      const room = PIC.perAnswer - this.area.querySelectorAll('img.ex-image').length;
+      if (room <= 0) return this._note(`An answer can have up to ${PIC.perAnswer} pictures.`, 8000);
+      const notes = [];
+      if (pics.length < list.length) notes.push('Only pictures can be added: the other files were left out.');
+      if (pics.length > room) notes.push(`An answer can have up to ${PIC.perAnswer} pictures, so only ${plural(room, 'picture')} ${room === 1 ? 'was' : 'were'} added.`);
+      this._note(pics.length > 1 ? 'Adding the pictures…' : 'Adding the picture…', 60000, true);
+      const ready = [];
+      for (const f of pics.slice(0, room)) {
+        const name = f.name || 'A picture';
+        if (f.size > PIC.maxFileMB * 1048576) {
+          notes.push(`${name} is too big to add (${Math.round(f.size / 1048576)} MB: the most is ${PIC.maxFileMB} MB).`);
+          continue;
+        }
+        try {
+          const rec = await preparePicture(f);
+          const id = this.o.images.add(rec);
+          if (!id) {
+            notes.push('There is no room for more pictures in this attempt.');
+            break;
+          }
+          ready.push({ id, rec });
+        } catch (e) {
+          notes.push(`${name} couldn’t be opened: save it as a JPEG or PNG, and add that.`);
+        }
+      }
+      if (ready.length) this._insertPictures(ready, range);
+      const done = ready.length ? `${ready.length > 1 ? `${ready.length} pictures added.` : 'Picture added.'} You can type a caption under ${ready.length > 1 ? 'each' : 'it'}.` : '';
+      this._note([done, ...notes].filter(Boolean).join(' ') || ' ', notes.length ? 10000 : 6000, !notes.length);
+    }
+    _pictureEl({ id, rec }) {
+      const im = document.createElement('img');
+      im.className = 'ex-image';
+      im.setAttribute('data-img', id);
+      im.src = this.o.images.url(id);
+      im.width = rec.w;
+      im.height = rec.h;
+      im.alt = 'A picture';
+      im.title = 'A picture (double-click to take it out)';
+      return im;
+    }
+    _insertPictures(list, range) {
+      const A = this.area;
+      this.focus();
+      this.flush();
+      const s = window.getSelection();
+      if (range && A.contains(range.startContainer)) {
+        s.removeAllRanges();
+        s.addRange(range);
+      }
+      if (!s.rangeCount || !A.contains(s.anchorNode)) this._caretToEnd();
+      const r = s.getRangeAt(0);
+      r.deleteContents();
+      const node = r.startContainer.nodeType === 1 ? r.startContainer : r.startContainer.parentNode;
+      const inLine = node.closest && node.closest('td,th,li');
+      if (inLine && A.contains(inLine)) {
+        // (in a table or a list: in its line, where the cursor is)
+        const frag = document.createDocumentFragment();
+        list.forEach((x) => frag.append(this._pictureEl(x), document.createElement('br')));
+        const last = frag.lastChild;
+        r.insertNode(frag);
+        r.setStartAfter(last);
+        r.collapse(true);
+      } else {
+        // a paragraph of its own: the one the cursor is in is split there
+        let blk = node === A ? null : node.closest && node.closest('p,h1,h2,h3,pre,div');
+        if (blk && (blk === A || !A.contains(blk))) blk = null;
+        let tail = null;
+        if (blk) {
+          const rest = document.createRange();
+          rest.setStart(r.startContainer, r.startOffset);
+          rest.setEnd(blk, blk.childNodes.length);
+          tail = blk.cloneNode(false);
+          tail.appendChild(rest.extractContents());
+        } else {
+          blk = document.createElement('p');
+          r.insertNode(blk);
+        }
+        const empty = (b) => !b.textContent.trim() && !b.querySelector('img,.ex-formula,table');
+        let after = blk;
+        list.forEach((x) => {
+          const p = document.createElement('p');
+          p.appendChild(this._pictureEl(x));
+          after.after(p);
+          after = p;
+        });
+        if (empty(blk)) blk.remove();
+        let next = tail && !empty(tail) ? tail : null;
+        if (!next) {
+          next = document.createElement('p');
+          next.innerHTML = '<br>';
+        }
+        after.after(next);
+        r.selectNodeContents(next);
+        r.collapse(true);
+      }
+      s.removeAllRanges();
+      s.addRange(r);
+      this._range = r.cloneRange();
+      this.record();
+      this._good = { html: A.innerHTML, sel: this._sel() };
+      this._changed();
+      this._format('picture');
+    }
+    async _removePicture(img) {
+      if (!(await MG.confirmBox('Take the picture out?', '<p>The picture goes from your answer. (Undo – Ctrl+Z – brings it back.)</p>', 'Take it out', { cancel: 'Keep it' }))) return;
+      if (!img.isConnected) return;
+      this.flush();
+      const p = img.parentElement;
+      if (p && p !== this.area && p.tagName === 'P' && p.childNodes.length === 1) p.remove();
+      else img.remove();
+      this.record();
+      this._changed();
+      this._format('picture');
+      this.focus();
+    }
+    /** the pictures of the answer (or of root) shown, from the attempt; one that isn't there any more goes */
+    _showPictures(root) {
+      (root || this.area).querySelectorAll('img.ex-image').forEach((im) => {
+        const u = this.o.images ? this.o.images.url(im.getAttribute('data-img')) : '';
+        if (!u) im.remove();
+        else if (im.getAttribute('src') !== u) im.setAttribute('src', u);
+      });
+    }
+    /** pictures in what is pasted (copied in the exam): from this attempt, or brought from another with the copy */
+    _pastedPictures(frag) {
+      const t = document.createElement('template');
+      t.innerHTML = frag;
+      t.content.querySelectorAll('img.ex-image').forEach((im) => {
+        const id = im.getAttribute('data-img');
+        if (this.o.images && !this.o.images.has(id) && CLIP.images[id]) this.o.images.add(CLIP.images[id], id);
+      });
+      this._showPictures(t.content);
+      const d = document.createElement('div');
+      d.appendChild(t.content);
+      return d.innerHTML;
+    }
     async _pasteButton() {
       this.focus();
       if (this.o.clipboard !== 'any') {
@@ -1735,7 +2013,7 @@
     }
     insertPasted(html, text) {
       if (this.readonly) return;
-      if (!html && !text) return this._note('Only text can be pasted into an answer. Use the drawing tool for a diagram.');
+      if (!html && !text) return this._note(this.o.images ? 'Only text can be pasted into an answer. To add a picture, use Insert picture.' : 'Only text can be pasted into an answer. Use the drawing tool for a diagram.');
       this.focus();
       this.flush();
       let frag = this.mode !== 'plain' && html ? cleanHTML(html, { foreign: true }) : textToHTML(text);
@@ -1744,6 +2022,7 @@
       tmp.innerHTML = frag;
       if (tmp.children.length === 1 && tmp.firstElementChild.tagName === 'P') frag = tmp.firstElementChild.innerHTML;
       if (this.mode === 'plain') frag = esc(text || tmp.textContent).replace(/\n/g, '<br>');
+      else if (frag.indexOf('ex-image') >= 0) frag = this._pastedPictures(frag);
       const max = this._limit();
       if (max) {
         const avail = max - this.words();
@@ -1870,6 +2149,11 @@
       }
       CLIP.text = text;
       CLIP.html = html;
+      // (pictures copied go with the copy, so that they can be pasted into another attempt too)
+      CLIP.images = {};
+      picRefs(html, new Set()).forEach((id) => {
+        if (this.att.images && this.att.images[id]) CLIP.images[id] = this.att.images[id];
+      });
       // (the same text goes on the computer's clipboard – what the browser would put there can differ in its spaces,
       // or its bullets – so that a paste can be recognised as what was copied here)
       if (!e.clipboardData) return;
@@ -1907,6 +2191,9 @@
     }
     _onDrop(e) {
       if (!this._clipKept() || this._dragFromExam || !this._inExam(e.target)) return;
+      // (picture files dropped into an answer that may have pictures: the answer adds them, as Insert picture does)
+      const dt = e.dataTransfer;
+      if (dt && dt.files && dt.files.length && this.ed && this.ed.o.images && this.ed.area.contains(e.target)) return;
       e.preventDefault();
       e.stopImmediatePropagation();
       this._pasteRefused(e.target);
@@ -1920,6 +2207,74 @@
         this.ed.el.classList.add('ex-limit-flash');
       } else toast(msg + ' (Text copied from outside the exam cannot be pasted in.)', 'warn', 4500);
       bus.emit('exam:paste', { paper: this.att.paper.id, q: this.qcur && this.qcur.id, refused: true });
+    }
+    /* ---------------- pictures (kept once, with the attempt) ---------------- */
+    _picturesAllowed(q) {
+      const paper = this.att.paper;
+      return (q.toolbar || paper.toolbar || 'default') === 'default' && paper.pictures !== false && q.pictures !== false;
+    }
+    _pictureStore() {
+      const att = this.att;
+      return {
+        has: (id) => !!(att.images && att.images[id]),
+        url: (id) => this._pictureURL(att, id),
+        add: (rec, id) => this._addPicture(att, rec, id)
+      };
+    }
+    /** a blob: address for a picture of the attempt ('' when it has none of that id), made once */
+    _pictureURL(att, id) {
+      const r = PIC_ID.test(id || '') && att.images && att.images[id];
+      if (!r) return '';
+      if (!this._picURLs || this._picURLs.att !== att) {
+        if (this._picURLs) this._picURLs.map.forEach((u) => URL.revokeObjectURL(u));
+        this._picURLs = { att, map: new Map() };
+      }
+      let u = this._picURLs.map.get(id);
+      if (!u) {
+        u = URL.createObjectURL(b64ToBlob(r.data, r.type));
+        this._picURLs.map.set(id, u);
+      }
+      return u;
+    }
+    /** keeps a picture with the attempt → its id; null when there is no room (PIC.totalMB, after the pictures that
+        nothing uses any more have gone) */
+    _addPicture(att, rec, id) {
+      att.images = att.images || {};
+      const total = () => Object.values(att.images).reduce((n, x) => n + ((x && x.data) || '').length, 0);
+      const max = PIC.totalMB * 1048576 * (4 / 3);
+      if (total() + rec.data.length > max) {
+        this._prunePictures(att, true);
+        if (total() + rec.data.length > max) return null;
+      }
+      if (!(id && PIC_ID.test(id) && !att.images[id])) {
+        do id = newPicId();
+        while (att.images[id]);
+      }
+      att.images[id] = { type: rec.type, data: rec.data, w: rec.w, h: rec.h };
+      this._dirty = true;
+      return id;
+    }
+    /** the pictures that no answer, and no backup copy of one, uses (and, with live, nothing in the open answer and
+        its undo either) go */
+    _prunePictures(att, live) {
+      if (!att.images) return;
+      const used = new Set();
+      Object.values(att.answers || {}).forEach((a) => picRefs(a && a.html, used));
+      Object.values(att.backups || {}).forEach((list) => (list || []).forEach((b) => picRefs(b && b.html, used)));
+      if (live && this.ed && this.att === att) {
+        picRefs(this.ed.area.innerHTML, used);
+        (this.ed.hist || []).forEach((s) => picRefs(s.html, used));
+      }
+      Object.keys(att.images).forEach((id) => {
+        if (used.has(id)) return;
+        delete att.images[id];
+        this._dirty = true;
+        const m = this._picURLs && this._picURLs.att === att ? this._picURLs.map : null;
+        if (m && m.has(id)) {
+          URL.revokeObjectURL(m.get(id));
+          m.delete(id);
+        }
+      });
     }
     now() {
       return Date.now() + this.skew;
@@ -1981,6 +2336,7 @@
       if (!a || !a.paper || !Array.isArray(a.paper.questions)) throw new Error('This is not an attempt of exam practice.');
       a.answers = a.answers || {};
       a.backups = a.backups || {};
+      a.images = a.images || {};
       a.settings = a.settings || {};
       return a;
     }
@@ -2244,6 +2600,7 @@
         current: 0,
         answers: {},
         backups: {},
+        images: {},
         settings: { spellcheck: paper.spellcheck != null ? !!paper.spellcheck : !!CFG.spellcheckDefault }
       };
       this.path = path;
@@ -2562,7 +2919,8 @@
           onBlur: () => this._saveNow(),
           onFormat: (cmd) => bus.emit('exam:format', { cmd }),
           onBackups: () => this._backups(q),
-          onExpand: () => this._expand()
+          onExpand: () => this._expand(),
+          images: this._picturesAllowed(q) ? this._pictureStore() : null
         }));
         wrap.appendChild(ed.el);
       } else if (q.type === 'numeric') {
@@ -2750,6 +3108,7 @@
             if (this.ed) {
               this.ed.flush();
               this.ed.area.innerHTML = cleanHTML(b.html);
+              this.ed._showPictures();
               this.ed.record();
               this.ed._good = { html: this.ed.area.innerHTML, sel: null };
               this.ed._changed();
@@ -2858,6 +3217,7 @@
 <li><kbd>Ctrl</kbd>+<kbd>Z</kbd> undo, <kbd>Ctrl</kbd>+<kbd>Y</kbd> redo; <kbd>Ctrl</kbd>+<kbd>C</kbd>, <kbd>Ctrl</kbd>+<kbd>X</kbd> and <kbd>Ctrl</kbd>+<kbd>V</kbd> copy, cut and paste.${this.att && this.att.paper.clipboard === 'any' ? '' : ' As in Inspera’s exam browser, you can paste only what you copied in this exam (from your answers or the questions): text copied anywhere else cannot be pasted in.'}</li>
 <li>In a list, <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> indent and outdent an item. Right-click in a table for its rows and columns.</li>
 <li>Double-click a formula or a drawing to change it. <kbd>Esc</kbd> leaves the expanded view.</li>
+<li>Insert picture puts in pictures from your computer – a photo of a diagram you drew on paper, say – or drag a picture file into your answer. Type a caption under it if you like. Double-click a picture to take it out.</li>
 <li>The calculator: type a calculation and press <kbd>Enter</kbd>; <kbd>↑</kbd> brings back the earlier ones, <kbd>Esc</kbd> clears it.</li>
 </ul>`);
     }
@@ -2944,6 +3304,7 @@
       this._collect();
       att.submitted = new Date(this.now()).toISOString();
       att.autoSubmitted = !!auto;
+      this._prunePictures(att);
       this._dirty = true;
       this._write();
       if (MG.project && MG.project.flush) MG.project.flush();
@@ -3094,6 +3455,7 @@
       let body;
       try {
         const { blob, name } = await this._docx(att);
+        if (blob.size > 10 * 1048576) return { ok: false, error: 'size', message: `Your essay is too big to hand in with its pictures (${(blob.size / 1048576).toFixed(1)} MB: the most is 10 MB).` };
         const c = att.candidate || {};
         const words = this._questions(att).filter((q) => q.type === 'essay' || q.type === 'short').reduce((n, q) => n + ((att.answers[q.id] || {}).words || 0), 0);
         body = JSON.stringify({ v: 1, password, paper: att.paper.id, week: att.paper.week || 0, title: att.paper.title, name: c.name || fullName(), number: c.number || '',
@@ -3151,7 +3513,7 @@
         x += `<h2>Question ${n}${q.title ? ': ' + esc(q.title) : ''}</h2>`;
         if (q.text) x += `<div class="qtext">${cleanTrusted(q.text)}</div>`;
         if (q.type === 'essay' || q.type === 'short') {
-          x += `<h3>Answer</h3>${a.html ? cleanHTML(a.html) : '<p><i>(no answer)</i></p>'}`;
+          x += `<h3>Answer</h3>${a.html ? withPictures(cleanHTML(a.html), att) : '<p><i>(no answer)</i></p>'}`;
           x += `<p class="meta">Words: ${a.words || 0}${q.words && q.words.max ? ' (limit ' + q.words.max + ')' : ''}</p>`;
         } else if (q.type === 'numeric') {
           x += `<p><b>Answer:</b> ${a.value != null && String(a.value).trim() ? esc(String(a.value).trim()) + (q.units ? ' ' + esc(q.units) : '') : '<i>(no answer)</i>'}</p>`;
@@ -3272,7 +3634,7 @@
 h1{font-size:24px;color:#3b1c42;margin:0 0 6px}h2{font-size:18px;margin:28px 0 8px;border-bottom:1px solid #ccc;padding-bottom:3px}h3{font-size:15px;margin:16px 0 6px}
 .meta{color:#666;font-size:13px;margin:2px 0}.qtext{color:#555;font-style:italic}.qtext img{max-width:100%}
 table{border-collapse:collapse;margin:8px 0}td,th{border:1px solid #999;padding:4px 8px;vertical-align:top}th{background:#eee}
-img.ex-drawing{max-width:100%;height:auto;border:1px solid #ddd}.ex-formula{font-family:'Cambria Math','STIX Two Math',Cambria,serif}
+img.ex-drawing{max-width:100%;height:auto;border:1px solid #ddd}img.ex-image{display:block;width:auto;height:auto;max-width:100%;max-height:22cm;margin:6px 0;border:1px solid #ddd;break-inside:avoid}.ex-formula{font-family:'Cambria Math','STIX Two Math',Cambria,serif}
 .mfrac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .1em}.mnum{border-bottom:1px solid currentColor;padding:0 .15em}.mden{padding:0 .15em}
 .msqrt{display:inline-flex;align-items:flex-start}.mrad{border-top:1px solid currentColor;padding:0 .1em}.mroot{font-size:.65em;margin-right:-.3em}
 .msubsup{display:inline-flex;flex-direction:column;vertical-align:middle;font-size:.75em;line-height:1}.mo{padding:0 .2em}.mfn{padding-right:.15em}

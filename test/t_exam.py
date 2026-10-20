@@ -5,6 +5,7 @@ submission page, submitting, the downloads (the Word file is opened with zipfile
 numerical answers, a free essay, the list of attempts, the calculator against Python, the events, and the layout at
 desktop and phone widths.
 Run:  python3 test/t_exam.py   (screenshots in test/out/exam-*.png)"""
+import base64
 import io
 import json
 import math
@@ -448,6 +449,111 @@ P.click('.ex-draw button:has-text("Clear")')
 P.click('.ex-draw button:has-text("Save and close")')
 sleep(0.2)
 check(count('.ex-area img.ex-drawing') == 1, 'Clear, then Save and close, takes the drawing away')
+# pictures from the computer (Insert picture, or a picture file dropped in): made smaller, each on a line of its own
+MAKEPIC = """([w, hh, type, q]) => { const c = document.createElement('canvas'); c.width = w; c.height = hh; const g = c.getContext('2d');
+  if (type === 'image/jpeg') { const gr = g.createLinearGradient(0, 0, w, hh); gr.addColorStop(0, '#2a6'); gr.addColorStop(1, '#a26'); g.fillStyle = gr; g.fillRect(0, 0, w, hh);
+    for (let i = 0; i < 400; i++) { g.fillStyle = `hsl(${i * 37 % 360},60%,50%)`; g.beginPath(); g.arc((i * 97) % w, (i * 53) % hh, 20 + i % 40, 0, 7); g.fill(); } }
+  else { g.strokeStyle = '#123'; g.lineWidth = 4; g.strokeRect(20, 20, w - 40, hh - 40); g.font = '28px sans-serif'; g.fillStyle = '#c00'; g.fillText('Thirst loop', 40, 80); }
+  return c.toDataURL(type, q).split(',')[1]; }"""
+PHOTO = base64.b64decode(p.js(MAKEPIC, [4000, 3000, 'image/jpeg', 0.95]))   # (as a phone's photo is: large)
+DIAG = base64.b64decode(p.js(MAKEPIC, [420, 260, 'image/png', None]))       # (a diagram with a transparent background)
+
+
+def choose(files):
+    with P.expect_file_chooser() as fc:
+        tb('picture')
+    fc.value.set_files(files)
+    return fc.value
+
+
+def pics():
+    return p.js("""() => [...document.querySelectorAll('.ex-area img.ex-image')].map(i => ({ id: i.getAttribute('data-img'), w: +i.getAttribute('width'), h: +i.getAttribute('height'),
+        src: i.getAttribute('src').slice(0, 5), shown: i.complete && i.naturalWidth > 0, alone: i.parentElement.tagName === 'P' && i.parentElement.childNodes.length === 1 }))""")
+
+
+new_paragraph_at_end()
+check(p.js("() => (document.querySelector('.ex-tb [data-cmd=picture]') || {}).title") == 'Insert picture (from your computer)', 'the toolbar has Insert picture')
+fc = choose([{'name': 'photo.jpg', 'mimeType': 'image/jpeg', 'buffer': PHOTO}, {'name': 'loop.png', 'mimeType': 'image/png', 'buffer': DIAG}])
+check(fc.is_multiple(), 'Insert picture opens the computer’s file chooser, for one picture or several')
+p.wait("() => document.querySelectorAll('.ex-area img.ex-image').length === 2", timeout=20000)
+sleep(0.4)
+pc = pics()
+check([(x['w'], x['h'], x['src'], x['shown'], x['alone']) for x in pc] == [(1600, 1200, 'blob:', True, True), (420, 260, 'blob:', True, True)],
+      f'the pictures are put in, each on a line of its own; the 4000 × 3000 photo made 1600 × 1200: {pc}')
+im = att('Object.fromEntries(Object.entries(a.images).map(([k, v]) => [k, [v.type, v.w, v.h, Math.round(v.data.length * 3 / 4)]]))')
+check(im[pc[0]['id']][0] == 'image/jpeg' and im[pc[0]['id']][3] < 700 * 1024 and im[pc[1]['id']][0] == 'image/png',
+      f'the photo is kept as a JPEG of less than 700 KB (it was {len(PHOTO) // 1024} KB), and the diagram as a PNG: {list(im.values())}')
+check(text('.ex-ednote') == '2 pictures added. You can type a caption under each.' and p.js("() => document.querySelector('.ex-ednote').classList.contains('ok')"),
+      f'a note says so: {text(".ex-ednote")}')
+check(ev('exam:format', "d.cmd === 'picture'") == 1, 'exam:format fired (picture)')
+w0 = p.js(f"() => {E}.ed.words()")
+P.keyboard.type('Figure 1. The thirst loop.')
+sleep(0.2)
+check(p.js("() => { const i = document.querySelectorAll('.ex-area img.ex-image')[1]; return i.parentElement.nextElementSibling.textContent; }") == 'Figure 1. The thirst loop.',
+      'the cursor is on a new line under the pictures, for a caption')
+check(p.js(f"() => {E}.ed.words()") == w0 + 5, 'the pictures add no words; the caption’s do')
+html = p.js(f"() => {E}.ed.getHTML()")
+check(f'data-img="{pc[0]["id"]}"' in html and 'blob:' not in html and p.js(f"(h) => Object.values({E}.att.images).every(v => !h.includes(v.data.slice(0, 60)))", html),
+      'the answer keeps only the pictures’ ids (their data is kept once, with the attempt)')
+# files that aren't pictures, and a picture that can't be opened
+choose([{'name': 'notes.txt', 'mimeType': 'text/plain', 'buffer': b'some notes'}])
+sleep(0.4)
+check(text('.ex-ednote') == 'Only pictures can be added to an answer: PNG, JPEG, GIF or WebP files.' and len(pics()) == 2, f'a file that isn’t a picture is refused: {text(".ex-ednote")}')
+choose([{'name': 'broken.jpg', 'mimeType': 'image/jpeg', 'buffer': b'this is not a JPEG'}])
+p.wait("() => /couldn’t be opened/.test(document.querySelector('.ex-ednote').textContent)", timeout=10000)
+check(text('.ex-ednote') == 'broken.jpg couldn’t be opened: save it as a JPEG or PNG, and add that.' and len(pics()) == 2, 'a picture that can’t be opened says so')
+# dropped in: as Insert picture
+DROPFILE = """([b64, name, type]) => { const A = document.querySelector('.ex-area'); const bin = atob(b64); const u = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); const dt = new DataTransfer(); dt.items.add(new File([u], name, { type }));
+    const r = A.lastElementChild.getBoundingClientRect();
+    A.dispatchEvent(new DragEvent('drop', { dataTransfer: dt, bubbles: true, cancelable: true, clientX: r.left + 4, clientY: r.top + 4 })); }"""
+refused = ev('exam:paste', 'd.refused === true')
+p.js(DROPFILE, [base64.b64encode(DIAG).decode(), 'dropped.png', 'image/png'])
+p.wait("() => document.querySelectorAll('.ex-area img.ex-image').length === 3", timeout=10000)
+check(ev('exam:paste', 'd.refused === true') == refused and text('.ex-ednote').startswith('Picture added.'), 'a picture file dropped into the answer goes in, as with Insert picture')
+tb('undo')
+sleep(0.2)
+check(len(pics()) == 2, 'Undo takes it out')
+tb('redo')
+sleep(0.3)
+check(len(pics()) == 3 and pics()[2]['shown'], 'and Redo puts it back')
+P.dblclick('.ex-area img.ex-image >> nth=2')
+sleep(0.2)
+check('Take the picture out?' in (text('.modal') or ''), 'double-clicking a picture asks whether to take it out')
+P.click('.modal button:has-text("Keep it")')
+sleep(0.2)
+check(len(pics()) == 3, 'Keep it keeps it')
+P.dblclick('.ex-area img.ex-image >> nth=2')
+sleep(0.2)
+P.click('.modal button:has-text("Take it out")')
+sleep(0.2)
+check(len(pics()) == 2, 'Take it out takes it out')
+# at most 10 in an answer
+caret_end()
+choose([{'name': f'small{i}.png', 'mimeType': 'image/png', 'buffer': DIAG} for i in range(9)])
+p.wait("() => document.querySelectorAll('.ex-area img.ex-image').length === 10", timeout=20000)
+sleep(0.3)
+check('An answer can have up to 10 pictures, so only 8 pictures were added.' in text('.ex-ednote'), f'an answer can have up to 10 pictures: {text(".ex-ednote")}')
+choose([{'name': 'one-more.png', 'mimeType': 'image/png', 'buffer': DIAG}])
+sleep(0.4)
+check(len(pics()) == 10 and text('.ex-ednote') == 'An answer can have up to 10 pictures.', 'and no more')
+tb('undo')
+sleep(0.3)
+check(len(pics()) == 2, 'Undo takes the eight out again')
+# copied and pasted in the exam: the same picture
+COPY_PIC = """() => { const i = document.querySelector('.ex-area img.ex-image'); const r = document.createRange(); r.selectNode(i);
+    const g = getSelection(); g.removeAllRanges(); g.addRange(r); i.dispatchEvent(new ClipboardEvent('copy', { clipboardData: new DataTransfer(), bubbles: true, cancelable: true })); }"""
+p.js(COPY_PIC)
+new_paragraph_at_end()
+p.js("() => { const r = document.createRange(); r.selectNodeContents(document.querySelector('.ex-area').lastElementChild); r.collapse(true); const g = getSelection(); g.removeAllRanges(); g.addRange(r); }")
+p.js(PASTE, {'html': p.js("() => document.querySelector('.ex-area img.ex-image').outerHTML"), 'text': ''})
+sleep(0.3)
+pc2 = pics()
+check(len(pc2) == 3 and pc2[2]['id'] == pc2[0]['id'] and pc2[2]['shown'], f'a picture copied in the exam can be pasted, and shows: {[x["id"] for x in pc2]}')
+tb('undo')
+sleep(0.2)
+check(len(pics()) == 2, 'Undo takes the pasted copy out')
+no_errors('pictures')
 # a formula
 new_paragraph_at_end('The flow is ')
 tb('formula')
@@ -592,7 +698,7 @@ check(p.js("() => document.activeElement.dataset.cmd") == 'bold', 'the right arr
 P.keyboard.press('Escape')
 check(p.js("() => document.activeElement.classList.contains('ex-area')"), 'Esc goes back to the answer')
 cmds = sorted(set(e[1]['cmd'] for e in evs() if e[0] == 'exam:format'))
-want = ['backup', 'bold', 'copy', 'drawing', 'expand', 'formula', 'heading', 'indent', 'italic', 'ol', 'outdent', 'paste', 'redo', 'removeFormat', 'restore',
+want = ['backup', 'bold', 'copy', 'drawing', 'expand', 'formula', 'heading', 'indent', 'italic', 'ol', 'outdent', 'paste', 'picture', 'redo', 'removeFormat', 'restore',
         'special', 'subscript', 'superscript', 'table', 'ul', 'underline', 'undo']
 check(all(c in cmds for c in want), f'exam:format fired for every button: missing {[c for c in want if c not in cmds]}')
 wc = p.js(f"() => {E}.ed.words()")
@@ -675,6 +781,10 @@ saved = p.js("async () => JSON.parse(await MG.app.fs.readText('~/essays/tour-1.e
 check('Alveoli' in saved['answers']['tissue']['html'] and saved['answers']['scale-bar']['value'] == '7.5' and saved['answers']['scale-bar']['flag'] is True,
       'the answers and the flags are saved in the file')
 check(ev('exam:saved', "d.path === '/home/user/essays/tour-1.exam.json'") >= 1, 'exam:saved fired with the path')
+used = set(re.findall(r'data-img="([a-z0-9]+)"', saved['answers']['tissue']['html']))
+raw = p.js("async () => await MG.app.fs.readText('~/essays/tour-1.exam.json')")
+check(len(used) == 2 and used <= set(saved['images']) and all(raw.count(saved['images'][i]['data'][:80]) == 1 for i in used),
+      'the file keeps each picture once: the answer and its backup copies hold only their ids')
 caret_end()
 P.keyboard.type(' Saved before the reload.')
 sleep(0.1)
@@ -689,6 +799,8 @@ p.js(EVJS)
 p.js("() => MG.app.showWorkbench('exam')")
 p.wait(f"() => {E} && document.querySelector('.ex-player .ex-area')", timeout=30000)
 check('Saved before the reload' in area_html() and text('.ex-qn') == '1', 'after a reload the attempt is open again, at the same question, with the answer')
+pc3 = p.js("() => [...document.querySelectorAll('.ex-area img.ex-image')].map(i => i.complete && i.naturalWidth > 0 && i.getAttribute('src').startsWith('blob:'))")
+check(pc3 == [True, True], f'and its pictures: {pc3}')
 check(att('a.deadline') == deadline, 'the deadline is the same')
 left = p.js(f"() => Date.parse({E}.att.deadline) - {E}.now()")
 check(text('.ex-timer') == p.js("(ms) => MG.examUtil.fmtRemaining(ms)", left) and left < 20 * 60000, f'the clock carried on: {text(".ex-timer")}')
@@ -761,6 +873,9 @@ rh = text('.ex-receipt h2')
 check(re.fullmatch(r'You submitted at \d\d:\d\d on \d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December) \d{4}', rh), f'the receipt: {rh}')
 check(ev('exam:submit', "d.paper === 'tour' && d.answered === 3 && d.total === 3") == 1, 'exam:submit fired with the numbers of questions')
 check(att('!!a.submitted') is True, 'the attempt is submitted')
+kept = att('Object.keys(a.images).sort()')
+refs = sorted(set(re.findall(r'data-img="([a-z0-9]+)"', att('JSON.stringify(a.answers) + JSON.stringify(a.backups)').replace('\\"', '"'))))
+check(kept == refs and len(kept) >= 2, f'submitting keeps only the pictures that are used: {len(kept)} of them')
 p.shot('exam-receipt')
 
 
@@ -799,6 +914,11 @@ for n in names:
             bad.append(f'{n}: {ex}')
 check(not bad, f'every part of the Word file is well-formed XML: {bad}')
 check('<w:drawing>' in doc and z.read('word/media/image1.png')[:4] == b'\x89PNG', 'the drawing is a picture in Word')
+check(z.read('word/media/image2.jpeg')[:3] == b'\xff\xd8\xff' and z.read('word/media/image3.png')[:4] == b'\x89PNG' and doc.count('name="Picture ') == 2 and doc.count('descr="A picture"') == 2,
+      'the two pictures are pictures in Word too (the photo a JPEG, the diagram a PNG), with their alternative text')
+ext = [(int(a), int(b)) for a, b in re.findall(r'<wp:extent cx="(\d+)" cy="(\d+)"/>', doc)]
+check(len(ext) == 3 and ext[1] == (6 * 914400, round(6 * 914400 * 1200 / 1600)) and ext[2] == (420 * 9525, 260 * 9525),
+      f'the photo is 6 inches wide (the width of the page), the diagram its own size: {ext[1:]}')
 check('τ = RC' in plain, 'the formula is written as text')
 check('Heading2' in doc and 'Structure' in plain, 'the heading is a heading')
 check(ev('exam:download', "d.format === 'docx'") == 1, 'exam:download fired (docx)')
@@ -806,11 +926,13 @@ hpath, hname = download('Web page', 'exam-tour.html')
 html = open(hpath, encoding='utf-8').read()
 check(hname.endswith('.html') and '<h1 class="title">Getting to know exam practice</h1>' in html and '<b>thin</b>' in html and 'ex-formula' in html and '<table' in html,
       'the web page has the title, the formatting, the formula and the table')
+check(len(re.findall(r'<img class="ex-image" data-img="[a-z0-9]+" [^>]*src="data:image/(?:jpeg|png);base64,', html)) == 2, 'and the pictures, in the page itself')
 tpath, tname = download('Plain text', 'exam-tour.txt')
 txt = open(tpath, encoding='utf-8').read()
 check(tname.endswith('.txt') and 'Alveoli are thin walled' in txt and '1. first point' in txt and 'τ = RC' in txt and '[drawing]' in txt and 'Answer: 7.5 µm' in txt,
       'the text file has the answers (lists numbered, formula as text)')
-order = [txt.find(x) for x in ['Alveoli are thin', 'Resistance in Ω', 'Vessel', '[drawing]', 'The flow is', 'pasted from the clipboard']]
+check(txt.count('[picture]') == 2 and 'Figure 1. The thirst loop.' in txt, 'in the text file, the pictures are [picture], with their caption')
+order = [txt.find(x) for x in ['Alveoli are thin', 'Resistance in Ω', 'Vessel', '[drawing]', '[picture]', 'Figure 1. The thirst loop.', 'The flow is', 'pasted from the clipboard']]
 check(order == sorted(order) and order[0] > 0 and re.search(r'The flow is\s+τ = RC', txt), f'everything is in the order it was written: {order}')
 P.click('.ex-recacts .btn.primary')
 P.click('.popmenu button:has-text("Print")')
@@ -827,6 +949,7 @@ rv = text('.ex-review')
 check('Guidance' in rv and '✓ Right' in rv and 'The answer is 7.5 µm' in rv and 'The answer is B' in rv, 'the review shows the guidance and the right answers')
 check(text('.ex-score') == 'Marked automatically: 3 of 3 marks', f'the numerical and multiple-choice questions are marked: {text(".ex-score")}')
 check(p.js("() => document.querySelector('.ex-review .ex-area, .ex-review [contenteditable=true]') === null"), 'the review cannot be changed')
+check(p.js("() => [...document.querySelectorAll('.ex-review img.ex-image')].map(i => i.complete && i.naturalWidth > 0)") == [True, True], 'the review shows the pictures')
 p.shot('exam-review')
 P.click('.ex-revbar button:has-text("Back")')
 p.wait("() => document.querySelector('.ex-receipt')")
