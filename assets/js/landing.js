@@ -3,7 +3,8 @@
    ready, how far the student has got (what that supervision's page saved
    in this browser: its ticks and answers) and what they have done with
    the essay to hand in (MG.siteStore 'paper:<id>', kept by Supervision
-   work); and the student's name, which goes on the work they hand in.
+   work: started, submitted, downloaded, handedIn); and the student's
+   name, which goes on the work they hand in.
    ===================================================================== */
 (function () {
   'use strict';
@@ -47,11 +48,12 @@
     const r = s.paper ? siteStore.get('paper:' + s.paper, null) : null;
     if (!e || !s.paper) return;
     e.className = 'tile-essay';
-    if (r && r.downloaded) {
-      e.textContent = `✓ Essay submitted and downloaded (${day(r.downloaded)}): remember to send it in`;
+    const to = (CFG.handIn && CFG.handIn.to) || 'your supervisor';
+    if (r && r.handedIn) {
+      e.textContent = `✓ Essay handed in (${day(r.handedIn)})`;
       e.classList.add('ok');
     } else if (r && r.submitted) {
-      e.textContent = `Essay submitted (${day(r.submitted)}): now download it as a Word document and send it in`;
+      e.textContent = `Essay submitted (${day(r.submitted)}), but not handed in yet: hand it in to ${to} from Supervision work`;
       e.classList.add('todo');
     } else if (r && r.started) {
       e.textContent = 'Essay started, not yet submitted';

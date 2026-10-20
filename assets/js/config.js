@@ -28,12 +28,25 @@ window.MG_CONFIG = {
   objectives: [1, 2, 4, 10, 20, 40],
   micronsPerScreenPixelAt20x: 0.5,
 
-  /* Exam practice. The papers are in exams/ (exams/index.json lists them). spellcheckDefault: whether the browser's
+  /* Supervision work. The papers are in exams/ (exams/index.json lists them). spellcheckDefault: whether the browser's
      spelling checker is on when a student starts a paper (it is usually off in real exams; students can switch it).
      autosaveSeconds: how often an answer that is being typed is saved. */
   examBase: 'exams/',
   spellcheckDefault: false,
   autosaveSeconds: 5,
+
+  /* Where students hand in the work they submit in Supervision work: a Dropbox file request, to which they upload the
+     Word document of their essay (a paper with "handIn": true uses it; a paper can name its own). The request is
+     protected by a password that the supervisor gives the students: it is not on this site, and it must not be put
+     here. url: the request's address; to: who it goes to; service: what it is called; password: whether students need
+     the password; title: the request's title, as Dropbox shows it. */
+  handIn: {
+    url: 'https://www.dropbox.com/request/e790md8zp1o350ok02g9',
+    to: 'Tim Hearn',
+    service: 'Dropbox',
+    password: true,
+    title: 'BMS Supervision work 26-27'
+  },
 
   /* The examples of the Diagrams and Circuits tabs. */
   examplesBase: 'examples/',

@@ -471,10 +471,33 @@ time.sleep(0.2)
 click('.modal button:has-text("Submit now")')
 p.wait("() => document.querySelector('.ex-receipt')", timeout=10000)
 check(wait_ticked('es-submit', 5), 'submitting ticks es-submit')
-hb = p.js("() => document.querySelector('.ex-receipt .ex-handin') ? document.querySelector('.ex-receipt .ex-handin').innerText : ''")
-check('Now hand it in' in hb and 'Tim Hearn' in hb and 'Download the Word document' in hb, f'the receipt says how to hand it in: {hb[:160]!r}')
+# ---------------------------------------------------------------- handing it in, step by step
+# (the hand-in page is Tim Hearn's Dropbox file request: here it is a stand-in, so that the tests never upload anything)
+DBX = p.js("() => MG.config.handIn.url")
+check(DBX.startswith('https://www.dropbox.com/request/'), f'the site hands in to a Dropbox file request ({DBX})')
+# (the password is given to students, and must never be in the site: given as BMS_HANDIN_PASSWORD, every file is
+# searched for it; it is not written here)
+PW = os.environ.get('BMS_HANDIN_PASSWORD')
+if PW:
+    ROOT = os.path.dirname(os.path.dirname(OUT))
+    found = []
+    for dirpath, dirs, files in os.walk(ROOT):
+        dirs[:] = [d for d in dirs if d not in ('.git', 'out', '__pycache__', 'slides', 'anatomy', 'sims', 'recordings', 'molecules')]
+        for f in files:
+            try:
+                if PW in open(os.path.join(dirpath, f), encoding='utf-8', errors='ignore').read():
+                    found.append(os.path.relpath(os.path.join(dirpath, f), ROOT))
+            except OSError:
+                pass
+    check(not found, f'the hand-in password is in none of the site’s files: {found}')
+p.ctx.route('https://www.dropbox.com/**', lambda r: r.fulfill(status=200, body='<!doctype html><title>Dropbox</title><h1>The hand-in page (a stand-in)</h1>', headers={'Content-Type': 'text/html'}))
+hb = p.js("() => document.querySelector('.ex-receipt .ex-hi') ? document.querySelector('.ex-receipt .ex-hi').innerText : ''")
+check('Now hand it in' in hb and 'Tim Hearn’s Dropbox' in hb and 'password' in hb and 'supervision-1-essay-ada-lovelace.docx' in hb and 'Finished uploading' in hb,
+      f'the receipt takes the student through handing it in: {hb[:200]!r}')
+steps = p.js("() => [...document.querySelectorAll('.ex-receipt .ex-hi-step')].map(s => s.querySelector('.ex-hi-t').textContent + (s.classList.contains('done') ? ' ✓' : ''))")
+check(steps == ['Download your essay', 'Upload it to Tim Hearn’s Dropbox', 'Say that it is handed in'], f'in three steps: {steps}')
 with P.expect_download() as d:
-    click('.ex-receipt .ex-handin button')
+    click('.ex-receipt .ex-hi button:has-text("Download the Word document")')
 path = os.path.join(OUT, 's1-essay.docx')
 d.value.save_as(path)
 fname = d.value.suggested_filename
@@ -483,29 +506,69 @@ doc = re.sub(r'<[^>]+>', '', zipfile.ZipFile(path).read('word/document.xml').dec
 check(NAME in doc and 'Discuss, with examples, why negative feedback' in doc and 'Negative feedback opposes a change' in doc,
       'the Word document has the student’s name, the title and the essay')
 check(wait_ticked('es-word', 5), 'downloading it ticks es-word')
+time.sleep(0.4)
+check(p.js("() => document.querySelector('.ex-receipt .ex-hi-step').classList.contains('done')") and
+      p.js("() => !!document.querySelector('.ex-receipt .ex-hi a.btn.primary')"), 'step 1 is done, and opening the hand-in page is now the thing to do')
+link = p.js("() => { const a = document.querySelector('.ex-receipt .ex-hi a.btn'); return [a.href, a.target, a.rel]; }")
+check(link == [DBX, '_blank', 'noopener'], f'the hand-in page opens in a new tab: {link}')
+check(not ticked('es-upload') and not ticked('es-send'), 'es-upload and es-send wait for the student')
+with p.ctx.expect_page() as np:
+    click('.ex-receipt .ex-hi a:has-text("Open the hand-in page")')
+np.value.wait_for_load_state()
+check(np.value.url == DBX and 'hand-in page' in np.value.inner_text('body'), f'Open the hand-in page opens it ({np.value.url})')
+np.value.close()
+check(wait_ticked('es-upload', 5) and ev('exam:handin', "d.paper === 's1-essay' && d.step === 'opened'") == 1, 'opening it ticks es-upload')
+time.sleep(0.4)
+click('.ex-receipt .ex-hi button:has-text("I have handed it in")')
+time.sleep(0.2)
+mt = p.js("() => document.querySelector('.modal') ? document.querySelector('.modal').innerText : ''")
+check('Finished uploading' in mt, f'it asks first whether Dropbox said Finished uploading: {mt[:120]!r}')
+click('.modal button:has-text("Not yet")')
+time.sleep(0.2)
+check(not ticked('es-send') and not (p.js("() => MG.siteStore.get('paper:s1-essay')") or {}).get('handedIn'), 'Not yet leaves it to hand in')
+click('.ex-receipt .ex-hi button:has-text("I have handed it in")')
+time.sleep(0.2)
+click('.modal button:has-text("Yes, it is handed in")')
+check(wait_ticked('es-send', 5) and ev('exam:handin', "d.paper === 's1-essay' && d.step === 'confirmed'") == 1, 'saying it is handed in ticks es-send')
+time.sleep(0.3)
+done_text = p.js("() => document.querySelector('.ex-receipt .ex-hi').innerText")
+check('Handed in to Tim Hearn' in done_text and p.js("() => document.querySelector('.ex-receipt .ex-hi').classList.contains('handed')"), f'the receipt says it is handed in: {done_text[:100]!r}')
 st = p.js("() => MG.siteStore.get('paper:s1-essay')")
-check(st and st.get('started') and st.get('submitted') and st.get('downloaded'), f'the site remembers that the essay was started, submitted and downloaded: {sorted((st or {}).keys())}')
-check(not ticked('es-send'), 'es-send is left for the student to tick')
-P.locator('li[data-task="es-send"] .task-check input').check()
-check(ticked('es-send'), 'the student ticks es-send')
+check(st and all(st.get(k) for k in ('started', 'submitted', 'downloaded', 'opened', 'handedIn')), f'the site remembers each step: {sorted((st or {}).keys())}')
 P.locator('.q[data-q="es-q-next"] textarea').fill('Take a clearer position in the introduction.')
 time.sleep(0.6)
 check(answered('es-q-next'), 'es-q-next is answered')
 p.shot('s1-essay-receipt')
-# the paper's first page offers the Word document again
+# the paper's first page: what was submitted, handed in, and how to hand it in again
 p.js(f"() => {E}.openPaper('s1-essay')")
 p.wait("() => document.querySelector('.ex-startacts') && /You submitted this at/.test(document.querySelector('.ex-startacts').innerText)", timeout=10000)
-acts = p.js("() => [...document.querySelectorAll('.ex-startacts button')].map(b => b.textContent)")
-check(acts == ['Download the Word document', 'See what you submitted', 'Start a new attempt'], f'after submitting, the first page offers the Word document again: {acts}')
+sa = p.js("() => document.querySelector('.ex-startacts').innerText")
+acts = p.js("() => [...document.querySelectorAll('.ex-startacts .btn')].map(b => b.textContent)")
+check('Handed in to Tim Hearn' in sa and acts == ['Download it again', 'Open the hand-in page again', 'See what you submitted', 'Start a new attempt'],
+      f'after handing it in, the first page says so, and offers it again: {acts}')
 with P.expect_download() as d2:
-    click('.ex-startacts button:has-text("Download the Word document")')
+    click('.ex-startacts button:has-text("Download it again")')
 check(d2.value.suggested_filename == fname, 'and it downloads the same essay')
-click('.ex-startacts button:has-text("See what you submitted")')
-p.wait("() => document.querySelector('.ex-receipt')", timeout=10000)
-check(True, 'and See what you submitted shows the receipt')
+# not handed in after all: undone, and the steps come back
+click('.ex-startacts button:has-text("Not handed in after all?")')
+time.sleep(0.2)
+click('.modal button:has-text("Mark it as not handed in")')
+time.sleep(0.3)
+check(not (p.js("() => MG.siteStore.get('paper:s1-essay')") or {}).get('handedIn') and p.js("() => document.querySelectorAll('.ex-startacts .ex-hi-step').length") == 3,
+      'it can be marked as not handed in, and the steps come back')
+p.js(f"() => {E}.home()")
+p.wait("() => document.querySelector('.ex-card[data-paper=\"s1-essay\"] .ex-pill')", timeout=10000)
+pill = p.js("() => document.querySelector('.ex-card[data-paper=\"s1-essay\"] .ex-pill').textContent")
+check(pill == 'Submitted · not handed in yet', f'the list of papers says it is still to hand in: {pill}')
+p.js(f"() => {E}.openPaper('s1-essay')")
+p.wait("() => document.querySelector('.ex-startacts .ex-hi')", timeout=10000)
+click('.ex-startacts .ex-hi button:has-text("I have handed it in")')
+time.sleep(0.2)
+click('.modal button:has-text("Yes, it is handed in")')
+time.sleep(0.3)
 p.js(f"() => {E}.home()")
 p.wait("() => document.querySelector('.ex-card[data-paper=\"s1-essay\"] .ex-pill.ok')", timeout=10000)
-check('Submitted' in p.js("() => document.querySelector('.ex-card[data-paper=\"s1-essay\"] .ex-pill.ok').textContent"), 'the list of papers marks the essay as submitted')
+check(p.js("() => document.querySelector('.ex-card[data-paper=\"s1-essay\"] .ex-pill.ok').textContent").startswith('Handed in'), 'and, handed in again, that it is handed in')
 no_errors('the essay')
 
 # ====================================================================== 7 More practice
@@ -526,8 +589,8 @@ check(set(undone) <= {'ck-q-thirst', 'ck-q-light', 'wh-q-light', 'wh-q-pit', 'ht
 p.open('index.html')
 tile = p.js("() => document.querySelector('.tile[data-sup=\"1\"]').innerText")
 m_ = re.search(r'(\d+) of (\d+) steps and questions done', tile)
-check(m_ and int(m_.group(2)) == 67 and int(m_.group(1)) >= 60, f'the tile shows how far the student has got: {m_.group(0) if m_ else tile[:200]!r}')
-check('✓ Essay submitted and downloaded' in tile and 'remember to send it in' in tile, 'and that the essay has been submitted and downloaded')
+check(m_ and int(m_.group(2)) == 68 and int(m_.group(1)) >= 61, f'the tile shows how far the student has got: {m_.group(0) if m_ else tile[:200]!r}')
+check('✓ Essay handed in' in tile, f'and that the essay has been handed in: {tile[-120:]!r}')
 p.shot('s1-landing-after')
 no_errors('the landing page afterwards')
 p.close()

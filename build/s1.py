@@ -30,7 +30,7 @@ def handin_box(buttons=True):
   <ul>
     <li>An essay, written in <b>Supervision work</b> – the first tab of the workbench – as you will write essays in the online exam: typed, in one sitting, without notes and with nothing pasted in.</li>
     <li>There is no time limit, but aim for about <b>40 minutes</b>.</li>
-    <li>When you have submitted it, download it as a <b>Word document</b> and send it to <b>{SUPERVISOR}</b> before your supervision.</li>
+    <li>When you have submitted it, <b>hand it in</b> from the same page, before your supervision: you download it as a Word document and upload that to <b>{SUPERVISOR}</b>’s Dropbox, with the password he gives you.</li>
   </ul>
   {b}
 </div>'''
@@ -480,12 +480,13 @@ def ch_write(num):
 <p class="essay-title">“{ESSAY}”</p>
 
 <h2 id="es-why">Why write it like this?</h2>
-<p>Your exams are written on a computer, in an online exam system: you type your answers in one sitting, against the clock, without notes, and you can’t paste anything in. Supervision work is set up in the same way. Writing your supervision essays like this makes the exam familiar long before the summer: you find out how much you can plan and write in 40 minutes, and what it is like to do it without your notes. And because your supervisor sees the essay you can write in that time, the feedback is about the essay you would actually write in the exam – not one polished over a week.</p>
+<p>Your exams are written on a computer, in an online exam system: you type your answers in one sitting, against the clock, without notes, and you can’t paste anything in. Supervision work is set up in the same way. Writing your supervision essays like this makes the exam familiar long before the summer: you find out how much you can plan and write in 40 minutes, and what it is like to do it without your notes. And because your supervisor sees the essay you can write in that time, the feedback is about the essay you would actually write in the exam – not one polished over a week. As in the exam, you submit it when you have finished, and it is handed in from the same page: here, you upload it to {SUPERVISOR}’s Dropbox.</p>
 
 <h2 id="es-before">Before you start</h2>
 <ul>
 <li>Read how essays are marked {goto("s1-marking", "chapter 4")}, and about plagiarism {goto("s1-plag", "chapter 5")}.</li>
 <li>Revise the lectures first if you like. Then put your notes away, and find about 45 minutes when you won’t be interrupted.</li>
+<li>Have the <b>hand-in password</b> that {SUPERVISOR} gave you ready, for handing it in at the end. It isn’t on this site.</li>
 <li>There is no time limit, but give yourself about <b>40 minutes</b>, as in the exam. The clock at the top of the paper counts the time you spend writing, and tells you when you reach 40 minutes. If you haven’t finished by then, write your conclusion – or carry on if you need to: the clock shows how long you took.</li>
 <li>Spend the first five minutes planning. What is your answer to the question? Which examples support it, and in what order will you make your points? You can plan on paper, or in the box itself, and delete the plan before you submit.</li>
 </ul>
@@ -495,16 +496,18 @@ def ch_write(num):
     task("es-paste", 'Before you write, try it: copy a sentence of these instructions (<kbd>Ctrl</kbd>+<kbd>C</kbd>, or <kbd>⌘</kbd>+<kbd>C</kbd> on a Mac) and paste it into the box (<kbd>Ctrl</kbd>+<kbd>V</kbd>). It won’t go in.', auto="exam:paste paper=s1-essay refused=true"),
     task("es-write", 'Plan, then write: an introduction that says what your essay will argue, paragraphs that each make one point, with examples, and a conclusion that draws them together.', auto="exam:words paper=s1-essay words>299"),
     task("es-submit", 'Go to the submission page (the ✓ tile at the bottom right), check your essay, and submit it.', auto="exam:submit paper=s1-essay", check="paper:s1-essay.submitted"),
-    task("es-word", 'Download it: <b>Download the Word document</b>, on the page that follows. (The first page of the paper offers it again later.)', auto="exam:download paper=s1-essay format=docx", check="paper:s1-essay.downloaded"),
-    task("es-send", f'Send the Word document to <b>{SUPERVISOR}</b> before your supervision. Tick this step yourself when you have.'),
+    task("es-word", 'Hand it in, on the page that follows. First, <b>Download the Word document</b>: it goes to your Downloads folder. (The first page of the paper offers these steps again later.)', auto="exam:download paper=s1-essay format=docx", check="paper:s1-essay.downloaded"),
+    task("es-upload", f'Then <b>Open the hand-in page</b>, {SUPERVISOR}’s Dropbox, in a new tab. Enter the password he gave you, press <b>Add files</b> ▸ <b>Files from computer</b> and choose the Word document, type your name and email address, and press <b>Upload</b>.', auto="exam:handin paper=s1-essay step=opened", check="paper:s1-essay.opened"),
+    task("es-send", 'When Dropbox says <b>Finished uploading</b>, come back to this tab and press <b>I have handed it in</b>.', auto="exam:handin paper=s1-essay step=confirmed", check="paper:s1-essay.handedIn"),
 ])}
+{callout("info", "The hand-in page", f"<p>It is {SUPERVISOR}’s Dropbox file request for the year’s supervision work, <i>BMS Supervision work 26-27</i>: you don’t need a Dropbox account. It asks first for the password, which {SUPERVISOR} gives you – keep it to yourself – and then for your file, your name and your email address. If it won’t open, or the upload fails, tell {SUPERVISOR}, and send him the Word document another way.</p>")}
 {callout("info", "After you have handed it in", "<p><b>Review my answers</b>, on the page that follows the submission, shows the ground a good answer covers. Read it after you have handed your essay in, and note what you would add or change: that is what the supervision is for.</p><p>Your essay is kept in this browser, in Files → <code>essays</code>. On another computer it won’t be there, so download it before you leave.</p>")}
 {q("es-q-next", "Once you have read the guidance: what is one thing you would do differently in your next essay?",
    "Your own answer is what matters here: bring it to your supervision. It might be about the content (an example you missed, or one you described without linking it to the question), about the argument (a clearer position from the start), or about the time (more planning, or a shorter introduction).")}
 '''
     return chapter("s1-write", num, "Write your essay", "exam", "Write your essay, and hand it in", 45,
                    f"The one piece of work to hand in this week. Write it in Supervision work, as you will write in the "
-                   f"online exam; then download it as a Word document and send it to {SUPERVISOR}.", body)
+                   f"online exam; then hand it in from the same page, uploading it to {SUPERVISOR}’s Dropbox.", body)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
