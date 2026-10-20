@@ -9,7 +9,7 @@ Students don't need a Google account, and they never leave the site. The passwor
 1. Sign in to the Google account whose Drive should receive the work, and go to [script.google.com](https://script.google.com). Press **New project**, and name it (click *Untitled project* at the top), for example *BMS supervisions hand-in*.
 2. Delete everything in the editor's `Code.gs`, and paste in the whole of [Code.gs](Code.gs) from this folder. Press **Save** (the disk icon).
 3. Optional: in **Project Settings** (the cog on the left), tick *Show "appsscript.json" manifest file in editor*. Then open `appsscript.json` in the editor and replace it with [appsscript.json](appsscript.json) from this folder. This sets the time zone to London and gives the web app its settings.
-4. Set the password. In **Project Settings** (the cog), under **Script properties**, press **Add script property**. Enter the property `PASSWORD`, and as its value the hand-in password that you will give the students. Then press **Save script properties**. The Dropbox request's password can be used here too, so that students only need one.
+4. Set the password. In **Project Settings** (the cog), under **Script properties**, press **Add script property**. Enter the property `PASSWORD`, and as its value the hand-in password that you will give the students. Then press **Save script properties**.
 5. Make the folder and the sheet. Back in the **Editor** (`< >` on the left), choose `setup` in the list of functions at the top and press **Run**.
    - The first time, Google asks you to let the script use your Drive and Sheets. Press **Review permissions** and choose your account.
    - If Google says *Google hasn't verified this app*, press **Advanced** and then **Go to BMS supervisions hand-in (unsafe)**. It is your own script, so this is expected.
@@ -23,7 +23,7 @@ Students don't need a Google account, and they never leave the site. The passwor
 
    Then press **Deploy**. Copy the **Web app URL**, which ends in `/exec`.
 7. Check it: open the address in a private (incognito) window, where you aren't signed in to Google, as your students won't be. It should show `{"ok":true,"service":"BMS supervisions hand-in","version":1,"ready":true}`. If Google asks you to sign in instead, *Who has access* isn't *Anyone*: change it under **Deploy → Manage deployments**.
-8. Give the address to the site: put it in `assets/js/config.js`, as `script` under `handIn`, and run `python3 build/make_page.py` (the chapters then say that the essay goes straight to your Google Drive) – or send the address to whoever looks after the site.
+8. Give the address to the site: put it in `assets/js/config.js`, as `script` under `handIn` – or send it to whoever looks after the site.
 
 **If your Google account is managed by an organisation**, its administrator may not allow web apps that *Anyone* can use. If *Anyone* isn't offered in step 6, ask them, or use a personal Google account.
 

@@ -7,9 +7,7 @@ It also writes the lists that the tabs read: slides/index.json (the microscope's
 slides/*/slide.json), exams/index.json (the papers of Supervision work) and examples/index.json (the diagrams and
 circuits), and gives every page the list of the files that a new user finds in their home folder (everything in
 ../starter: starter/data/x.csv becomes ~/data/x.csv).
-Run:  python3 build/make_page.py
-(BMS_PAGES_OUT=folder writes the pages into that folder instead, and not the lists: the tests use it, with
-BMS_HANDIN_SCRIPT – see supervisions.py – to build the pages for the other way of handing in.)"""
+Run:  python3 build/make_page.py"""
 import html as H
 import importlib
 import json
@@ -22,11 +20,6 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from supervisions import COURSE, GUIDE, SITE_TITLE, SUPERVISIONS, SUPERVISOR  # noqa: E402
-
-PAGES = os.path.abspath(os.environ.get('BMS_PAGES_OUT') or SITE)   # where the pages go
-LISTS = PAGES == SITE                                                 # (the lists only go into the site)
-if not LISTS:
-    os.makedirs(PAGES, exist_ok=True)
 
 # the starter files: starter/ of the site → ~/ of the user. Increase STARTERS_VERSION when you add a starter file after
 # students have started, so that they receive it (files they already have are left alone).
@@ -42,8 +35,6 @@ for root, dirs, files in os.walk(os.path.join(SITE, 'starter')):
 
 
 def write_json(path, data):
-    if not LISTS:
-        return
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=1, ensure_ascii=False)
         f.write('\n')
@@ -180,7 +171,7 @@ def build_page(pg, week):
     if left:
         print(pg['page'], 'has placeholders left:', left)
         bad = True
-    write(os.path.join(PAGES, pg['page']), page)
+    write(os.path.join(SITE, pg['page']), page)
     tasks = [t for t, opt in p.tasks if not opt]
     questions = [q for q, opt in p.questions if not opt]
     print(f'{pg["page"]}: {len(chapters)} chapters, {len(p.tasks)} steps and {len(p.questions)} questions '
@@ -229,7 +220,7 @@ left = re.findall(r'\{\{[A-Z_]+\}\}', land)
 if left:
     print('index.html has placeholders left:', left)
     bad = True
-write(os.path.join(PAGES, 'index.html'), land)
+write(os.path.join(SITE, 'index.html'), land)
 print(f'index.html: {len(SUPERVISIONS)} tiles; {len(starters)} starter files; {len(slides)} slides; {len(papers)} papers; '
       f'{sum(len(v) for v in examples.values())} examples')
 sys.exit(1 if bad else 0)

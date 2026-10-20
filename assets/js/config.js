@@ -41,17 +41,12 @@ window.MG_CONFIG = {
      script: the address of the hand-in script (handin/Code.gs), published as a Google Apps Script web app from the
        supervisor's Google account (handin/README.md says how). The site sends the Word document to it, with the
        password that the student types; it checks the password, saves the document in the supervisor's Google Drive
-       and sends back a receipt. Leave it empty ('') until it is set up: students then hand in through Dropbox. When
-       you change it, run python3 build/make_page.py, because the chapters say how to hand in.
-     dropbox: a Dropbox file request, where students upload the Word document themselves, step by step: the way to
-       hand in when there is no script, or when the script can't be reached.
-     to: who the work goes to; password: whether students need a password; title: the Dropbox request's title. */
+       and sends back a receipt.
+     to: who the work goes to; password: whether students need a password. */
   handIn: {
     to: 'Tim Hearn',
     password: true,
-    script: '',
-    dropbox: 'https://www.dropbox.com/request/e790md8zp1o350ok02g9',
-    title: 'BMS Supervision work 26-27'
+    script: 'https://script.google.com/macros/s/AKfycbxeCW2Orw3iCkQb5IPVtyGfB2-l6TTvGRRt5FUnKY6lpnpShigUe0NB2SNPQGypBrwB/exec'
   },
 
   /* The examples of the Diagrams and Circuits tabs. */

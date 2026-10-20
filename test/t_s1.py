@@ -6,21 +6,19 @@ page), and each chapter's steps ticking as the student does them – the thirst 
 finds in Anatomy and the Microscope, the molecules, the R–R interval, the heart-rate data in R (the numbers the model
 answers give), the multiple-choice questions of the marking and plagiarism chapters – and the landing page's progress
 and essay status afterwards; the layout on a phone.
-Handing in is tried both ways that config.js can set up – straight to Google Drive through the hand-in script, and
-through Dropbox – the way that is set up on the main page, the other on a page of its own built for it; both are
-stand-ins, so nothing is handed in. Given the hand-in password as BMS_HANDIN_PASSWORD, it checks that no file has it.
+Handing in goes straight to Google Drive, through the hand-in script (here a stand-in, so nothing is handed in): no
+password, a wrong one, no answer, the hand-in busy, then the receipt, and handing it in again. Given the hand-in
+password as BMS_HANDIN_PASSWORD, it checks that no file has it.
 Run:  python3 test/t_s1.py   (screenshots in test/out/s1-*.png; R is downloaded from the internet)"""
 import base64
 import io
 import json
 import os
 import re
-import subprocess
-import sys
 import time
 import zipfile
 
-from h import Page, check, done, OUT, SITE
+from h import Page, check, done, OUT
 
 A = 'MG.app.anatomy'
 F = 'MG.app.flow'
@@ -138,10 +136,10 @@ no_errors('the landing page')
 # ====================================================================== Supervision 1's page
 p.open('supervision-1.html')
 listen()
-# how the essay is handed in, as config.js sets it up: straight to Google Drive (the hand-in script), or through Dropbox
-HI_CFG = p.js("() => MG.config.handIn")
-MODE = 'script' if HI_CFG.get('script') else 'dropbox'
-print(f'(handing in {"straight to Google Drive, through the hand-in script" if MODE == "script" else "through Dropbox"}, as config.js sets it up)')
+# the essay is handed in through the hand-in script, in Tim Hearn's Google account (config.js: handIn.script)
+SCRIPT = p.js("() => MG.config.handIn.script") or ''
+check(bool(re.match(r'https://script\.google\.com/macros/s/[\w-]+/exec$', SCRIPT)), f'the site hands in to the hand-in script, a web app of Apps Script ({SCRIPT[:48]}…)')
+check('dropbox' not in p.js("() => document.body.textContent + JSON.stringify(MG.config)").lower(), 'nothing on the page, or in its settings, mentions Dropbox')
 chs = p.js("() => [...document.querySelectorAll('.chapter')].map(c => c.id + ':' + c.dataset.num)")
 check(chs == ['s1-week:0', 's1-clock:1', 's1-where:2', 's1-heart:3', 's1-marking:4', 's1-plag:5', 's1-write:6', 's1-more:7'], f'Supervision 1 has its eight chapters: {chs}')
 check(p.js("() => document.body.dataset.week") == '1' and p.js("() => window.BMS_PAGE && window.BMS_PAGE.week") == 1, 'the page knows it is week 1')
@@ -156,8 +154,7 @@ check('No time limit (about 40 minutes suggested)' in meta, f'the essay has no t
 check(p.js("() => document.querySelector('.ex-card[data-paper=\"s1-revision\"] .ex-cmeta').textContent").find('marks') < 0, 'the revision titles carry no marks')
 check(wait_ticked('wk-name', 5), 'the name given on the landing page ticks wk-name')
 box = p.js("() => document.querySelector('#s1-week .handin-box').innerText")
-check('Discuss, with examples' in box and '40 minutes' in box and 'Tim Hearn' in box and
-      ('goes straight to his Google Drive' in box if MODE == 'script' else 'Word document' in box and 'Dropbox' in box),
+check('Discuss, with examples' in box and '40 minutes' in box and 'type the hand-in password that Tim Hearn gives you, and it goes straight to his Google Drive' in box,
       f'This week shows the essay to hand in, the 40 minutes, and how it is handed in to Tim Hearn: {box[-160:]!r}')
 p.shot('s1-week')
 no_errors('opening Supervision 1')
@@ -480,24 +477,14 @@ click('.ex-tile.review')
 p.wait("() => document.querySelector('.ex-submit')", timeout=10000)
 click('.ex-submit')
 time.sleep(0.2)
-SUBMIT_SAYS = {'script': 'Then you hand it in, from the page that follows: it goes straight to Tim Hearn’s Google Drive.',
-               'dropbox': 'Then you hand it in: you download it as a Word document and upload it to Tim Hearn’s Dropbox.'}
 mt = p.js("() => document.querySelector('.modal') ? document.querySelector('.modal').innerText : ''")
-check(SUBMIT_SAYS[MODE] in mt, f'Submit asks first, and says how it will then be handed in: {mt[-120:]!r}')
+check('Then you hand it in, from the page that follows: it goes straight to Tim Hearn’s Google Drive.' in mt, f'Submit asks first, and says how it will then be handed in: {mt[-120:]!r}')
 click('.modal button:has-text("Submit now")')
 p.wait("() => document.querySelector('.ex-receipt')", timeout=10000)
 check(wait_ticked('es-submit', 5), 'submitting ticks es-submit')
 # ---------------------------------------------------------------- handing it in
-# The site hands in either way that config.js can set up (handIn): straight to Tim Hearn's Google Drive, through the
-# hand-in script (handIn.script: handin/Code.gs, a web app of Google Apps Script), or by the student uploading the Word
-# document to his Dropbox file request (handIn.dropbox), step by step. This page hands in the way that is set up (MODE);
-# a page of its own, at the end, the other way, with the site's pages built for it. Both are stand-ins, so that the
-# tests never hand anything in.
-DBX = HI_CFG.get('dropbox') or ''
-check(DBX.startswith('https://www.dropbox.com/request/'), f'the site can hand in to a Dropbox file request ({DBX})')
-if MODE == 'script':
-    check(bool(re.match(r'https://script\.google\.com/macros/s/[\w-]+/exec$', HI_CFG['script'])), f'the hand-in script is a web app of Apps Script ({HI_CFG["script"]})')
-SCRIPT = HI_CFG.get('script') or 'https://script.google.com/macros/s/AKfyTESTDEPLOYMENT/exec'
+# Straight to Tim Hearn's Google Drive, through the hand-in script (config.js: handIn.script – handin/Code.gs, a web
+# app of Google Apps Script). Here the script is a stand-in, so that the tests never hand anything in.
 TEST_PW = 'the-stand-in-password'   # (the stand-in's: the real password is never in the tests)
 # (the real password is given to students, and must never be in the site: given as BMS_HANDIN_PASSWORD, every file is
 # searched for it; it is not written here)
@@ -514,17 +501,13 @@ if PW:
             except OSError:
                 pass
     check(not found, f'the hand-in password is in none of the site’s files: {found}')
-STEPS_DBX = ['Download your essay', 'Upload it to Tim Hearn’s Dropbox', 'Say that it is handed in']
 FILE = 'supervision-1-essay-ada-lovelace.docx'
 RX = '.ex-receipt .ex-hi'
+STILL = 'If it still won’t go, download a copy (below), and send it to Tim Hearn another way.'
 
 
 def state():
     return p.js("() => MG.siteStore.get('paper:s1-essay')") or {}
-
-
-def hi_steps(where='.ex-receipt'):
-    return p.js(f"() => [...document.querySelectorAll('{where} .ex-hi-step')].map(s => s.querySelector('.ex-hi-t').textContent + (s.classList.contains('done') ? ' ✓' : ''))")
 
 
 def modal_text():
@@ -540,87 +523,6 @@ def pill():
 
 def essay_text(docx_bytes):
     return re.sub(r'<[^>]+>', '', zipfile.ZipFile(io.BytesIO(docx_bytes)).read('word/document.xml').decode('utf-8'))
-
-
-def handin_dropbox():
-    """hands in the essay just submitted, from its receipt, through Dropbox (a stand-in for the file request), in three
-    steps: the Word document; the hand-in page, in a new tab; and saying that it is handed in. Then, on the paper's
-    first page, it is marked as not handed in, and handed in again."""
-    p.ctx.route('https://www.dropbox.com/**', lambda r: r.fulfill(status=200, body='<!doctype html><title>Dropbox</title><h1>The hand-in page (a stand-in)</h1>', headers={'Content-Type': 'text/html'}))
-    hb = p.js(f"() => document.querySelector('{RX}') ? document.querySelector('{RX}').innerText : ''")
-    check('Now hand it in' in hb and 'Tim Hearn’s Dropbox' in hb and 'password' in hb and FILE in hb and 'Finished uploading' in hb,
-          f'the receipt takes the student through handing it in: {hb[:200]!r}')
-    hint = p.js("() => document.querySelector('.ex-receipt p.hint').textContent")
-    check('The site itself sends nothing anywhere: you upload the Word document yourself.' in hint, f'and says that the site sends nothing itself: {hint!r}')
-    steps = hi_steps()
-    check(steps == STEPS_DBX, f'in three steps: {steps}')
-    with P.expect_download() as d:
-        click(f'{RX} button:has-text("Download the Word document")')
-    path = os.path.join(OUT, 's1-essay.docx')
-    d.value.save_as(path)
-    fname = d.value.suggested_filename
-    check(fname == FILE, f'the Word document is named after the essay and the student: {fname}')
-    doc = essay_text(open(path, 'rb').read())
-    check(NAME in doc and 'Discuss, with examples, why negative feedback' in doc and 'Negative feedback opposes a change' in doc,
-          'the Word document has the student’s name, the title and the essay')
-    check(wait_ticked('es-word', 5), 'downloading it ticks es-word')
-    time.sleep(0.4)
-    check(p.js("() => document.querySelector('.ex-receipt .ex-hi-step').classList.contains('done')") and
-          p.js("() => !!document.querySelector('.ex-receipt .ex-hi a.btn.primary')"), 'step 1 is done, and opening the hand-in page is now the thing to do')
-    link = p.js("() => { const a = document.querySelector('.ex-receipt .ex-hi a.btn'); return [a.href, a.target, a.rel]; }")
-    check(link == [DBX, '_blank', 'noopener'], f'the hand-in page opens in a new tab: {link}')
-    check(not ticked('es-upload') and not ticked('es-send'), 'es-upload and es-send wait for the student')
-    with p.ctx.expect_page() as np:
-        click('.ex-receipt .ex-hi a:has-text("Open the hand-in page")')
-    np.value.wait_for_load_state()
-    check(np.value.url == DBX and 'hand-in page' in np.value.inner_text('body'), f'Open the hand-in page opens it ({np.value.url})')
-    np.value.close()
-    check(wait_ticked('es-upload', 5) and ev('exam:handin', "d.paper === 's1-essay' && d.step === 'opened'") == 1, 'opening it ticks es-upload')
-    time.sleep(0.4)
-    click('.ex-receipt .ex-hi button:has-text("I have handed it in")')
-    time.sleep(0.2)
-    mt = modal_text()
-    check('Finished uploading' in mt, f'it asks first whether Dropbox said Finished uploading: {mt[:120]!r}')
-    click('.modal button:has-text("Not yet")')
-    time.sleep(0.2)
-    check(not ticked('es-send') and not state().get('handedIn'), 'Not yet leaves it to hand in')
-    click('.ex-receipt .ex-hi button:has-text("I have handed it in")')
-    time.sleep(0.2)
-    click('.modal button:has-text("Yes, it is handed in")')
-    check(wait_ticked('es-send', 5) and ev('exam:handin', "d.paper === 's1-essay' && d.step === 'confirmed' && d.via === 'page'") == 1, 'saying it is handed in ticks es-send')
-    time.sleep(0.3)
-    done_text = p.js("() => document.querySelector('.ex-receipt .ex-hi').innerText")
-    check('Handed in to Tim Hearn' in done_text and p.js("() => document.querySelector('.ex-receipt .ex-hi').classList.contains('handed')"), f'the receipt says it is handed in: {done_text[:100]!r}')
-    st = state()
-    check(all(st.get(k) for k in ('started', 'submitted', 'downloaded', 'opened', 'handedIn')) and st.get('via') == 'page', f'the site remembers each step: {sorted(st.keys())}')
-    p.shot('s1-handin-dropbox')
-    # the paper's first page: what was submitted, handed in, and how to hand it in again
-    p.js(f"() => {E}.openPaper('s1-essay')")
-    p.wait("() => document.querySelector('.ex-startacts') && /You submitted this at/.test(document.querySelector('.ex-startacts').innerText)", timeout=10000)
-    sa = p.js("() => document.querySelector('.ex-startacts').innerText")
-    acts = p.js("() => [...document.querySelectorAll('.ex-startacts .btn')].map(b => b.textContent)")
-    check('Handed in to Tim Hearn' in sa and acts == ['Download it again', 'Open the hand-in page again', 'See what you submitted', 'Start a new attempt'],
-          f'after handing it in, the first page says so, and offers it again: {acts}')
-    with P.expect_download() as d2:
-        click('.ex-startacts button:has-text("Download it again")')
-    check(d2.value.suggested_filename == fname, 'and it downloads the same essay')
-    # not handed in after all: undone, and the steps come back
-    click('.ex-startacts button:has-text("Not handed in after all?")')
-    time.sleep(0.2)
-    click('.modal button:has-text("Mark it as not handed in")')
-    time.sleep(0.3)
-    check(not state().get('handedIn') and p.js("() => document.querySelectorAll('.ex-startacts .ex-hi-step').length") == 3,
-          'it can be marked as not handed in, and the steps come back')
-    pl = pill()
-    check(pl == 'Submitted · not handed in yet', f'the list of papers says it is still to hand in: {pl}')
-    p.js(f"() => {E}.openPaper('s1-essay')")
-    p.wait("() => document.querySelector('.ex-startacts .ex-hi')", timeout=10000)
-    click('.ex-startacts .ex-hi button:has-text("I have handed it in")')
-    time.sleep(0.2)
-    click('.modal button:has-text("Yes, it is handed in")')
-    time.sleep(0.3)
-    pl = pill()
-    check(pl.startswith('Handed in'), f'and, handed in again, that it is handed in: {pl}')
 
 
 class Script:
@@ -664,20 +566,19 @@ class Script:
         route.fulfill(status=200, headers=dict(cors, **{'Content-Type': 'application/json; charset=utf-8'}), body=json.dumps(r))
 
 
-def handin_direct(script):
+def handin(script):
     """hands in the essay just submitted, from its receipt, straight to the hand-in script (a stand-in): with no
-    password, a wrong one, no answer, the hand-in busy and an answer that isn't its own – each said, with Dropbox
-    offered instead – then the right password, and the receipt. Then, on the paper's first page, it is handed in
-    again: a second copy."""
+    password, a wrong one, no answer, the hand-in busy and an answer that isn't its own – each said, with what to do –
+    then the right password, and the receipt. Then, on the paper's first page, it is handed in again: a second copy."""
     S = Script(script)
     p.ctx.route('https://script.google.com/**', S)
     p.ctx.route('https://script.googleusercontent.com/**', lambda r: r.abort())
     hb = p.js(f"() => document.querySelector('{RX}') ? document.querySelector('{RX}').innerText : ''")
     check('Now hand it in' in hb and 'Your essay goes straight from here to Tim Hearn’s Google Drive. Type the hand-in password that Tim Hearn gave you, and press Hand it in.' in hb,
           f'the receipt hands the essay in from here, with the hand-in password: {hb[:220]!r}')
-    check('hand it in through Dropbox instead' in hb and not hi_steps(), 'with Dropbox offered instead, and no steps to follow')
     hint = p.js("() => document.querySelector('.ex-receipt p.hint').textContent")
     check('When you hand it in, its Word document goes to Tim Hearn’s Google Drive, and nowhere else.' in hint, f'and says where it goes: {hint!r}')
+    check('Dropbox' not in p.js("() => document.querySelector('.ex-receipt').textContent"), 'and doesn’t mention Dropbox')
     box = p.js(f"() => {{ const i = document.querySelector('{RX} .ex-hi-pw'); return [i.type, i.getAttribute('autocomplete'), i.value, !!i.closest('form')]; }}")
     check(box == ['password', 'off', '', True], f'the password goes in a password box, which the browser doesn’t fill in: {box}')
     words = int(re.search(r'(\d+) words', p.js("() => document.querySelector('.ex-receipt').innerText")).group(1))
@@ -703,21 +604,13 @@ def handin_direct(script):
     check(ev('exam:handin', "d.paper === 's1-essay' && d.step === 'failed' && d.error === 'password'") == 1 and not ticked('es-send') and not state().get('handedIn'),
           'and the essay isn’t handed in: es-send waits')
     msg = send(TEST_PW, 'network')
-    check(msg == 'Your essay couldn’t be sent: Tim Hearn’s Google Drive didn’t answer. Check that you are online, and try again. Or hand it in through Dropbox instead.',
-          f'when the hand-in doesn’t answer, it says so, and offers Dropbox: {msg!r}')
+    check(msg == 'Your essay couldn’t be sent: Tim Hearn’s Google Drive didn’t answer. Check that you are online, and try again. ' + STILL,
+          f'when the hand-in doesn’t answer, it says so, and what to do: {msg!r}')
     msg = send(None, 'busy')
-    check(msg == 'The hand-in is busy. Try again in a moment. Or hand it in through Dropbox instead.', f'the hand-in’s own messages are passed on: {msg!r}')
+    check(msg == 'The hand-in is busy. Try again in a moment. ' + STILL, f'the hand-in’s own messages are passed on: {msg!r}')
     msg = send(None, 'garbled')
-    check(msg == 'The hand-in sent back an answer that couldn’t be read (502). Try again in a moment. Or hand it in through Dropbox instead.', f'and an answer that isn’t the hand-in’s is caught: {msg!r}')
+    check(msg == 'The hand-in sent back an answer that couldn’t be read (502). Try again in a moment. ' + STILL, f'and an answer that isn’t the hand-in’s is caught: {msg!r}')
     check(not state().get('handedIn') and not ticked('es-send') and len(S.replies) == 2, 'none of them hands it in')
-    # Dropbox instead, and back
-    click(f'{RX} .ex-hi-msg button.linkbtn')
-    time.sleep(0.3)
-    steps = hi_steps()
-    check(steps == STEPS_DBX, f'“hand it in through Dropbox instead” gives Dropbox’s three steps: {steps}')
-    click(f'{RX} button:has-text("straight to Tim Hearn’s Google Drive instead")')
-    time.sleep(0.3)
-    check(p.js(f"() => !!document.querySelector('{RX} .ex-hi-pw') && !document.querySelector('{RX} .ex-hi-step')"), 'and the student can come back, to hand it in straight to Google Drive')
     # on a phone (where the workbench opens over the instructions), the password and the button fit
     P.set_viewport_size({'width': 390, 'height': 844})
     p.js("() => document.body.classList.add('bench-open')")
@@ -726,7 +619,7 @@ def handin_direct(script):
     fit = p.js(f"""() => {{ const b = document.querySelector('{RX}'), i = b.querySelector('.ex-hi-pw'), g = b.querySelector('.ex-hi-go');
         return [b.scrollWidth <= b.clientWidth + 1, Math.round(i.getBoundingClientRect().width), g.getBoundingClientRect().right <= innerWidth + 1]; }}""")
     check(fit[0] and fit[1] >= 150 and fit[2], f'on a phone, the password box and the button fit: {fit}')
-    p.shot('s1-handin-direct-phone')
+    p.shot('s1-handin-phone')
     p.js("() => document.body.classList.remove('bench-open')")
     P.set_viewport_size({'width': 1500, 'height': 950})
     time.sleep(0.4)
@@ -735,7 +628,7 @@ def handin_direct(script):
     p.wait(f"() => document.querySelector('{RX}.handed')", timeout=20000)
     hdr, d = S.posts[-1]
     R = S.replies[-1]
-    check(len(S.posts) == 3 and R.get('ok') and all(m == 'POST' and u == script for m, u in S.calls), f'it is sent to the hand-in script, as a POST: {S.calls[-1]}')
+    check(len(S.posts) == 3 and R.get('ok') and all(m == 'POST' and u == script for m, u in S.calls), f'it is sent to the hand-in script, as a POST: {S.calls[-1][0]}')
     ct = hdr.get('content-type', '')
     check(ct.startswith('text/plain'), f'as text, which needs no preflight: {ct}')
     check(d.get('v') == 1 and d.get('password') == TEST_PW and d.get('paper') == 's1-essay' and d.get('week') == 1 and d.get('title') == 'Supervision 1 essay'
@@ -752,18 +645,22 @@ def handin_direct(script):
     done_text = p.js(f"() => document.querySelector('{RX}').innerText")
     check('Handed in to Tim Hearn' in done_text and 'Received by Tim Hearn’s Google Drive at' in done_text and f'receipt {R["receipt"]}' in done_text
           and FILE in done_text and 'in the folder Supervision 1' in done_text, f'the receipt says it has arrived, and where it was saved: {done_text[:240]!r}')
-    check(wait_ticked('es-send', 5) and ev('exam:handin', f"d.paper === 's1-essay' && d.step === 'confirmed' && d.via === 'script' && d.receipt === '{R['receipt']}'") == 1,
+    check(wait_ticked('es-send', 5) and ev('exam:handin', f"d.paper === 's1-essay' && d.step === 'confirmed' && d.receipt === '{R['receipt']}'") == 1,
           'handing it in ticks es-send')
     st = state()
-    check(st.get('handedIn') == R['time'] and st.get('via') == 'script' and st.get('receipt') == R['receipt'] and st.get('file') == FILE and st.get('folder') == 'Supervision 1',
-          f'the site remembers it, with the receipt: {st}')
+    check(st.get('handedIn') == R['time'] and st.get('receipt') == R['receipt'] and st.get('file') == FILE and st.get('folder') == 'Supervision 1'
+          and all(st.get(k) for k in ('started', 'submitted')), f'the site remembers it, with the receipt: {st}')
     kept = p.js("""async () => { const E = MG.app.exam; let t = JSON.stringify(Object.assign({}, localStorage)) + JSON.stringify(Object.assign({}, sessionStorage));
         for (const f of E._attemptFiles()) t += await E.fs.readText(f); return t; }""")
     check(len(kept) > 1000 and TEST_PW not in kept and 'a wrong password' not in kept, 'the password is kept nowhere: not in the browser’s storage, nor with the essay')
-    p.shot('s1-handin-direct')
+    p.shot('s1-essay-receipt')
     with P.expect_download() as dl:
         click(f'{RX} button:has-text("Download your copy")')
     check(dl.value.suggested_filename == FILE and wait_ticked('es-word', 5), 'Download your copy downloads the Word document, and ticks es-word')
+    path = os.path.join(OUT, 's1-essay.docx')
+    dl.value.save_as(path)
+    mine = essay_text(open(path, 'rb').read())
+    check(NAME in mine and 'Negative feedback opposes a change' in mine, 'the copy has the student’s name and the essay')
     # the paper's first page: handed in, with the receipt; and handing it in again, which sends a second copy
     p.js(f"() => {E}.openPaper('s1-essay')")
     p.wait("() => document.querySelector('.ex-startacts') && /You submitted this at/.test(document.querySelector('.ex-startacts').innerText)", timeout=10000)
@@ -797,11 +694,9 @@ def handin_direct(script):
           f'handed in again: a second copy, with a receipt of its own: {sa[:200]!r}')
     pl = pill()
     check(pl.startswith('Handed in'), f'and the list of papers says it is handed in: {pl}')
-# (the main page: the way that config.js sets up)
-if MODE == 'script':
-    handin_direct(HI_CFG['script'])
-else:
-    handin_dropbox()
+
+
+handin(SCRIPT)
 P.locator('.q[data-q="es-q-next"] textarea').fill('Take a clearer position in the introduction.')
 time.sleep(0.6)
 check(answered('es-q-next'), 'es-q-next is answered')
@@ -822,79 +717,14 @@ check(pct >= 90, f'nearly everything counted is done: {prog}')
 undone = p.js("""() => { const s = MG.tutorial.state; const t = [...document.querySelectorAll('[data-task]')].filter(li => !li.closest('.optional') && !s.tasks[li.dataset.task]).map(li => li.dataset.task);
     const q = [...document.querySelectorAll('.q[data-q]')].filter(x => !x.closest('.optional') && !(s.answers[x.dataset.q] || {}).done).map(x => x.dataset.q); return t.concat(q); }""")
 check(set(undone) <= {'ck-q-thirst', 'ck-q-light', 'wh-q-light', 'wh-q-pit', 'ht-q-one'}, f'what is left is the written answers this test didn’t type: {undone}')
-TOTAL = {'dropbox': 68, 'script': 67}   # the steps and questions that count (handing in straight to Google Drive has one step fewer)
-
-
-def landing_after(mode, least):
-    p.open('index.html')
-    tile = p.js("() => document.querySelector('.tile[data-sup=\"1\"]').innerText")
-    m_ = re.search(r'(\d+) of (\d+) steps and questions done', tile)
-    check(m_ and int(m_.group(2)) == TOTAL[mode] and int(m_.group(1)) >= least, f'the tile shows how far the student has got: {m_.group(0) if m_ else tile[:200]!r}')
-    check('✓ Essay handed in' in tile, f'and that the essay has been handed in: {tile[-120:]!r}')
-
-
-landing_after(MODE, TOTAL[MODE] - 7)
+p.open('index.html')
+tile = p.js("() => document.querySelector('.tile[data-sup=\"1\"]').innerText")
+m_ = re.search(r'(\d+) of (\d+) steps and questions done', tile)
+check(m_ and int(m_.group(2)) == 67 and int(m_.group(1)) >= 60, f'the tile shows how far the student has got: {m_.group(0) if m_ else tile[:200]!r}')
+check('✓ Essay handed in' in tile, f'and that the essay has been handed in: {tile[-120:]!r}')
+check('dropbox' not in p.js("() => document.body.textContent").lower(), 'the landing page doesn’t mention Dropbox')
 p.shot('s1-landing-after')
 no_errors('the landing page afterwards')
-p.close()
-
-# ====================================================================== the other way of handing in
-# (a page of its own, with the site's pages built for the other way – make_page.py with BMS_HANDIN_SCRIPT and
-# BMS_PAGES_OUT, into test/out – and config.js changed to match)
-OTHER = 'dropbox' if MODE == 'script' else 'script'
-OTHER_SCRIPT = SCRIPT if OTHER == 'script' else ''
-ALT = os.path.join(OUT, 'site-' + OTHER)
-r = subprocess.run([sys.executable, os.path.join(SITE, 'build', 'make_page.py')], capture_output=True, text=True,
-                   env=dict(os.environ, BMS_HANDIN_SCRIPT=OTHER_SCRIPT, BMS_PAGES_OUT=ALT))
-check(r.returncode == 0 and os.path.exists(os.path.join(ALT, 'supervision-1.html')),
-      f'the pages are built for handing in {"straight to Google Drive" if OTHER == "script" else "through Dropbox"}: {[l for l in r.stdout.splitlines() if l.startswith("supervision-1")]} {r.stderr[-300:]}')
-cfg = open(os.path.join(SITE, 'assets', 'js', 'config.js'), encoding='utf-8').read()
-cfg = re.sub(r"(\n\s*script:\s*)'[^']*'", lambda m: m.group(1) + "'" + OTHER_SCRIPT + "'", cfg, count=1)
-extra = {'assets/js/config.js': (cfg, 'text/javascript')}
-for f in ('index.html', 'supervision-1.html'):
-    extra[f] = (open(os.path.join(ALT, f), encoding='utf-8').read(), 'text/html; charset=utf-8')
-p = Page(width=1500, height=950, extra=extra)
-P = p.p
-p.open('supervision-1.html')
-listen()
-check(p.js("() => MG.config.handIn.script") == OTHER_SCRIPT, f'this page hands in the other way: {OTHER}')
-p.js(f"() => MG.user.setFullName('{NAME}')")
-box = p.js("() => document.querySelector('#s1-week .handin-box').innerText")
-tasks = p.js("() => [...document.querySelectorAll('#s1-write [data-task]')].map(x => x.dataset.task)")
-wtext = p.js("() => document.querySelector('#s1-write').textContent")
-if OTHER == 'script':
-    check('type the hand-in password that Tim Hearn gives you, and it goes straight to his Google Drive' in box, f'This week says that the essay goes straight to Tim Hearn’s Google Drive: {box[-160:]!r}')
-    check(tasks[-2:] == ['es-send', 'es-word'] and 'es-upload' not in tasks, f'and the chapter’s last steps are to hand it in, and keep a copy: {tasks}')
-    check('it goes straight to Tim Hearn’s Google Drive' in wtext and 'Handing in' in wtext and 'Finished uploading' not in wtext, 'the chapter says how it is handed in')
-else:
-    check('upload that to Tim Hearn’s Dropbox' in box, f'This week says that the essay is uploaded to Tim Hearn’s Dropbox: {box[-160:]!r}')
-    check(tasks[-3:] == ['es-word', 'es-upload', 'es-send'], f'and the chapter’s last steps are Dropbox’s three: {tasks}')
-    check('Finished uploading' in wtext and 'The hand-in page' in wtext, 'the chapter says how it is handed in')
-chapter('s1-write')
-click('#s1-write button[data-exam="s1-essay"]')
-p.wait("() => document.querySelector('.ex-startcard h2') && document.querySelector('.ex-startcard h2').textContent === 'Supervision 1 essay'", timeout=30000)
-hand = p.js("() => document.querySelector('.ex-startcard .ex-handin').innerText")
-check(('you hand it in from here, and it goes straight to Tim Hearn’s Google Drive' in hand and 'hand-in password' in hand) if OTHER == 'script'
-      else 'upload that to Tim Hearn’s Dropbox, step by step' in hand, f'the essay’s first page says how it is handed in: {hand!r}')
-click('.ex-startacts .btn.primary')
-p.wait("() => document.querySelector('.ex-area')", timeout=30000)
-p.js("""(t) => { const A = document.querySelector('.ex-area'); A.focus(); document.execCommand('insertText', false, t); }""", (para * 9).strip())
-time.sleep(1.6)
-click('.ex-tile.review')
-p.wait("() => document.querySelector('.ex-submit')", timeout=10000)
-click('.ex-submit')
-time.sleep(0.2)
-mt = p.js("() => document.querySelector('.modal') ? document.querySelector('.modal').innerText : ''")
-check(SUBMIT_SAYS[OTHER] in mt, f'Submit says how it will then be handed in: {mt[-120:]!r}')
-click('.modal button:has-text("Submit now")')
-p.wait("() => document.querySelector('.ex-receipt .ex-hi')", timeout=10000)
-time.sleep(0.4)
-if OTHER == 'script':
-    handin_direct(SCRIPT)
-else:
-    handin_dropbox()
-no_errors('the other way of handing in')
-landing_after(OTHER, 5)
 p.close()
 
 # ====================================================================== a phone

@@ -13,9 +13,6 @@ The lecture notes are Prof. Matthew Mason's: nothing here is copied from them. T
 Assessment Plus (a HEFCE-funded project), as on the essay feedback form; the plagiarism exercise is the University's
 (Kohler, 1994)."""
 from lib import *
-from supervisions import HAND_IN
-
-DIRECT = bool(HAND_IN['script'])   # handing in straight to Google Drive (the hand-in script), or through Dropbox
 
 ESSAY = ('Discuss, with examples, why negative feedback mechanisms are more common than positive feedback mechanisms in '
          'animal physiology.')
@@ -23,9 +20,7 @@ SUPERVISOR = 'Tim Hearn'
 PLUM = '#8a1c4a'
 
 
-HANDIN_LINE = (f'When you have submitted it, <b>hand it in</b> from the same page, before your supervision: type the hand-in password that <b>{SUPERVISOR}</b> gives you, and it goes straight to his Google Drive.'
-               if DIRECT else
-               f'When you have submitted it, <b>hand it in</b> from the same page, before your supervision: you download it as a Word document and upload that to <b>{SUPERVISOR}</b>’s Dropbox, with the password he gives you.')
+HANDIN_LINE = f'When you have submitted it, <b>hand it in</b> from the same page, before your supervision: type the hand-in password that <b>{SUPERVISOR}</b> gives you, and it goes straight to his Google Drive.'
 
 
 def handin_box(buttons=True):
@@ -484,25 +479,16 @@ def ch_plag(num):
 
 # ---------------------------------------------------------------------------------------------------------------------
 def ch_write(num):
-    HANDED = f'here, it goes straight to {SUPERVISOR}’s Google Drive' if DIRECT else f'here, you upload it to {SUPERVISOR}’s Dropbox'
-    if DIRECT:
-        hand_steps = [
-            task("es-send", f'Hand it in, on the page that follows: type the hand-in password that {SUPERVISOR} gave you, and press <b>Hand it in</b>. It goes straight to his Google Drive, and the page shows a receipt when it has arrived.', auto="exam:handin paper=s1-essay step=confirmed", check="paper:s1-essay.handedIn"),
-            task("es-word", 'Keep a copy for yourself: <b>Download a copy for yourself</b>, under the box (or <b>Download your copy</b>, once it is handed in). It is a Word document, in your Downloads folder.', auto="exam:download paper=s1-essay format=docx", check="paper:s1-essay.downloaded"),
-        ]
-        hand_note = callout("info", "Handing in", f"<p>Your essay goes straight from this page to {SUPERVISOR}’s Google Drive: you don’t need a Google account. The hand-in password, which {SUPERVISOR} gives you, stops anyone else handing work in – keep it to yourself. When your essay has arrived, the page says so, with a receipt. If it can’t be handed in, the page says why, and offers to hand it in through Dropbox instead.</p>")
-    else:
-        hand_steps = [
-            task("es-word", 'Hand it in, on the page that follows. First, <b>Download the Word document</b>: it goes to your Downloads folder. (The first page of the paper offers these steps again later.)', auto="exam:download paper=s1-essay format=docx", check="paper:s1-essay.downloaded"),
-            task("es-upload", f'Then <b>Open the hand-in page</b>, {SUPERVISOR}’s Dropbox, in a new tab. Enter the password he gave you, press <b>Add files</b> ▸ <b>Files from computer</b> and choose the Word document, type your name and email address, and press <b>Upload</b>.', auto="exam:handin paper=s1-essay step=opened", check="paper:s1-essay.opened"),
-            task("es-send", 'When Dropbox says <b>Finished uploading</b>, come back to this tab and press <b>I have handed it in</b>.', auto="exam:handin paper=s1-essay step=confirmed", check="paper:s1-essay.handedIn"),
-        ]
-        hand_note = callout("info", "The hand-in page", f"<p>It is {SUPERVISOR}’s Dropbox file request for the year’s supervision work, <i>BMS Supervision work 26-27</i>: you don’t need a Dropbox account. It asks first for the password, which {SUPERVISOR} gives you – keep it to yourself – and then for your file, your name and your email address. If it won’t open, or the upload fails, tell {SUPERVISOR}, and send him the Word document another way.</p>")
+    hand_steps = [
+        task("es-send", f'Hand it in, on the page that follows: type the hand-in password that {SUPERVISOR} gave you, and press <b>Hand it in</b>. It goes straight to his Google Drive, and the page shows a receipt when it has arrived.', auto="exam:handin paper=s1-essay step=confirmed", check="paper:s1-essay.handedIn"),
+        task("es-word", 'Keep a copy for yourself: <b>Download a copy for yourself</b>, under the box (or <b>Download your copy</b>, once it is handed in). It is a Word document, in your Downloads folder.', auto="exam:download paper=s1-essay format=docx", check="paper:s1-essay.downloaded"),
+    ]
+    hand_note = callout("info", "Handing in", f"<p>Your essay goes straight from this page to {SUPERVISOR}’s Google Drive: you don’t need a Google account. The hand-in password, which {SUPERVISOR} gives you, stops anyone else handing work in – keep it to yourself. When your essay has arrived, the page says so, with a receipt. If it can’t be handed in, the page says why; if it still won’t go, download a copy and send it to {SUPERVISOR} another way.</p>")
     body = f'''
 <p class="essay-title">“{ESSAY}”</p>
 
 <h2 id="es-why">Why write it like this?</h2>
-<p>Your exams are written on a computer, in an online exam system: you type your answers in one sitting, against the clock, without notes, and you can’t paste anything in. Supervision work is set up in the same way. Writing your supervision essays like this makes the exam familiar long before the summer: you find out how much you can plan and write in 40 minutes, and what it is like to do it without your notes. And because your supervisor sees the essay you can write in that time, the feedback is about the essay you would actually write in the exam – not one polished over a week. As in the exam, you submit it when you have finished, and it is handed in from the same page: {HANDED}.</p>
+<p>Your exams are written on a computer, in an online exam system: you type your answers in one sitting, against the clock, without notes, and you can’t paste anything in. Supervision work is set up in the same way. Writing your supervision essays like this makes the exam familiar long before the summer: you find out how much you can plan and write in 40 minutes, and what it is like to do it without your notes. And because your supervisor sees the essay you can write in that time, the feedback is about the essay you would actually write in the exam – not one polished over a week. As in the exam, you submit it when you have finished, and it is handed in from the same page: here, it goes straight to {SUPERVISOR}’s Google Drive.</p>
 
 <h2 id="es-before">Before you start</h2>
 <ul>
@@ -526,7 +512,7 @@ def ch_write(num):
 '''
     return chapter("s1-write", num, "Write your essay", "exam", "Write your essay, and hand it in", 45,
                    f"The one piece of work to hand in this week. Write it in Supervision work, as you will write in the "
-                   f"online exam; then hand it in from the same page: {'it goes straight to ' + SUPERVISOR + '’s Google Drive' if DIRECT else 'you upload it to ' + SUPERVISOR + '’s Dropbox'}.", body)
+                   f"online exam; then hand it in from the same page: it goes straight to {SUPERVISOR}’s Google Drive.", body)
 
 
 # ---------------------------------------------------------------------------------------------------------------------

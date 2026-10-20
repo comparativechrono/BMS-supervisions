@@ -445,38 +445,18 @@ details.ex-others > .ex-papers { margin-top: 8px; }
 .ex-handin p { margin: 6px 0; }
 .ex-handin ol, .ex-handin ul { margin: 6px 0; padding-left: 1.3em; }
 
-/* handing in, step by step (a supervision's paper: download the Word document, upload it, say it is done) */
+/* handing in (a supervision's paper): the hand-in password, and one button that sends it to the hand-in script */
 .ex-hi { padding: 14px 18px 12px; }
 .ex-hi .ex-hi-h { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; font-size: 1.05rem; }
 .ex-hi .ex-hi-lede { margin: 0 0 10px; color: var(--ink-2); }
-.ex-hi-steps { list-style: none; margin: 0; padding: 0; }
-.ex-hi-step { position: relative; display: flex; gap: 12px; padding: 10px 0 10px; border-top: 1px dashed #e8c9d6; }
-.ex-hi-step:first-child { border-top: 0; padding-top: 4px; }
-.ex-hi-n { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 0.85rem; color: #8a1c4a; background: #fff; border: 2px solid #8a1c4a; }
-.ex-hi-n svg { width: 15px; height: 15px; }
-.ex-hi-step.done .ex-hi-n { background: var(--good, #2c7a4b); border-color: var(--good, #2c7a4b); color: #fff; }
-.ex-hi-b { min-width: 0; flex: 1; }
-.ex-hi-b > p { margin: 5px 0; }
-.ex-hi-t { color: var(--ink); }
-.ex-hi-dn { color: var(--good, #2c7a4b); font-size: 0.85rem; font-weight: 650; }
 .ex-hi .btn { display: inline-flex; align-items: center; gap: 6px; }
-.ex-hi a.btn, .ex-hi a.btn:hover { text-decoration: none; }
 .ex-hi-file { overflow-wrap: anywhere; }
-.ex-hi-how { margin: 6px 0 2px; padding-left: 1.3em; list-style: lower-alpha; color: var(--ink-2); }
-.ex-hi-how li { margin: 3px 0; }
 .ex-hi .muted { color: var(--muted); font-size: 0.86rem; }
 .ex-hi.handed { border-left-color: var(--good, #2c7a4b); background: #eef8f1; }
 .ex-hi.handed .ex-hi-h { color: var(--good, #2c7a4b); }
 .ex-hi-ok { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--good, #2c7a4b); color: #fff; }
 .ex-hi-ok svg { width: 15px; height: 15px; }
 .ex-hi-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.ex-pill.warn { background: #fff2d8; color: #8a5a00; }
-.ex-startmore { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-@media (max-width: 560px) {
-  .ex-hi { padding: 12px 12px 10px; }
-  .ex-hi-step { gap: 9px; }
-}
-/* (with the hand-in script: the password, and one button) */
 .ex-hi-form { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0 4px; }
 .ex-hi-pw { flex: 1 1 220px; min-width: 0; box-sizing: border-box; font: inherit; font-size: 1rem; padding: 8px 11px; border: 1px solid var(--line-2, #c9c3cf); border-radius: 8px; background: #fff; }
 .ex-hi-pw:focus { outline: 2px solid #e8c9d6; border-color: #8a1c4a; }
@@ -485,4 +465,8 @@ details.ex-others > .ex-papers { margin-top: 8px; }
 .ex-hi-msg:empty { display: none; }
 .ex-hi-msg.no { color: var(--bad, #b42318); }
 .ex-hi-small { margin: 10px 0 0; font-size: 0.9rem; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-.ex-hi-or { margin: 8px 0 0; font-size: 0.9rem; }
+.ex-pill.warn { background: #fff2d8; color: #8a5a00; }
+.ex-startmore { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+@media (max-width: 560px) {
+  .ex-hi { padding: 12px 12px 10px; }
+}

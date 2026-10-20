@@ -20,12 +20,13 @@
      "week": 1,                            the supervision it belongs to: on that supervision's page it is listed
                                            first (papers with no week are practice papers, listed on every page)
      "required": true,                     work to hand in (a "To hand in" badge, listed first); else optional
-     "handIn": true,                       work handed in through the site (config.js: handIn, a Dropbox file request):
-                                           after submitting, the student downloads the Word document and uploads it
-                                           there, step by step, and says when it is done. Or {"url": "https://…",
-                                           "to": "…", "service": "…", "password": true, "title": "…"}: somewhere of
-                                           its own. Or HTML ("<p>…</p>"), which only says how to hand it in (on the
-                                           first page and after submitting, beside the button for the Word document)
+     "handIn": true,                       work handed in through the site (config.js: handIn, the hand-in script):
+                                           after submitting, the student types the hand-in password and the site
+                                           sends the Word document to the script, which saves it in the supervisor's
+                                           Google Drive and sends back a receipt. Or {"script": "https://…", "to":
+                                           "…", "password": true}: a hand-in of its own. Or HTML ("<p>…</p>"), which
+                                           only says how to hand it in (on the first page and after submitting,
+                                           beside the button for the Word document)
      "autoSubmit": false,                  true: the answers are submitted when the time is up
      "spellcheck": false,                  is the browser's spelling checker on at the start? (students can switch it)
      "showWordCount": true,                show "Words: …" under essays
@@ -76,12 +77,10 @@
      exam:paste    {paper, q, refused}       something is pasted (or dropped) into the exam; refused: it was copied
                                              from outside the exam, so it was not let in
      exam:suggested {paper, minutes}         the time spent writing reached the suggested time
-     exam:handin   {paper, step, via}        handing a paper in: 'opened' (the hand-in page), 'confirmed' (handed in:
-                                             via 'script', the hand-in script, with a receipt; or 'page', the
-                                             student says they uploaded it), 'failed' (the script refused it, or
-                                             didn't answer: error) or 'undone'
+     exam:handin   {paper, step, receipt, error}  handing a paper in: 'confirmed' (the hand-in script has saved it,
+                                             with a receipt) or 'failed' (the script refused it, or didn't answer)
    What a student has done with a paper to hand in is also kept for the whole site (MG.siteStore 'paper:<id>':
-   {started, submitted, downloaded}), for the supervisions' landing page.
+   {started, submitted, downloaded, handedIn, receipt, file, folder}), for the supervisions' landing page.
      (the calculator: calc:open {}, calc:result {expr, value})
 
    THE PROGRAM: MG.ExamApp(root, {fs}) → .ready (a promise), .shown(), .openPaper(id), .newEssay(), .openFile(path),
@@ -120,20 +119,19 @@
     MG.siteStore.set('paper:' + id, r);
   };
   const paperState = (id) => (MG.siteStore && id ? MG.siteStore.get('paper:' + id, {}) || {} : {});
-  /** where a paper is handed in through the site, or null when it isn't (no handIn, or handIn is only HTML): {to,
-      password, title, script – the address of the hand-in script, which takes the Word document itself – and page –
-      {url, service}: a page, such as a Dropbox file request, where the student uploads it}. A paper's "handIn": true
-      takes the site's (config.js: handIn); an object of its own adds to it, or replaces it. */
+  /** where a paper is handed in through the site, or null when it isn't (no handIn, handIn is only HTML, or there is
+      no hand-in script): {to, password, script – the address of the hand-in script, which takes the Word document –
+      and drive, where it keeps it}. A paper's "handIn": true takes the site's (config.js: handIn); an object of its
+      own adds to it, or replaces it. */
   function handInOf(paper) {
     const v = paper && paper.handIn;
     if (!v || typeof v === 'string') return null;
     const o = Object.assign({}, CFG.handIn || {}, v === true ? {} : v);
-    const https = (u) => typeof u === 'string' && /^https:\/\//.test(u);
-    const page = https(o.dropbox) ? { url: o.dropbox, service: 'Dropbox' } : https(o.url) ? { url: o.url, service: o.service || 'the hand-in page' } : null;
-    const script = https(o.script) ? o.script : null;
-    if (!script && !page) return null;
-    return { to: o.to || 'your supervisor', password: o.password !== false, title: o.title || '', script, page, drive: o.drive || 'Google Drive' };
+    if (typeof o.script !== 'string' || !/^https:\/\//.test(o.script)) return null;
+    return { to: o.to || 'your supervisor', password: o.password !== false, script: o.script, drive: o.drive || 'Google Drive' };
   }
+  /** a paper's handIn when it is only HTML that says how to hand it in */
+  const handInHTML = (paper) => (paper && typeof paper.handIn === 'string' ? paper.handIn : '');
   /** keeps what a student has done with a paper: a patch of fields, for the landing page and the instructions */
   const setPaperState = (id, patch) => {
     if (!MG.siteStore || !id) return;
@@ -2228,10 +2226,8 @@
       const ins = h('div.ex-instr');
       ins.innerHTML = paper.instructions ? cleanTrusted(paper.instructions) : '';
       const HI = handInOf(paper);
-      const hand = HI ? h('div.ex-handin', h('h3', 'To hand in'), h('p', HI.script
-        ? `When you have submitted it, you hand it in from here, and it goes straight to ${possessive(HI.to)} ${HI.drive}.${HI.password ? ` You will need the hand-in password that ${HI.to} gave you (it isn’t on this site).` : ''}`
-        : `When you have submitted it, you hand it in from here: you download it as a Word document, and upload that to ${possessive(HI.to)} ${HI.page.service}, step by step.${HI.password ? ` You will need the password that ${HI.to} gave you (it isn’t on this site).` : ''}`))
-        : paper.handIn ? h('div.ex-handin', { html: '<h3>To hand in</h3>' + cleanTrusted(paper.handIn) }) : null;
+      const hand = HI ? h('div.ex-handin', h('h3', 'To hand in'), h('p', `When you have submitted it, you hand it in from here, and it goes straight to ${possessive(HI.to)} ${HI.drive}.${HI.password ? ` You will need the hand-in password that ${HI.to} gave you (it isn’t on this site).` : ''}`))
+        : handInHTML(paper) ? h('div.ex-handin', { html: '<h3>To hand in</h3>' + cleanTrusted(handInHTML(paper)) }) : null;
       V.append(h('div.ex-startcard', h('p.ex-kicker', paper.week ? `Supervision ${paper.week}${paper.required ? ' · to hand in' : ' · optional'}` : 'Supervision work'), h('h2', paper.title), paper.description ? h('p', paper.description) : null, dl, ins, hand, paper.minutes ? h('p.hint', `The time starts when you press Start, and keeps running if you leave the page. ${paper.autoSubmit ? 'Your answers are submitted when the time is up.' : 'When the time is up your answers are locked, and you submit them.'}`) : null, acts, h('div.ex-startback', back)));
     }
     _start(paper) {
@@ -2940,7 +2936,7 @@
     async _confirmSubmit() {
       const n = this._questions().filter((q) => q.type !== 'info' && !this._attempted(q)).length;
       const HI = handInOf(this.att.paper);
-      const ok = await MG.confirmBox('Submit your answers?', `<p>${n ? `You have <b>${plural(n, 'unattempted question')}</b>. ` : ''}After you submit, you cannot change your answers in this attempt.</p>${HI ? (HI.script ? `<p>Then you hand it in, from the page that follows: it goes straight to ${esc(possessive(HI.to))} ${esc(HI.drive)}.</p>` : `<p>Then you hand it in: you download it as a Word document and upload it to ${esc(possessive(HI.to))} ${esc(HI.page.service)}.</p>`) : ''}`, 'Submit now', { cancel: 'Go back' });
+      const ok = await MG.confirmBox('Submit your answers?', `<p>${n ? `You have <b>${plural(n, 'unattempted question')}</b>. ` : ''}After you submit, you cannot change your answers in this attempt.</p>${HI ? `<p>Then you hand it in, from the page that follows: it goes straight to ${esc(possessive(HI.to))} ${esc(HI.drive)}.</p>` : ''}`, 'Submit now', { cancel: 'Go back' });
       if (ok) this._submit();
     }
     _submit(auto) {
@@ -2979,12 +2975,13 @@
       const back = h('button.btn', { type: 'button', html: IC.back + '<span>All papers</span>' });
       back.addEventListener('click', () => this.home());
       const essays = this._questions(att).filter((q) => q.type === 'essay' || q.type === 'short');
+      const HI = handInOf(att.paper);
       let hand = this._handInPanel(att, { title: 'Now hand it in' });
       if (hand) dl.classList.remove('primary');
-      else if (att.paper.handIn) {
+      else if (handInHTML(att.paper)) {
         const word = h('button.btn.primary', { type: 'button', html: IC.download + '<span>Download the Word document</span>' });
         word.addEventListener('click', () => this.download(att, 'docx'));
-        hand = h('div.ex-handin', { html: '<h3>Now hand it in</h3>' + cleanTrusted(att.paper.handIn) });
+        hand = h('div.ex-handin', { html: '<h3>Now hand it in</h3>' + cleanTrusted(handInHTML(att.paper)) });
         hand.appendChild(h('p', word));
         dl.classList.remove('primary');
       }
@@ -2995,83 +2992,51 @@
         essays.length ? h('p.muted', essays.map((q) => `${q.title || 'Essay'}: ${plural((att.answers[q.id] || {}).words || 0, 'word')}`).join(' · ')) : null,
         hand,
         h('div.ex-recacts', dl, save, rev, again, back),
-        h('p.hint', `Your attempt is kept in Files: ${this.fs.pretty(path)}. ${hand && handInOf(att.paper) ? (handInOf(att.paper).script ? `When you hand it in, its Word document goes to ${esc(possessive(handInOf(att.paper).to))} ${esc(handInOf(att.paper).drive)}, and nowhere else.` : 'The site itself sends nothing anywhere: you upload the Word document yourself.') : 'Nothing has been sent anywhere: to hand your work in, download it and send it yourself.'}`)));
+        h('p.hint', `Your attempt is kept in Files: ${this.fs.pretty(path)}. ${HI ? `When you hand it in, its Word document goes to ${possessive(HI.to)} ${HI.drive}, and nowhere else.` : 'Nothing has been sent anywhere: to hand your work in, download it and send it yourself.'}`)));
     }
-    /** handing in a submitted paper. With the hand-in script (config.js: handIn.script), the student types the
-        hand-in password and the site sends the Word document straight to it (_directPanel); otherwise, or if the
-        script can't be reached and the student chooses to, they upload it to the hand-in page – a Dropbox file request
-        – step by step (_pagePanel). What they have done is kept with the paper (MG.siteStore 'paper:<id>': downloaded,
-        opened, handedIn, via, receipt…), for the landing page and the steps of the instructions. */
+    /** handing in a submitted paper, through the hand-in script (config.js: handIn.script): the student types the
+        hand-in password, and the site sends the Word document to the script, which saves it in the supervisor's
+        Google Drive and sends back a receipt. What has been done is kept with the paper (MG.siteStore 'paper:<id>':
+        downloaded, handedIn, receipt, file, folder), for the landing page and the steps of the instructions. */
     _handInPanel(att, opts = {}) {
       const HI = handInOf(att.paper);
       if (!HI) return null;
-      const id = att.paper.id;
       const wrap = h('div.ex-hi-wrap');
-      this._hiMode = this._hiMode || {};
       const show = () => {
-        const st = paperState(id);
-        const mode = st.handedIn ? (st.via === 'script' ? 'script' : 'page') : HI.script && this._hiMode[id] !== 'page' ? 'script' : 'page';
         wrap.innerHTML = '';
-        wrap.appendChild(mode === 'script' ? this._directPanel(att, HI, opts, show) : this._pagePanel(att, HI, opts, show));
+        wrap.appendChild(this._handInBox(att, HI, opts, show));
       };
       show();
       return wrap;
     }
-    /** the parts that both ways share */
-    _hiParts(att, HI, show) {
+    _handInBox(att, HI, opts, show) {
       const id = att.paper.id;
-      const step = (n, done, title, body) => h('li.ex-hi-step' + (done ? '.done' : ''), h('span.ex-hi-n', { 'aria-hidden': 'true', html: done ? IC.check : String(n) }),
-        h('div.ex-hi-b', h('b.ex-hi-t', title), done ? h('span.ex-hi-dn', ' ✓ done') : null, ...body));
-      const wordBtn = (primary, label) => {
-        const b = h('button.btn' + (primary ? '.primary' : ''), { type: 'button', html: IC.download + `<span>${esc(label)}</span>` });
-        b.addEventListener('click', async () => {
-          await this.download(att, 'docx');
-          show();
-        });
+      const where = `${possessive(HI.to)} ${HI.drive}`;
+      const box = h('section.ex-handin.ex-hi', { 'aria-label': 'Hand it in' });
+      const copy = (label) => {
+        const b = h('button.btn', { type: 'button', html: IC.download + `<span>${esc(label)}</span>` });
+        b.addEventListener('click', () => this.download(att, 'docx'));
         return b;
       };
-      const openLink = (primary, label) => {
-        const a = h('a.btn' + (primary ? '.primary' : ''), { href: HI.page.url, target: '_blank', rel: 'noopener', html: IC.link + `<span>${esc(label)}</span>`, title: `${possessive(HI.to)} ${HI.page.service}: it opens in a new tab` });
-        a.addEventListener('click', () => {
-          mark(id, 'opened');
-          bus.emit('exam:handin', { paper: id, step: 'opened' });
-          setTimeout(show, 300);
-        });
-        return a;
-      };
-      const done = (title, lines, acts) => [h('h3.ex-hi-h', h('span.ex-hi-ok', { 'aria-hidden': 'true', html: IC.check }), title), ...lines, h('p.ex-hi-acts', ...acts)];
-      return { step, wordBtn, openLink, done };
-    }
-    /** with the hand-in script: the password, and one button that sends the Word document straight to it */
-    _directPanel(att, HI, opts, show) {
-      const id = att.paper.id;
-      const P = this._hiParts(att, HI, show);
-      const where = `${possessive(HI.to)} ${HI.drive}`;
-      const box = h('section.ex-handin.ex-hi.ex-hi-direct', { 'aria-label': 'Hand it in' });
       const st = paperState(id);
       if (st.handedIn) {
         box.classList.add('handed');
         const again = h('button.linkbtn', { type: 'button' }, 'Hand it in again');
         again.addEventListener('click', async () => {
           if (!(await MG.confirmBox('Hand it in again?', `<p>It is already handed in. Handing it in again sends ${esc(HI.to)} a second copy (the first one is kept).</p>`, 'Hand it in again', { cancel: 'Keep it as it is' }))) return;
-          setPaperState(id, { handedIn: null, via: null, receipt: null });
+          setPaperState(id, { handedIn: null, receipt: null, file: null, folder: null });
           show();
         });
-        box.append(...P.done(`Handed in to ${HI.to}`, [
+        box.append(h('h3.ex-hi-h', h('span.ex-hi-ok', { 'aria-hidden': 'true', html: IC.check }), `Handed in to ${HI.to}`),
           h('p', `Received by ${where} at ${fmtWhen(st.handedIn)}${st.receipt ? ` · receipt ${st.receipt}` : ''}.`),
-          st.file ? h('p.muted', 'It was saved as ', h('code.ex-hi-file', st.file), st.folder ? ` in the folder ${st.folder}.` : '.') : null
-        ], [P.wordBtn(false, 'Download your copy'), again]));
+          st.file ? h('p.muted', 'It was saved as ', h('code.ex-hi-file', st.file), st.folder ? ` in the folder ${st.folder}.` : '.') : null,
+          h('p.ex-hi-acts', copy('Download your copy'), again));
         return box;
       }
       const pw = h('input.ex-hi-pw', { type: 'password', autocomplete: 'off', spellcheck: 'false', 'aria-label': 'The hand-in password', placeholder: 'The hand-in password' });
       const go = h('button.btn.primary.ex-hi-go', { type: 'submit', html: IC.send + '<span>Hand it in</span>' });
       const msg = h('p.ex-hi-msg', { role: 'status', 'aria-live': 'polite' });
       const form = h('form.ex-hi-form', pw, go);
-      const fallback = HI.page ? h('button.linkbtn', { type: 'button' }, `hand it in through ${HI.page.service} instead`) : null;
-      if (fallback) fallback.addEventListener('click', () => {
-        this._hiMode[id] = 'page';
-        show();
-      });
       const say = (kind, html) => {
         msg.className = 'ex-hi-msg' + (kind ? ' ' + kind : '');
         msg.innerHTML = html;
@@ -3092,41 +3057,35 @@
         go.disabled = true;
         pw.disabled = true;
         go.querySelector('span').textContent = 'Handing it in…';
-        say('', `Sending your essay to ${esc(where)}…`);
+        say('', `Sending your essay to ${esc(where)}… It can take up to half a minute.`);
         const r = await this._sendHandIn(att, HI, pw.value);
         go.disabled = false;
         pw.disabled = false;
         go.querySelector('span').textContent = 'Hand it in';
         if (r.ok) {
-          setPaperState(id, { handedIn: r.time || new Date().toISOString(), via: 'script', receipt: r.receipt || '', file: r.file || '', folder: r.folder || '' });
-          bus.emit('exam:handin', { paper: id, step: 'confirmed', via: 'script', receipt: r.receipt || '' });
+          setPaperState(id, { handedIn: r.time || new Date().toISOString(), receipt: r.receipt || '', file: r.file || '', folder: r.folder || '' });
+          bus.emit('exam:handin', { paper: id, step: 'confirmed', receipt: r.receipt || '' });
           toast(`<b>Handed in</b> to ${esc(HI.to)}${r.receipt ? ` (receipt ${esc(r.receipt)})` : ''}.`, 'ok', 5000);
           show();
           return;
         }
-        bus.emit('exam:handin', { paper: id, step: 'failed', via: 'script', error: r.error || '' });
-        const other = fallback ? ` Or ${fallback.outerHTML}.` : '';
+        bus.emit('exam:handin', { paper: id, step: 'failed', error: r.error || '' });
+        const still = ` If it still won’t go, download a copy (below), and send it to ${esc(HI.to)} another way.`;
         if (r.error === 'password') {
           say('no', `That isn’t the hand-in password. Check it with ${esc(HI.to)}, and try again.`);
           pw.select();
           pw.focus();
         } else if (r.error === 'network') {
-          say('no', `Your essay couldn’t be sent: ${esc(where)} didn’t answer. Check that you are online, and try again.${other}`);
+          say('no', `Your essay couldn’t be sent: ${esc(where)} didn’t answer. Check that you are online, and try again.${still}`);
         } else {
           // (the hand-in's own messages say what to do: wait, try again, or tell the supervisor)
-          say('no', `${esc(r.message || 'Your essay couldn’t be handed in. Try again in a moment.')}${other}`);
+          say('no', `${esc(r.message || 'Your essay couldn’t be handed in. Try again in a moment.')}${still}`);
         }
-        const fb = msg.querySelector('button.linkbtn');
-        if (fb) fb.addEventListener('click', () => {
-          this._hiMode[id] = 'page';
-          show();
-        });
       });
       box.append(h('h3.ex-hi-h', opts.title || 'Now hand it in'),
         h('p.ex-hi-lede', `Your essay goes straight from here to ${where}.${HI.password ? ` Type the hand-in password that ${HI.to} gave you, and press Hand it in.` : ''}`),
         form, msg,
-        h('p.ex-hi-small', P.wordBtn(false, 'Download a copy for yourself')),
-        fallback ? h('p.ex-hi-or.muted', 'Or ', fallback, '.') : null);
+        h('p.ex-hi-small', copy('Download a copy for yourself')));
       return box;
     }
     /** sends the Word document of a submitted attempt to the hand-in script; its reply: {ok, receipt, file, folder,
@@ -3163,63 +3122,6 @@
       } finally {
         if (timer) clearTimeout(timer);
       }
-    }
-    /** the hand-in page (a Dropbox file request), step by step: download the Word document; upload it there (the page
-        asks for the password that the supervisor gave the students: the site never sees it); and say that it is done */
-    _pagePanel(att, HI, opts, show) {
-      const id = att.paper.id;
-      const P = this._hiParts(att, HI, show);
-      const box = h('section.ex-handin.ex-hi', { 'aria-label': 'Hand it in' });
-      const file = () => this._fileBase(att) + '.docx';
-      const name = () => (att.candidate && att.candidate.name) || fullName();
-      const where = `${possessive(HI.to)} ${HI.page.service}`;
-      const st = paperState(id);
-      if (st.handedIn) {
-        box.classList.add('handed');
-        const undo = h('button.linkbtn', { type: 'button' }, 'Not handed in after all?');
-        undo.addEventListener('click', async () => {
-          if (!(await MG.confirmBox('Not handed in?', `<p>This marks the essay as not handed in yet, so that you can hand it in again. (It doesn’t take anything out of ${esc(where)}.)</p>`, 'Mark it as not handed in', { cancel: 'Keep it' }))) return;
-          mark(id, 'handedIn', true);
-          bus.emit('exam:handin', { paper: id, step: 'undone' });
-          show();
-        });
-        box.append(...P.done(`Handed in to ${HI.to}`, [h('p', `You uploaded it to ${where} – you said so at ${fmtWhen(st.handedIn)}.`)],
-          [P.wordBtn(false, 'Download it again'), P.openLink(false, 'Open the hand-in page again'), undo]));
-        return box;
-      }
-      const copy = h('button.linkbtn', { type: 'button', title: 'Copy the name of the file, to find it when you choose it' }, 'copy the name');
-      copy.addEventListener('click', async () => toast((await MG.copyText(file())) ? 'The name of the file is copied.' : 'The name could not be copied.', null, 1800));
-      const how = HI.page.service === 'Dropbox'
-        ? h('ol.ex-hi-how',
-          HI.password ? h('li', { html: `Enter the <b>password</b> that ${esc(HI.to)} gave you – it isn’t on this site – and press <b>Next</b>.` }) : null,
-          h('li', { html: `Press <b>Add files</b> ▸ <b>Files from computer</b>, and choose <code>${esc(file())}</code> in your Downloads folder (or drag it in).` }),
-          h('li', { html: `Type your name${name() ? ` – <b>${esc(name())}</b> –` : ''} and your email address, and press <b>Upload</b>. Wait until it says <b>Finished uploading</b>.` }))
-        : h('ol.ex-hi-how',
-          HI.password ? h('li', { html: `Enter the <b>password</b> that ${esc(HI.to)} gave you (it isn’t on this site).` }) : null,
-          h('li', { html: `Upload <code>${esc(file())}</code>, from your Downloads folder.` }));
-      const yes = h('button.btn' + (st.opened ? '.primary' : ''), { type: 'button', html: IC.check + '<span>I have handed it in</span>' });
-      yes.addEventListener('click', async () => {
-        const ok = await MG.confirmBox('Handed in?', `<p>Has ${esc(where)} taken your essay${HI.page.service === 'Dropbox' ? ' – did it say <b>Finished uploading</b>' : ''}?</p><p>If you aren’t sure, open the hand-in page again and upload it: it does no harm to hand it in twice.</p>`, 'Yes, it is handed in', { cancel: 'Not yet' });
-        if (!ok) return;
-        mark(id, 'handedIn');
-        setPaperState(id, { via: 'page' });
-        bus.emit('exam:handin', { paper: id, step: 'confirmed', via: 'page' });
-        toast(`<b>Handed in</b> to ${esc(HI.to)}.`, 'ok', 4000);
-        show();
-      });
-      const back = HI.script ? h('button.linkbtn', { type: 'button' }, `hand it in straight to ${possessive(HI.to)} ${HI.drive} instead`) : null;
-      if (back) back.addEventListener('click', () => {
-        this._hiMode[id] = 'script';
-        show();
-      });
-      box.append(h('h3.ex-hi-h', opts.title || 'Now hand it in'),
-        h('p.ex-hi-lede', `Upload the Word document of your essay to ${where}. It takes a minute.`),
-        h('ol.ex-hi-steps',
-          P.step(1, !!st.downloaded, 'Download your essay', [h('p', 'It is saved in your Downloads folder as ', h('code.ex-hi-file', file()), ' (', copy, ').'), h('p', P.wordBtn(!st.downloaded, st.downloaded ? 'Download it again' : 'Download the Word document'))]),
-          P.step(2, !!st.opened, `Upload it to ${where}`, [h('p', P.openLink(!!st.downloaded && !st.opened, 'Open the hand-in page'), h('span.muted', ' it opens in a new tab')), how]),
-          P.step(3, false, 'Say that it is handed in', [h('p', `When ${HI.page.service === 'Dropbox' ? 'Dropbox says Finished uploading' : 'it has been uploaded'}, come back to this tab and press `, h('b', 'I have handed it in'), '.'), h('p', yes)])),
-        back ? h('p.ex-hi-or.muted', 'Or ', back, '.') : null);
-      return box;
     }
     _downloadMenu(anchor, att) {
       MG.popmenu(anchor, [
