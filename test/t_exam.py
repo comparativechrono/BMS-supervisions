@@ -1011,7 +1011,7 @@ no_errors('calculations')
 # ====================================================================== paper 2: submitted when the time is up
 p.js(f"() => {E}.openPaper('practice-essay')")
 p.wait("() => document.querySelector('.ex-startcard h2') && document.querySelector('.ex-startcard h2').textContent.startsWith('Practice essay')")
-check('Your answers are submitted when the time is up' in text('.ex-startcard'), 'the start page says the answers are submitted when the time is up')
+check('Your answers are submitted for you when the time is up' in text('.ex-startcard'), 'the start page says the answers are submitted when the time is up')
 P.click('.ex-startacts .btn.primary')
 p.wait("() => document.querySelector('.ex-area')")
 check(words_text() == 'Words: 0/1000' and text('.ex-timer') == '45 minutes remaining', 'the essay: 0 of 1000 words, 45 minutes')
