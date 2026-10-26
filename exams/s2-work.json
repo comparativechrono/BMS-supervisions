@@ -1,0 +1,63 @@
+{
+ "id": "s2-work",
+ "week": 2,
+ "required": true,
+ "order": 1,
+ "title": "Supervision 2 work",
+ "description": "A practical question on the thyroid gland, with a labelled photograph from the microscope, and two short-answer questions. All of it is handed in.",
+ "minutes": null,
+ "suggestedMinutes": null,
+ "autoSubmit": false,
+ "spellcheck": false,
+ "showWordCount": true,
+ "clipboard": "exam",
+ "handIn": true,
+ "instructions": "<p><b>This is the work to hand in for Supervision 2.</b> It has four parts: a practical question on the thyroid gland, in two parts, and two short-answer questions.</p><ul><li><b>The practical question</b> needs the Microscope and R. Follow the steps in chapter 3 of the instructions first, so that you have your labelled photograph and the area of the lumen before you start writing. You may look things up for this question, but write your answers in your own words.</li><li><b>The short-answer questions</b> are like the ones in the exam, so try them without your notes, in about 10 minutes each. Each is marked out of five, so answer in bullet points and make at least five.</li><li><b>Time.</b> There’s no time limit, and the clock at the top only counts the time you spend writing here.</li><li><b>Pictures.</b> <b>Insert picture</b> adds your photograph from your files. It goes into the Word document with your answers.</li><li><b>Pasting.</b> As in the exam, you can copy and paste within your answers, but you can’t paste in text copied from anywhere else.</li><li><b>Saving.</b> Your answers are saved in this browser as you type, so you can leave and come back to them.</li></ul><p>When you’ve answered all four, go to the submission page (the last tile at the bottom), check your answers and submit them. Then hand them in as described below.</p>",
+ "resources": [
+  {
+   "type": "calculator"
+  },
+  {
+   "type": "slide",
+   "label": "Thyroid gland",
+   "spec": "thyroid-gland@2.05,0.83,20x"
+  }
+ ],
+ "questions": [
+  {
+   "id": "thyroid-a",
+   "type": "essay",
+   "title": "The thyroid gland (a): a labelled photograph",
+   "lines": 14,
+   "text": "<p><b>(a)</b> Use the digital microscope to examine a histological section of the thyroid gland (the <b>Thyroid gland</b> button at the top of the page opens it). Choose an appropriate magnification, and use the labelling tool to label a <b>thyroid follicle</b>, its <b>lumen</b> and a <b>thyroid follicular cell</b>, and take a photograph that shows your labels. Measure the area of the lumen of your follicle, and use R to report it.</p><p>Put your labelled photograph in your answer with <b>Insert picture</b> (it’s in your files). Under it, give the area of the lumen, and the magnification you chose, with a sentence on why you chose it.</p><p class=\"muted\">You may have to look up the structure of the thyroid gland to answer this. Chapter 3 of the instructions takes you through it step by step.</p>",
+   "guidance": "<p>What a good answer shows.</p><ul><li><b>A sensible magnification.</b> At 20× (or 10× for a big follicle) the whole follicle fits in the picture, and you can still pick out single follicular cells and their nuclei. At 40× you can’t see a whole follicle, and at 2× or 4× the cells are too small to label.</li><li><b>The three labels in the right places.</b> The follicle is the whole unit, the ring of follicular cells and the colloid it encloses, so its label goes on the follicle’s edge. The lumen is the space inside, filled with pink colloid. A follicular cell is one of the flattened to cuboidal cells of the wall, best labelled on its dark nucleus.</li><li><b>A scale bar</b>, so that the size is clear. The camera adds one.</li><li><b>The area of the lumen, with its units</b>, measured to the inner (apical) edge of the follicular cells. Where the colloid has shrunk away from the cells, the pale gap is part of the lumen, as it formed when the tissue was processed. The follicle that the button at the top of the page opens has a lumen of about 13,000 µm² (0.013 mm²). Follicles on this slide range from about 50 µm to over 300 µm across, so other values are fine if they match your photograph.</li><li><b>Going further.</b> Here the follicular cells are flat to cuboidal and the follicles are full of colloid, which is typical of a gland that’s storing hormone rather than releasing a lot of it. Very active follicles have taller, columnar cells and less colloid.</li></ul>"
+  },
+  {
+   "id": "thyroid-b",
+   "type": "essay",
+   "title": "The thyroid gland (b): making T3 and T4",
+   "lines": 12,
+   "words": {
+    "max": 200
+   },
+   "text": "<p><b>(b)</b> In your own words, and using your labelled photograph to support your narrative account, describe the steps involved in the synthesis of the T3 and T4 hormones.</p><p class=\"muted\">No more than 200 words. You’ll cover T3 and T4 again later in the course, in more detail, so this is good revision.</p>",
+   "guidance": "<p>The steps a good account covers, in order. It doesn’t need all of this detail to be good, but it should say where each step happens, using your photograph.</p><ol><li><b>Iodide uptake.</b> The follicular cells take up iodide (I<sup>−</sup>) from the blood across their basal membrane, through the Na<sup>+</sup>/I<sup>−</sup> symporter (NIS). It’s secondary active transport, powered by the Na<sup>+</sup> gradient, the same gradient as in this week’s lectures. Iodide then leaves the cells at their apical surface, into the lumen (through pendrin).</li><li><b>Thyroglobulin.</b> The cells make thyroglobulin, a large glycoprotein with many tyrosine residues, on their rough endoplasmic reticulum, and secrete it into the lumen by exocytosis. It makes up most of the colloid.</li><li><b>Iodination.</b> At the apical surface, thyroid peroxidase (TPO), using hydrogen peroxide, oxidizes the iodide and attaches it to tyrosine residues of thyroglobulin, making monoiodotyrosine (MIT) and diiodotyrosine (DIT).</li><li><b>Coupling.</b> TPO then joins pairs of these within the thyroglobulin. DIT + DIT gives T4 (thyroxine), and MIT + DIT gives T3 (triiodothyronine). The hormones stay part of the thyroglobulin, stored in the colloid, so the lumen in your photograph is a store of hormone.</li><li><b>Release.</b> TSH from the anterior pituitary stimulates the cells, through receptors coupled to cAMP. They take colloid back in by endocytosis at their apical surface, and lysosomes digest the thyroglobulin, freeing T4 and T3, which leave the cells into the capillaries between the follicles. The iodine of the leftover MIT and DIT is recycled.</li><li><b>Mostly T4.</b> The thyroid releases far more T4 than T3. In the tissues, deiodinases convert much of the T4 into T3, the more active hormone.</li></ol><p>TSH stimulates almost every step, not just release, and T3 and T4 feed back on the hypothalamus and the anterior pituitary.</p>"
+  },
+  {
+   "id": "saq-ek",
+   "type": "short",
+   "title": "Potassium and a negative equilibrium potential",
+   "lines": 10,
+   "text": "<p>How can POSITIVELY charged potassium ions generate a NEGATIVE value of <i>E</i><sub>K</sub>?</p><p class=\"muted\">Answer in bullet points, and make at least five, as this question is marked out of five.</p>",
+   "guidance": "<p>Points a good answer makes. Each is worth about a mark.</p><ul><li><b>The gradient.</b> K<sup>+</sup> is much more concentrated inside the cell than outside (about 140 mM against 2 to 5 mM), a gradient that the sodium pump maintains.</li><li><b>Selective permeability.</b> At rest the membrane is permeable mainly to K<sup>+</sup>, through K<sup>+</sup> leak channels, and hardly at all to the large anions inside the cell (proteins and organic phosphates) that balance the K<sup>+</sup>’s charge.</li><li><b>Charge separation.</b> K<sup>+</sup> diffuses out down its concentration gradient. Each ion that leaves takes a positive charge out and leaves an unpaired negative charge behind, so the inside of the membrane becomes negative relative to the outside.</li><li><b>Equilibrium.</b> The negative inside pulls K<sup>+</sup> back. When the electrical force on K<sup>+</sup> is equal and opposite to the chemical force of its concentration gradient, there’s no net movement, and the potential at which that happens is <i>E</i><sub>K</sub>.</li><li><b>The Nernst equation.</b> <i>E</i><sub>K</sub> = (<i>RT</i>/<i>zF</i>) ln([K<sup>+</sup>]<sub>out</sub>/[K<sup>+</sup>]<sub>in</sub>). With <i>z</i> = +1 and less K<sup>+</sup> outside than inside, the logarithm is negative, so <i>E</i><sub>K</sub> is negative: 58 log<sub>10</sub>(2.25/140) ≈ −104 mV for frog muscle at 20 °C. The sign comes from the direction of the gradient and the charge, which is also why <i>E</i><sub>Na</sub> is positive.</li><li><b>Very few ions move.</b> Only a tiny fraction of the K<sup>+</sup> needs to cross to charge the membrane’s capacitance, so the concentrations don’t change measurably, and the solutions on either side stay electrically neutral, apart from a thin layer of charge at the membrane itself.</li><li><b>A real cell isn’t at <i>E</i><sub>K</sub>.</b> The resting membrane is also slightly permeable to Na<sup>+</sup>, so its potential lies a little positive to <i>E</i><sub>K</sub>.</li></ul>"
+  },
+  {
+   "id": "saq-nav",
+   "type": "short",
+   "title": "The voltage-gated sodium channel",
+   "lines": 12,
+   "text": "<p>Briefly describe (a) how a voltage-gated sodium channel is selective for Na<sup>+</sup> ions, and (b) how the voltage-gating works.</p><p class=\"muted\">Answer in bullet points, and make at least five, as this question is marked out of five.</p>",
+   "guidance": "<p>Points a good answer makes. Each is worth about a mark.</p><p><b>(a) Selectivity</b></p><ul><li><b>The structure.</b> The channel is one large α subunit with four similar domains (I to IV), each of six transmembrane segments (S1 to S6), arranged round a central pore.</li><li><b>The selectivity filter.</b> The narrowest part of the pore is formed by the four re-entrant P-loops between S5 and S6, one from each domain. Each contributes one amino acid to a ring of four: aspartate, glutamate, lysine and alanine (the DEKA ring).</li><li><b>How it selects.</b> The filter is just wide enough for a Na<sup>+</sup> ion with some of its water still attached, and its side chains interact more favourably with Na<sup>+</sup> than with the larger K<sup>+</sup>, so Na<sup>+</sup> passes about 10 to 20 times more easily than K<sup>+</sup>. The lysine is the key: changing it to glutamate makes the channel select Ca<sup>2+</sup> instead.</li></ul><p><b>(b) Voltage-gating</b></p><ul><li><b>The voltage sensors.</b> The S4 segment of each domain carries a positively charged amino acid (arginine or lysine) at every third position, and sits within the electric field across the membrane.</li><li><b>Activation.</b> Depolarization makes the inside less negative, so the S4 segments move outwards. That small movement of charge can be measured as a gating current. Through the S4–S5 linkers, it pulls apart the ends of the S6 segments that close the pore on the inside, so the channel opens within a fraction of a millisecond. The more the membrane depolarizes, the more likely each channel is to open, which gives the positive feedback of the Hodgkin cycle.</li><li><b>Inactivation.</b> A millisecond or so later, the short intracellular loop between domains III and IV, with its isoleucine–phenylalanine–methionine (IFM) motif, swings into the inner mouth of the pore and blocks it, like a hinged lid.</li><li><b>Recovery.</b> The channel can’t open again until the membrane repolarizes, which returns the voltage sensors and releases the lid. So the channel has three states, closed, open and inactivated, and inactivation causes the refractory period.</li></ul>"
+  }
+ ]
+}

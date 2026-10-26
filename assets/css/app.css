@@ -287,6 +287,8 @@ label.stack select { border: 1px solid var(--line-2); border-radius: 6px; paddin
 }
 .wb-pane > div { height: 100%; min-height: 0; }
 .optional { border-top: 2px dashed var(--line); margin-top: 2em; }
+/* (a whole chapter that's optional: its first box says so, so no rule above it) */
+.optional.whole { border-top: 0; margin-top: 0; }
 .no-answers .q-model { display: none !important; }
 
 @media (max-width: 620px) {

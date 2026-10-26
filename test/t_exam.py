@@ -159,7 +159,7 @@ p.wait(f"() => {E} && document.querySelectorAll('.ex-card').length >= 3", timeou
 # out of the way, in a closed list of their own)
 cards = p.js("() => Array.from(document.querySelectorAll('.ex-card')).filter(c => !c.closest('details')).map(c => [c.querySelector('h4').textContent, c.querySelector('.ex-cmeta').textContent])")
 others = p.js("() => Array.from(document.querySelectorAll('details.ex-others .ex-card')).map(c => c.dataset.paper)")
-check(others == ['s1-essay', 's1-saqs', 's1-revision'] and not p.js("() => document.querySelector('details.ex-others').open"),
+check(others == ['s1-essay', 's1-saqs', 's1-revision', 's2-work', 's2-revision'] and not p.js("() => document.querySelector('details.ex-others').open"),
       f'the supervisions’ papers are listed apart, closed: {others}')
 check(cards == [['Getting to know exam practice', '20 minutes · 3 questions · 13 marks'], ['Practice essay (45 minutes)', '45 minutes · 1 question · 25 marks'],
                 ['Calculations', '40 minutes · 8 questions · 16 marks']], f'the papers are listed with their time, questions and marks: {cards}')

@@ -184,7 +184,7 @@ guide = build_page(GUIDE, 0)
 for sv in SUPERVISIONS:
     if sv['status'] == 'ready':
         r = build_page(sv, sv['n'])
-        r.update({'n': sv['n'], 'paper': sv.get('handin_paper')})
+        r.update({'n': sv['n'], 'paper': sv.get('handin_paper'), 'noun': sv.get('handin_noun') or 'Essay'})
         registry.append(r)
 
 # the landing page

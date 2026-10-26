@@ -49,16 +49,18 @@
     if (!e || !s.paper) return;
     e.className = 'tile-essay';
     const to = (CFG.handIn && CFG.handIn.to) || 'your supervisor';
+    // (what the work to hand in is called: 'Essay', or 'Practical and short answers'…)
+    const what = s.noun || 'Essay';
     if (r && r.handedIn) {
-      e.textContent = `✓ Essay handed in (${day(r.handedIn)})`;
+      e.textContent = `✓ ${what} handed in (${day(r.handedIn)})`;
       e.classList.add('ok');
     } else if (r && r.submitted) {
-      e.textContent = `Essay submitted (${day(r.submitted)}) but not handed in yet. You can hand it in to ${to} from Supervision work.`;
+      e.textContent = `${what} submitted (${day(r.submitted)}) but not handed in yet. You can hand it in to ${to} from Supervision work.`;
       e.classList.add('todo');
     } else if (r && r.started) {
-      e.textContent = 'Essay started, but not submitted yet';
+      e.textContent = `${what} started, but not submitted yet`;
       e.classList.add('todo');
-    } else e.textContent = 'Essay not started yet';
+    } else e.textContent = `${what} not started yet`;
   }
 
   function showName() {

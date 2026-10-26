@@ -80,6 +80,8 @@
      exam:saved    {path}                    the attempt is saved to its file
      exam:paste    {paper, q, refused}       something is pasted (or dropped) into the exam; refused: it was copied
                                              from outside the exam, so it was not let in
+     exam:picture  {paper, q, n, source}     n pictures were added to an answer, from 'files' (the workbench's: a
+                                             photograph taken with the microscope…), 'computer', 'drop' or 'paste'
      exam:suggested {paper, minutes}         the time spent writing reached the suggested time
      exam:handin   {paper, step, receipt, error}  handing a paper in: 'confirmed' (the hand-in script has saved it,
                                              with a receipt) or 'failed' (the script refused it, or didn't answer)
@@ -149,6 +151,11 @@
     r.readAsDataURL(blob);
   });
   const possessive = (who) => (/s$/.test(who) ? who + '’' : who + '’s');
+  /** what the work of a paper is called in the hand-in's messages: "essay" for a paper that is one essay, else "work" */
+  const workOf = (paper) => {
+    const qs = ((paper && paper.questions) || []).filter((q) => q.type !== 'info');
+    return qs.length === 1 && qs[0].type === 'essay' ? 'essay' : 'work';
+  };
 
   /* ------------------------------------------------------------------
      pictures: added to an answer from the student's computer (Insert picture, or a picture file dropped in), made
@@ -1129,7 +1136,9 @@
     /* opts: html, words {min, max, hard}, showWords, spellcheck, lines, toolbar ('default'|'basic'|'plain'), readonly,
        label, onInput(editor), onFormat(cmd), onBackup(), getBackups() → [...], restoreBackup(b), onExpand(on), and
        images – the attempt's pictures, when the answer may have them: {has(id), url(id) → a blob: address, add(picture,
-       id) → its id, or null when there is no room} */
+       id) → its id, or null when there is no room, files() → the pictures in the workbench's files that Insert picture
+       offers [{path, name, where}], blob(path) → a promise of one of them}, and onPictures(n, source) – pictures were
+       added ('computer', 'files', 'drop' or 'paste') */
     constructor(opts) {
       this.o = opts || {};
       this.id = 'exed' + ++edCount;
@@ -1231,7 +1240,7 @@
         if (this.readonly) return;
         const cd = e.clipboardData;
         // (a picture on the clipboard, on a paper that lets anything be pasted: as if it had been inserted)
-        if (cd && cd.files && cd.files.length && this.o.images && !cd.getData('text/plain')) return this._addPictures(cd.files);
+        if (cd && cd.files && cd.files.length && this.o.images && !cd.getData('text/plain')) return this._addPictures(cd.files, null, 'paste');
         this.insertPasted(cd ? cd.getData('text/html') : '', cd ? cd.getData('text/plain') : '');
       });
       // (text dragged from one place in the answer to another: the browser moves it, and the word limit is checked)
@@ -1247,7 +1256,7 @@
         // pictures from the computer: put in where they are dropped (the same as Insert picture)
         if (dt.files && dt.files.length) {
           if (!this.o.images) return this._note('Files and pictures can’t be added to this answer, but you can use the drawing tool for a diagram.');
-          return this._addPictures(dt.files, r && this.area.contains(r.startContainer) ? r : null);
+          return this._addPictures(dt.files, r && this.area.contains(r.startContainer) ? r : null, 'drop');
         }
         if (r) {
           const s = window.getSelection();
@@ -1829,25 +1838,74 @@
       });
     }
 
-    /* ---------- pictures (from the student's computer) ---------- */
+    /* ---------- pictures (from the student's files in the workbench, or from their computer) ---------- */
     _choosePictures() {
       if (!this.o.images) return;
       this._keepRange();
       const range = this._range ? this._range.cloneRange() : null;
+      // (with pictures in the workbench's files – a photograph taken with the microscope, say – a choice; else the
+      // computer's chooser at once)
+      const mine = this.o.images.files ? this.o.images.files() : [];
+      if (mine.length) this._pictureDialog(mine, range);
+      else this._fromComputer(range);
+    }
+    _fromComputer(range) {
       const inp = h('input', { type: 'file', accept: 'image/*', multiple: true, hidden: true });
       inp.addEventListener('change', () => {
         const files = Array.from(inp.files || []);
         inp.remove();
-        if (files.length) this._addPictures(files, range);
+        if (files.length) this._addPictures(files, range, 'computer');
       });
       inp.addEventListener('cancel', () => inp.remove());
       // (in the page while it is open: some browsers only open a chooser that is)
       this.el.appendChild(inp);
       inp.click();
     }
+    /** the pictures in the workbench's files (list: [{path, name, where}], the newest first) to choose from, and a
+        button for one from the computer */
+    _pictureDialog(list, range) {
+      const urls = [];
+      const grid = h('div.ex-picgrid', { role: 'list', 'aria-label': 'Pictures in your files' });
+      const pc = h('button.btn', { type: 'button' }, 'From your computer…');
+      const cancel = h('button.btn', { type: 'button' }, 'Cancel');
+      const m = dialog('Insert a picture', h('div.ex-picdlg',
+        h('p', 'Choose a picture from your files in the workbench, such as a photograph you took with the microscope, or add one from your computer.'),
+        grid, h('div.prompt-actions', pc, h('span.grow'), cancel)), { wide: true, onClose: () => urls.forEach((u) => URL.revokeObjectURL(u)) });
+      pc.addEventListener('click', () => {
+        m.close();
+        this._fromComputer(range);
+      });
+      cancel.addEventListener('click', () => m.close());
+      list.forEach((f) => {
+        const img = h('img', { alt: '' });
+        const folder = f.where.slice(0, f.where.lastIndexOf('/')) || f.where;
+        const b = h('button.ex-picitem', { type: 'button', role: 'listitem', title: f.where, 'aria-label': `${f.name}, in ${folder}` },
+          h('span.ex-picthumb', img), h('span.ex-picname', f.name), h('span.ex-picwhere', folder));
+        this.o.images.blob(f.path).then((blob) => {
+          const u = URL.createObjectURL(blob);
+          urls.push(u);
+          img.src = u;
+        }, () => b.classList.add('broken'));
+        b.addEventListener('click', async () => {
+          m.close();
+          let file;
+          try {
+            const blob = await this.o.images.blob(f.path);
+            const ext = (/\.([a-z]+)$/i.exec(f.name) || [])[1] || 'png';
+            file = new File([blob], f.name, { type: /^image\//.test(blob.type) ? blob.type : 'image/' + ext.toLowerCase().replace('jpg', 'jpeg') });
+          } catch (e) {
+            return this._note(`${f.name} couldn’t be read from your files.`, 8000);
+          }
+          this._addPictures([file], range, 'files');
+        });
+        grid.appendChild(b);
+      });
+      setTimeout(() => grid.querySelector('button') && grid.querySelector('button').focus(), 30);
+    }
     /** pictures (files) into the answer, where the cursor is (or range): made smaller, kept with the attempt, each on
-        a line of its own, with the cursor on a new line after them for a caption */
-    async _addPictures(files, range) {
+        a line of its own, with the cursor on a new line after them for a caption. source: where they came from
+        ('computer', 'files', 'drop', 'paste'), for onPictures */
+    async _addPictures(files, range, source) {
       if (this.readonly || !this.o.images) return;
       const list = Array.from(files || []);
       const isPic = (f) => /^image\//.test(f.type || '') || /\.(png|jpe?g|gif|webp|bmp|heic|heif|avif)$/i.test(f.name || '');
@@ -1878,7 +1936,10 @@
           notes.push(`${name} couldn’t be opened. Try saving it as a JPEG or PNG and adding that instead.`);
         }
       }
-      if (ready.length) this._insertPictures(ready, range);
+      if (ready.length) {
+        this._insertPictures(ready, range);
+        if (this.o.onPictures) this.o.onPictures(ready.length, source || 'drop');
+      }
       const done = ready.length ? `${ready.length > 1 ? `${ready.length} pictures added.` : 'Picture added.'} You can type a caption under ${ready.length > 1 ? 'each' : 'it'}.` : '';
       this._note([done, ...notes].filter(Boolean).join(' ') || ' ', notes.length ? 10000 : 6000, !notes.length);
     }
@@ -2221,8 +2282,23 @@
       return {
         has: (id) => !!(att.images && att.images[id]),
         url: (id) => this._pictureURL(att, id),
-        add: (rec, id) => this._addPicture(att, rec, id)
+        add: (rec, id) => this._addPicture(att, rec, id),
+        files: () => this._workbenchPictures(),
+        blob: (path) => this.fs.toBlob(path)
       };
+    }
+    /** the pictures in the student's files (the microscope's photographs, a picture of a diagram or a chart that they
+        saved…), the newest first */
+    _workbenchPictures() {
+      const fs = this.fs, home = MG.app && MG.app.HOME;
+      if (!fs || !fs.entries || !home) return [];
+      const out = [];
+      for (const [path, e] of fs.entries) {
+        if (!e || e.kind === 'dir' || !path.startsWith(home + '/') || /\/\./.test(path.slice(home.length))) continue;
+        if (!/\.(png|jpe?g|gif|webp)$/i.test(path)) continue;
+        out.push({ path, name: path.slice(path.lastIndexOf('/') + 1), where: fs.pretty(path), time: e.mtime || 0 });
+      }
+      return out.sort((a, b) => b.time - a.time).slice(0, 48);
     }
     /** a blob: address for a picture of the attempt ('' when it has none of that id), made once */
     _pictureURL(att, id) {
@@ -2568,7 +2644,7 @@
         const sent = done && paper.week ? done : null;
         const s = h('button.btn' + (sent ? '' : '.primary'), { type: 'button' }, sent ? 'Start a new attempt' : 'Start');
         s.addEventListener('click', async () => {
-          if ((paper.required || paper.handIn) && !fullName() && MG.app.nameDialog) await MG.app.nameDialog({ title: 'Your name, for your essay', why: 'Your name goes at the top of the Word document you hand in, so that your supervisor knows whose work it is. It’s only kept in this browser. You can leave it out for now and add it later, before you hand your work in.', cancel: 'Not now' });
+          if ((paper.required || paper.handIn) && !fullName() && MG.app.nameDialog) await MG.app.nameDialog({ title: `Your name, for your ${workOf(paper)}`, why: 'Your name goes at the top of the Word document you hand in, so that your supervisor knows whose work it is. It’s only kept in this browser. You can leave it out for now and add it later, before you hand your work in.', cancel: 'Not now' });
           this._start(paper);
         });
         if (sent) {
@@ -2927,7 +3003,8 @@
           onFormat: (cmd) => bus.emit('exam:format', { cmd }),
           onBackups: () => this._backups(q),
           onExpand: () => this._expand(),
-          images: this._picturesAllowed(q) ? this._pictureStore() : null
+          images: this._picturesAllowed(q) ? this._pictureStore() : null,
+          onPictures: (n, source) => bus.emit('exam:picture', { paper: this.att.paper.id, q: q.id, n, source })
         }));
         wrap.appendChild(ed.el);
       } else if (q.type === 'numeric') {
@@ -3224,7 +3301,7 @@
 <li><kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes and <kbd>Ctrl</kbd>+<kbd>Y</kbd> redoes, and <kbd>Ctrl</kbd>+<kbd>C</kbd>, <kbd>Ctrl</kbd>+<kbd>X</kbd> and <kbd>Ctrl</kbd>+<kbd>V</kbd> copy, cut and paste.${this.att && this.att.paper.clipboard === 'any' ? '' : ' As in Inspera’s exam browser, you can only paste what you copied in this exam, from your answers or the questions. Text copied anywhere else can’t be pasted in.'}</li>
 <li>In a list, <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> indent and outdent an item. Right-click in a table to add or delete rows and columns.</li>
 <li>Double-click a formula or a drawing to change it. <kbd>Esc</kbd> leaves the expanded view.</li>
-<li><b>Insert picture</b> adds pictures from your computer, such as a photo of a diagram you drew on paper, and you can also drag a picture file into your answer. Type a caption under it if you like. To take a picture out, double-click it.</li>
+<li><b>Insert picture</b> adds a picture from your files in the workbench, such as a photograph you took with the microscope, or from your computer, such as a photo of a diagram you drew on paper. You can also drag a picture file into your answer. Type a caption under it if you like. To take a picture out, double-click it.</li>
 <li>In the calculator, type a calculation and press <kbd>Enter</kbd>. <kbd>↑</kbd> brings back your earlier ones, and <kbd>Esc</kbd> clears it.</li>
 </ul>`);
     }
@@ -3380,6 +3457,7 @@
     _handInBox(att, HI, opts, show) {
       const id = att.paper.id;
       const where = `${possessive(HI.to)} ${HI.drive}`;
+      const W = workOf(att.paper);
       const box = h('section.ex-handin.ex-hi', { 'aria-label': 'Hand it in' });
       const copy = (label) => {
         const b = h('button.btn', { type: 'button', html: IC.download + `<span>${esc(label)}</span>` });
@@ -3417,15 +3495,15 @@
           return;
         }
         const c = att.candidate || {};
-        if (!(c.name || fullName()) && MG.app.nameDialog) await MG.app.nameDialog({ title: 'Your name, for your essay', why: `Your name goes at the top of your essay and on its file, so that ${HI.to} knows whose work it is. It’s only kept in this browser.`, cancel: 'Not now' });
+        if (!(c.name || fullName()) && MG.app.nameDialog) await MG.app.nameDialog({ title: `Your name, for your ${W}`, why: `Your name goes at the top of your ${W} and on its file, so that ${HI.to} knows whose work it is. It’s only kept in this browser.`, cancel: 'Not now' });
         if (!(c.name || fullName())) {
-          say('no', 'Please add your name first, so that it goes on your essay. You’ll find <b>Your name</b> at the top of the page.');
+          say('no', `Please add your name first, so that it goes on your ${W}. You’ll find <b>Your name</b> at the top of the page.`);
           return;
         }
         go.disabled = true;
         pw.disabled = true;
         go.querySelector('span').textContent = 'Handing it in…';
-        say('', `Sending your essay to ${esc(where)}… It can take up to half a minute.`);
+        say('', `Sending your ${W} to ${esc(where)}… It can take up to half a minute.`);
         const r = await this._sendHandIn(att, HI, pw.value);
         go.disabled = false;
         pw.disabled = false;
@@ -3444,16 +3522,16 @@
           pw.select();
           pw.focus();
         } else if (r.error === 'network') {
-          say('no', `Your essay couldn’t be sent, because ${esc(where)} didn’t respond. Check that you’re online and try again.${still}`);
+          say('no', `Your ${W} couldn’t be sent, because ${esc(where)} didn’t respond. Check that you’re online and try again.${still}`);
         } else if (r.error === 'size') {
           say('no', `${esc(r.message)} Please download a copy (below) and send it to ${esc(HI.to)} another way.`);
         } else {
           // (the hand-in's own messages say what to do: wait, try again, or tell the supervisor)
-          say('no', `${esc(r.message || 'Your essay couldn’t be handed in. Try again in a moment.')}${still}`);
+          say('no', `${esc(r.message || `Your ${W} couldn’t be handed in. Try again in a moment.`)}${still}`);
         }
       });
       box.append(h('h3.ex-hi-h', opts.title || 'Now hand it in'),
-        h('p.ex-hi-lede', `Your essay goes straight from here to ${where}.${HI.password ? ' Type in the hand-in password you were given, then press Hand it in.' : ''}`),
+        h('p.ex-hi-lede', `Your ${W} goes straight from here to ${where}.${HI.password ? ' Type in the hand-in password you were given, then press Hand it in.' : ''}`),
         form, msg,
         h('p.ex-hi-small', copy('Download a copy for yourself')));
       return box;
@@ -3464,13 +3542,13 @@
       let body;
       try {
         const { blob, name } = await this._docx(att);
-        if (blob.size > 10 * 1048576) return { ok: false, error: 'size', message: `With its pictures, your essay is too big to hand in (${(blob.size / 1048576).toFixed(1)} MB, and the limit is 10 MB).` };
+        if (blob.size > 10 * 1048576) return { ok: false, error: 'size', message: `With its pictures, your ${workOf(att.paper)} is too big to hand in (${(blob.size / 1048576).toFixed(1)} MB, and the limit is 10 MB).` };
         const c = att.candidate || {};
         const words = this._questions(att).filter((q) => q.type === 'essay' || q.type === 'short').reduce((n, q) => n + ((att.answers[q.id] || {}).words || 0), 0);
         body = JSON.stringify({ v: 1, password, paper: att.paper.id, week: att.paper.week || 0, title: att.paper.title, name: c.name || fullName(), number: c.number || '',
           words, submitted: att.submitted, site: location.origin + location.pathname, file: { name, type: DOCX_TYPE, data: await base64Of(blob) } });
       } catch (e) {
-        return { ok: false, error: 'local', message: 'Your essay couldn’t be made into a Word document (' + (e.message || e) + '). Try again in a moment.' };
+        return { ok: false, error: 'local', message: `Your ${workOf(att.paper)} couldn’t be made into a Word document (${e.message || e}). Try again in a moment.` };
       }
       const ctl = typeof AbortController === 'function' ? new AbortController() : null;
       const timer = ctl ? setTimeout(() => ctl.abort(), 60000) : null;
@@ -3571,7 +3649,7 @@
         if (format === 'docx' || format === 'docx-file') {
           const c = att.candidate || {};
           // (work to hand in needs the student's name on it: ask for it if there is none)
-          if (format === 'docx' && (att.paper.required || att.paper.handIn) && !(c.name || fullName()) && MG.app.nameDialog) await MG.app.nameDialog({ title: 'Your name, for your essay', why: 'Your name goes at the top of the Word document, so that your supervisor knows whose work it is. It’s only kept in this browser.', cancel: 'Download without it' });
+          if (format === 'docx' && (att.paper.required || att.paper.handIn) && !(c.name || fullName()) && MG.app.nameDialog) await MG.app.nameDialog({ title: `Your name, for your ${workOf(att.paper)}`, why: 'Your name goes at the top of the Word document, so that your supervisor knows whose work it is. It’s only kept in this browser.', cancel: 'Download without it' });
           const { blob } = await this._docx(att);
           if (format === 'docx-file') {
             const p = await MG.app.saveToFiles(base + '.docx', blob, { folder: '~/essays', ask: false });

@@ -78,6 +78,32 @@
    "questions": 4,
    "description": "Four more essay titles from this week’s lectures. Note them down for revision, and write any of them here for practice.",
    "order": 3
+  },
+  {
+   "id": "s2-work",
+   "file": "s2-work.json",
+   "title": "Supervision 2 work",
+   "kind": "practice",
+   "minutes": null,
+   "suggestedMinutes": null,
+   "week": 2,
+   "required": true,
+   "questions": 4,
+   "description": "A practical question on the thyroid gland, with a labelled photograph from the microscope, and two short-answer questions. All of it is handed in.",
+   "order": 1
+  },
+  {
+   "id": "s2-revision",
+   "file": "s2-revision.json",
+   "title": "Essay titles for revision",
+   "kind": "practice",
+   "minutes": null,
+   "suggestedMinutes": null,
+   "week": 2,
+   "required": false,
+   "questions": 3,
+   "description": "Three essay titles from this week’s lectures. Note them down for revision, and write any of them here for practice.",
+   "order": 2
   }
  ]
 }

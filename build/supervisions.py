@@ -6,8 +6,8 @@ ALL() lists them) and its papers in exams/ (those with "week": N). A supervision
 workbench's guide (workbench.html: the chapters of build/chapters.py, the tour of the workbench).
 
 To add a supervision's work: write its module of chapters (like s1.py), its papers (exams/sN-*.json, with
-"week": N), and change its entry below (page, module, status 'ready', the texts of its tile); then run
-python3 build/make_page.py."""
+"week": N), and change its entry below (page, module, status 'ready', the texts of its tile, and handin_noun, the
+work to hand in as the tile's status names it: 'Essay', say); then run python3 build/make_page.py."""
 
 SITE_TITLE = 'BMS supervisions'
 COURSE = 'NST IA Biomedical Sciences'
@@ -36,9 +36,25 @@ SUPERVISIONS = [
                   'mechanisms in animal physiology.',
         'handin_short': 'an essay on why negative feedback is more common than positive feedback',
         'handin_paper': 's1-essay',
+        'handin_noun': 'Essay',
         'time': 'About 40 minutes for the essay, and an hour for the exercises',
+    },
+    {
+        'n': 2, 'status': 'ready', 'page': 'supervision-2.html', 'data_page': 'supervision-2', 'module': 's2',
+        'title': 'Supervision 2', 'topic': 'Nerves, synapses and the autonomic nervous system',
+        'subtitle': 'Supervision 2: nerves, synapses and the autonomic nervous system',
+        'description': 'Supervision 2 of NST IA Biomedical Sciences covers electrochemical gradients, action potentials, '
+                       'synapses and the autonomic nervous system. There’s a practical question on the thyroid gland and two '
+                       'short-answer questions to hand in, and optional exercises in the workbench.',
+        'card': 'Electrochemical gradients and resting potentials, the action potential, synapses and the '
+                'neuromuscular junction, and the autonomic nervous system.',
+        'handin': 'A practical question on the thyroid gland, and two short-answer questions.',
+        'handin_short': 'a practical question on the thyroid gland, and two short-answer questions',
+        'handin_paper': 's2-work',
+        'handin_noun': 'Practical and short answers',
+        'time': 'About an hour for the work to hand in, and half an hour for the optional exercises',
     },
 ] + [
     {'n': n, 'status': 'soon', 'page': GUIDE['page'], 'title': f'Supervision {n}', 'topic': '', 'card': '', 'time': ''}
-    for n in range(2, 9)
+    for n in range(3, 9)
 ]

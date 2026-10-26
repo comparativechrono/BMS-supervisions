@@ -118,7 +118,8 @@ tiles = p.js("""() => [...document.querySelectorAll('.tiles .tile')].map(t => ({
 check([t['n'] for t in tiles] == [str(i) for i in range(1, 9)] and [t['kicker'] for t in tiles] == [f'Supervision {i}' for i in range(1, 9)],
       f'the landing page has eight tiles, Supervision 1 to 8: {[t["kicker"] for t in tiles]}')
 check(tiles[0]['href'] == 'supervision-1.html' and tiles[0]['ready'], 'Supervision 1 opens its own page')
-check(all(t['href'] == 'workbench.html' and not t['ready'] and 'Coming soon' in t['text'] for t in tiles[1:]), 'Supervisions 2 to 8 are coming soon, and open the workbench and its guide')
+check(tiles[1]['href'] == 'supervision-2.html' and tiles[1]['ready'], 'Supervision 2 opens its own page (test/t_s2.py follows it)')
+check(all(t['href'] == 'workbench.html' and not t['ready'] and 'Coming soon' in t['text'] for t in tiles[2:]), 'Supervisions 3 to 8 are coming soon, and open the workbench and its guide')
 t1 = tiles[0]['text']
 check('To hand in: an essay on why negative feedback is more common than positive feedback' in t1 and 'Not started yet' in t1 and 'Essay not started yet' in t1, f'tile 1 names the essay to hand in, and nothing is started: {t1[:200]!r}')
 check(p.js("() => document.querySelector('[data-student-name-text]').textContent") == 'no name yet', 'there is no name yet')
