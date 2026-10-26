@@ -171,8 +171,8 @@
   <div class="act-t">Two agonists</div>
   <ol class="steps">
     <li data-task="an-setup" data-auto="bath:setup tissue=ileum">Set up a fresh piece of ileum <button class="do showme" type="button" data-bath="ileum?seed=3">show me</button>, and make the clock run 20 times faster <button class="do showme" type="button" data-bath-do="speed 20">show me</button>. This button gives everyone the same piece of ileum, so your numbers should be close to the ones in the model answers.</li>
-    <li data-task="an-ach" data-auto="bath:response drug=acetylcholine condition=control">Add acetylcholine to give 10<sup>−7</sup> M in the bath <button class="do showme" type="button" data-bath-do="add acetylcholine 1e-7">show me</button>. Once the contraction has reached its plateau <button class="do showme" type="button" data-bath-do="plateau">show me</button>, wash it out <button class="do showme" type="button" data-bath-do="wash">show me</button>. The response goes into the <b>Results</b> under the chart.</li>
-    <li data-task="an-nic" data-auto="bath:response drug=nicotine condition=control">Now add nicotine to give 10<sup>−5</sup> M <button class="do showme" type="button" data-bath-do="add nicotine 1e-5">show me</button>. Again, take it to its plateau and wash it out.</li>
+    <li data-task="an-ach" data-auto="bath:response drug=acetylcholine condition=control">Add acetylcholine to give 10<sup>−7</sup> M in the bath <button class="do showme" type="button" data-bath-do="add acetylcholine 1e-7">show me</button>. Once the contraction has reached its plateau <button class="do showme" type="button" data-bath-do="plateau">show me</button>, wash it out <button class="do showme" type="button" data-bath-do="wash">show me</button> and give the tissue a minute to recover <button class="do showme" type="button" data-bath-do="wait 60">show me</button>. The response goes into the <b>Results</b> under the chart.</li>
+    <li data-task="an-nic" data-auto="bath:response drug=nicotine condition=control">Now add nicotine to give 10<sup>−5</sup> M <button class="do showme" type="button" data-bath-do="add nicotine 1e-5">show me</button>. Again, take it to its plateau, wash it out, and give the tissue a minute to recover.</li>
   </ol>
 </div>
 <div class="q" data-q="an-q-nic" data-type="mcq">
@@ -185,7 +185,7 @@
   <div class="act-t">Add hexamethonium</div>
   <ol class="steps">
     <li data-task="an-hexa" data-auto="bath:equilibrated drug=hexamethonium">Put hexamethonium (10<sup>−4</sup> M) in the solution used for washing, and wash the bath with it <button class="do showme" type="button" data-bath-do="antagonist hexamethonium 1e-4">show me</button>. Let it equilibrate for 10 minutes <button class="do showme" type="button" data-bath-do="wait 600">show me</button>. That also gives the nicotinic receptors time to recover, as nicotine desensitizes them.</li>
-    <li data-task="an-nic2" data-auto="bath:response drug=nicotine condition~hexamethonium">Add nicotine (10<sup>−5</sup> M) again, take it to its plateau, and wash it out.</li>
+    <li data-task="an-nic2" data-auto="bath:response drug=nicotine condition~hexamethonium">Add nicotine (10<sup>−5</sup> M) again, take it to its plateau, wash it out, and let the tissue recover for a minute.</li>
     <li data-task="an-ach2" data-auto="bath:response drug=acetylcholine condition~hexamethonium">Then add acetylcholine (10<sup>−7</sup> M) again, take it to its plateau, and wash it out.</li>
   </ol>
 </div>

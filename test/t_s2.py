@@ -205,18 +205,18 @@ def bath(cmd, wait=0.8):
 click('#s2-ans button[data-bath="ileum?seed=3"]')
 check(wait_ticked('an-setup', 20), 'a fresh ileum is set up (an-setup)')
 bath('speed 20')
-for cmd in ('add acetylcholine 1e-7', 'plateau', 'wash'):
-    bath(cmd, 2.5 if cmd == 'plateau' else 0.8)
+for cmd in ('add acetylcholine 1e-7', 'plateau', 'wash', 'wait 60'):
+    bath(cmd, 2.5 if cmd in ('plateau', 'wait 60') else 0.8)
 check(wait_ticked('an-ach', 10), 'the response to acetylcholine ticks an-ach')
-for cmd in ('add nicotine 1e-5', 'plateau', 'wash'):
-    bath(cmd, 2.5 if cmd == 'plateau' else 0.8)
+for cmd in ('add nicotine 1e-5', 'plateau', 'wash', 'wait 60'):
+    bath(cmd, 2.5 if cmd in ('plateau', 'wait 60') else 0.8)
 check(wait_ticked('an-nic', 10), 'the response to nicotine ticks an-nic')
 check(mcq_right('an-q-nic'), 'an-q-nic: nicotine acts on the ganglia')
 bath('antagonist hexamethonium 1e-4')
 bath('wait 600', 3)
 check(wait_ticked('an-hexa', 10), 'ten minutes in hexamethonium ticks an-hexa')
-for cmd in ('add nicotine 1e-5', 'plateau', 'wash', 'add acetylcholine 1e-7', 'plateau', 'wash'):
-    bath(cmd, 2.5 if cmd == 'plateau' else 0.8)
+for cmd in ('add nicotine 1e-5', 'plateau', 'wash', 'wait 60', 'add acetylcholine 1e-7', 'plateau', 'wash'):
+    bath(cmd, 2.5 if cmd in ('plateau', 'wait 60') else 0.8)
 check(wait_ticked('an-nic2', 10) and wait_ticked('an-ach2', 10), 'the responses in hexamethonium tick an-nic2 and an-ach2')
 rs = {(r['drug'], 'hex' if 'hexamethonium' in r['condition'] else 'control'): r['pct'] for r in evs('bath:response')}
 check(85 < rs.get(('nicotine', 'control'), 0) <= 100 and 5 < rs.get(('nicotine', 'hex'), 100) < 20 and rs.get(('acetylcholine', 'hex'), 0) > 90,

@@ -156,8 +156,8 @@ def ch_ans(num):
 <h2 id="an-two">Acetylcholine and nicotine</h2>
 {activity("Two agonists", [
     task("an-setup", f'Set up a fresh piece of ileum {bath("ileum?seed=3", "show me")}, and make the clock run 20 times faster {bathdo("speed 20", "show me")}. This button gives everyone the same piece of ileum, so your numbers should be close to the ones in the model answers.', auto="bath:setup tissue=ileum"),
-    task("an-ach", f'Add acetylcholine to give 10<sup>−7</sup> M in the bath {bathdo("add acetylcholine 1e-7", "show me")}. Once the contraction has reached its plateau {bathdo("plateau", "show me")}, wash it out {bathdo("wash", "show me")}. The response goes into the <b>Results</b> under the chart.', auto="bath:response drug=acetylcholine condition=control"),
-    task("an-nic", f'Now add nicotine to give 10<sup>−5</sup> M {bathdo("add nicotine 1e-5", "show me")}. Again, take it to its plateau and wash it out.', auto="bath:response drug=nicotine condition=control"),
+    task("an-ach", f'Add acetylcholine to give 10<sup>−7</sup> M in the bath {bathdo("add acetylcholine 1e-7", "show me")}. Once the contraction has reached its plateau {bathdo("plateau", "show me")}, wash it out {bathdo("wash", "show me")} and give the tissue a minute to recover {bathdo("wait 60", "show me")}. The response goes into the <b>Results</b> under the chart.', auto="bath:response drug=acetylcholine condition=control"),
+    task("an-nic", f'Now add nicotine to give 10<sup>−5</sup> M {bathdo("add nicotine 1e-5", "show me")}. Again, take it to its plateau, wash it out, and give the tissue a minute to recover.', auto="bath:response drug=nicotine condition=control"),
 ])}
 {mcq("an-q-nic", "Nicotine makes the ileum contract too. Which receptors do you think it acts on?", [
     ("Muscarinic receptors on the smooth muscle, the same as acetylcholine", False, "Probably not. Nicotine is a very weak agonist at muscarinic receptors, and the next steps will show you where it really acts."),
@@ -168,7 +168,7 @@ def ch_ans(num):
 <h2 id="an-hex">Blocking the ganglia</h2>
 {activity("Add hexamethonium", [
     task("an-hexa", f'Put hexamethonium (10<sup>−4</sup> M) in the solution used for washing, and wash the bath with it {bathdo("antagonist hexamethonium 1e-4", "show me")}. Let it equilibrate for 10 minutes {bathdo("wait 600", "show me")}. That also gives the nicotinic receptors time to recover, as nicotine desensitizes them.', auto="bath:equilibrated drug=hexamethonium"),
-    task("an-nic2", 'Add nicotine (10<sup>−5</sup> M) again, take it to its plateau, and wash it out.', auto="bath:response drug=nicotine condition~hexamethonium"),
+    task("an-nic2", 'Add nicotine (10<sup>−5</sup> M) again, take it to its plateau, wash it out, and let the tissue recover for a minute.', auto="bath:response drug=nicotine condition~hexamethonium"),
     task("an-ach2", 'Then add acetylcholine (10<sup>−7</sup> M) again, take it to its plateau, and wash it out.', auto="bath:response drug=acetylcholine condition~hexamethonium"),
 ])}
 {q("an-q-hex", "Compare the responses in hexamethonium with the ones before. (In the Results table, each response is also given as a percentage of the largest contraction so far.) What do they tell you?",
