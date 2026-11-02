@@ -53,7 +53,7 @@
 <section class="chapter" id="s3-week" data-num="0" data-title="This week" data-bench="exam">
   <h1>Supervision 3: muscle and movement</h1>
   <div class="meta-row"><span class="pill time">≈ 5 min</span></div>
-  <p class="lede">This week’s lectures are on muscle: how the proteins of the sarcomere make force, how an action potential switches contraction on, and how muscles and the skeleton turn that force into movement. The essay you hand in asks you to put all of it together, from molecules to whole animals.</p>
+  <p class="lede">Most of this week’s lectures are on muscle: how the proteins of the sarcomere make force, how an action potential switches contraction on, and how muscles and the skeleton turn that force into movement. The essay you hand in asks you to put all of it together, from molecules to whole animals.</p>
 
 <div class="handin-box">
   <div class="hb-k">To hand in this week</div>
@@ -92,7 +92,7 @@
 <section class="chapter" id="s3-fibres" data-num="1" data-title="Muscle fibres" data-bench="scope" hidden>
   <h1>Optional: from the whole muscle to the fibre</h1>
   <div class="meta-row"><span class="pill time">≈ 15 min</span></div>
-  <p class="lede">An optional exercise. Look at skeletal muscle in the Microscope, measure the width of its fibres, and use R to work out why fibres that wide need T-tubules.</p>
+  <p class="lede">Look at skeletal muscle in the Microscope, measure the width of its fibres, and use R to work out why fibres that wide need T-tubules.</p>
 <div class="optional whole">
 
 <div class="callout info">
@@ -108,8 +108,8 @@
     <li data-task="fb-open" data-auto="scope:open slide=skeletal-muscle">Open a section of human skeletal muscle at low power <button class="do showme" type="button" data-scope="skeletal-muscle@1.6,1.6,2x">show me</button>. Some of its fibres were cut lengthways and some across. You can see how they’re grouped into fascicles, with pale connective tissue between them.</li>
     <li data-task="fb-peri" data-auto="scope:label slide=skeletal-muscle text~perimys">Choose the <b>Label</b> tool <button class="do showme" type="button" data-scope-tool="label">show me</button> and click on the connective tissue between two fascicles. Call the label <i>Perimysium</i>. It carries blood vessels and nerves into the muscle. Like the endomysium round each fibre and the epimysium round the whole muscle, it runs into the tendon, so it helps to pass the pull of the fibres on to the bone.</li>
     <li data-task="fb-across" data-auto="scope:mag slide=skeletal-muscle mag&gt;9||scope:view slide=skeletal-muscle mag&gt;9">Now go to some fibres cut across, at 10× <button class="do showme" type="button" data-scope="skeletal-muscle@0.642,3.113,10x">show me</button>. Each of these shapes is one fibre, and so one cell.</li>
-    <li data-task="fb-nuc" data-auto="scope:label slide=skeletal-muscle text~nucle">With the <b>Label</b> tool, label one of the nuclei at the edge of a fibre, and call it <i>Nucleus</i>. Look at how many nuclei each fibre has, and where they are.</li>
-    <li data-task="fb-width" data-auto="scope:measure slide=skeletal-muscle kind=length n&gt;2">Measure three fibres. Choose the <b>Measure</b> tool <button class="do showme" type="button" data-scope-tool="measure:fibre width">show me</button> and drag across a fibre at its narrowest, from one edge to the other. Then do the same for two more fibres.</li>
+    <li data-task="fb-nuc" data-auto="scope:label slide=skeletal-muscle text~nucle">With the <b>Label</b> tool, label one of the nuclei at the edge of a fibre, and call it <i>Nucleus</i>. Most of the nuclei you can see belong to the fibres, though a few between them belong to the cells of capillaries and connective tissue.</li>
+    <li data-task="fb-width" data-auto="scope:measure slide=skeletal-muscle kind=length n&gt;2">Measure three fibres. Choose the <b>Measure</b> tool <button class="do showme" type="button" data-scope-tool="measure:fibre width">show me</button> and drag across a fibre at its narrowest, from one edge to the other. Then do the same for two more fibres. If one goes wrong, delete it in the <b>Measurements</b> panel and measure it again.</li>
   </ol>
 </div>
 <div class="callout tip">
@@ -117,12 +117,12 @@
   <p>A fibre that was cut at a slant looks longer than it should in one direction, but its narrowest width hardly changes. That’s why pathologists who measure the fibres in a muscle biopsy use the narrowest width too. They call it the lesser diameter.</p>
 </div>
 <div class="q" data-q="fb-q-nuclei">
-  <div class="q-text">Why does a skeletal muscle fibre need so many nuclei? And why might they sit at its edge?</div>
-  <div class="q-model">A fibre is a huge cell. These are 60 to 80 µm across, and a fibre can be many centimetres long, sometimes running the whole length of its muscle. One nucleus couldn’t make enough mRNA for the proteins of so much cytoplasm, so each nucleus looks after the stretch of fibre around it. The nuclei come from the many myoblasts that fused to make the fibre as it developed. Satellite cells, which lie just outside the fibre under its basement membrane, can fuse with it to add more nuclei when it grows or is repaired. Keeping the nuclei at the edge leaves the middle of the fibre to the myofibrils. A row of nuclei down the middle of a fibre is a sign that it has regenerated after damage, as happens again and again in Duchenne muscular dystrophy.</div>
+  <div class="q-text">In a thin slice like this, each fibre shows only a few nuclei, but along its whole length a fibre has hundreds or thousands. Why does it need so many? And why might they sit at its edge?</div>
+  <div class="q-model">A fibre is a huge cell. The fibres on this slide are about 60 to 80 µm across, and a fibre can be many centimetres long, sometimes running the whole length of its muscle. One nucleus couldn’t make enough mRNA for the proteins of so much cytoplasm, so each nucleus looks after the stretch of fibre around it. The nuclei come from the many myoblasts that fused to make the fibre as it developed. Satellite cells, which lie just outside the fibre under its basement membrane, can fuse with it to add more nuclei when it grows or is repaired. Keeping the nuclei at the edge leaves the middle of the fibre to the myofibrils. A row of nuclei down the middle of a fibre is usually a sign that it has regenerated after damage, as happens again and again in Duchenne muscular dystrophy.</div>
 </div>
 
 <h2 id="fb-sarc">Smaller than the scan can show</h2>
-<p>A sarcomere is only about 2.5 µm long, and each pixel of this scan is half a micrometre across, so the cross-striations that the sarcomeres make are too fine for it. Look at some fibres cut lengthways at 40× <button class="do showme" type="button" data-scope="skeletal-muscle@1.137,0.494,40x">show me</button>, though, and you may just make out fine lines running along them. Those are the myofibrils, each about a micrometre across.</p>
+<p>A sarcomere is only about 2.5 µm long, so it spans just five pixels of this scan, and the pale I band in each is only a pixel or two wide. That’s at the very limit of what the scan can show, so don’t expect to see the cross-striations. Look at some fibres cut lengthways at 40× <button class="do showme" type="button" data-scope="skeletal-muscle@1.137,0.494,40x">show me</button>, though, and you may just make out faint lines running along them, where the myofibrils, each about a micrometre across, lie side by side.</p>
 <div class="q" data-q="fb-q-band" data-type="mcq">
   <div class="q-text">As a sarcomere shortens, which of these stays the same length?</div>
   <div class="mcq"><label data-why="No. The I band is the part of each thin filament that the thick filaments don’t overlap, so it gets narrower as the filaments slide past each other."><input type="radio"> <span>The I band</span></label><label data-correct data-why="Yes. The A band is the length of the thick filaments, so it stays the same however much the sarcomere shortens, while the I band and the H zone get narrower. That was the key observation of the two papers of 1954 that proposed the sliding filament theory: the filaments slide past each other, and neither kind changes its length."><input type="radio"> <span>The A band</span></label><label data-why="No. The H zone is the middle of the A band, where the thin filaments don’t reach. It narrows as they slide in, and it can disappear."><input type="radio"> <span>The H zone</span></label><label data-why="No. That’s the length of the sarcomere itself, which is what shortens."><input type="radio"> <span>The distance from one Z disc to the next</span></label></div>
@@ -148,14 +148,14 @@
 <div class="activity">
   <div class="act-t">Smooth and cardiac muscle</div>
   <ol class="steps">
-    <li data-task="fb-smooth" data-auto="scope:open slide=smooth-muscle">Open the smooth muscle of the oesophagus at 10× <button class="do showme" type="button" data-scope="smooth-muscle@2.471,2.273,10x">show me</button>, the same magnification as the skeletal muscle. Its cells are long, thin spindles, each with one nucleus in the middle, packed together in bundles. There are no striations, even at higher power.</li>
+    <li data-task="fb-smooth" data-auto="scope:open slide=smooth-muscle">Open the smooth muscle of the oesophagus at 10× <button class="do showme" type="button" data-scope="smooth-muscle@2.471,2.273,10x">show me</button>, the same magnification as the skeletal muscle. Its cells are long, thin spindles, each with one nucleus in the middle, packed together in bundles. Unlike skeletal and cardiac muscle, it has no striations, though this scan is too coarse to show you the difference.</li>
     <li data-task="fb-smooth-t" data-auto="r:input kind=rstudio line~2.5^2">A smooth muscle cell is only about 5 µm across at its widest. How long would Ca²⁺ take to reach its middle from the membrane? <code>2.5^2 / (2 * 800)</code> <button class="do showme" type="button" data-rcon="2.5^2 / (2 * 800)">show me</button></li>
-    <li data-task="fb-heart" data-auto="scope:open slide=heart">Now open the heart, at 40× <button class="do showme" type="button" data-scope="heart@2.2,1.46,40x">show me</button>. Cardiac muscle is striated, like skeletal muscle, but its cells are much smaller, with one or two nuclei in the middle. They branch, and they’re joined end to end by intercalated discs, the dark lines across the fibres.</li>
+    <li data-task="fb-heart" data-auto="scope:open slide=heart">Now open the heart, at 40× <button class="do showme" type="button" data-scope="heart@2.2,1.46,40x">show me</button>. Cardiac muscle is striated, like skeletal muscle, but its cells are much smaller, with one or two nuclei in the middle. They branch, and they’re joined end to end by intercalated discs, the dark lines that cross the fibres every 100 µm or so. Don’t mistake them for striations, which are dozens of times closer together, and too fine to see in this scan.</li>
   </ol>
 </div>
 <div class="q" data-q="fb-q-smooth">
   <div class="q-text">Smooth muscle has actin and myosin too. Why does it have no striations, and why doesn’t it need T-tubules?</div>
-  <div class="q-model">Its actin and myosin aren’t lined up in sarcomeres. Bundles of filaments run at an angle across the cell, anchored to dense bodies in the cytoplasm, which do the job of Z discs and are linked to each other by intermediate filaments, and to adhesion plaques on the membrane. With nothing in register, there’s nothing to make stripes, and when the cell contracts it gets shorter and fatter rather than pulling along a single line. It’s so thin that Ca²⁺ coming in through its membrane has at most 2.5 µm to go, which takes about 4 ms (2.5² / 1600 = 0.0039 s), so it doesn’t need T-tubules. It has small pits in its membrane, caveolae, instead, and it contracts far more slowly than skeletal muscle anyway.</div>
+  <div class="q-model">Its actin and myosin aren’t lined up in sarcomeres. Bundles of filaments run at an angle across the cell. They’re anchored to dense bodies in the cytoplasm, which do the job of Z discs, and to adhesion plaques on the membrane, and intermediate filaments link the dense bodies to each other. With nothing in register, there’s nothing to make stripes. Because the bundles pull at many angles, the whole cell bunches up as it contracts, and it can shorten much further than a skeletal muscle fibre. It’s so thin that Ca²⁺ coming in through its membrane has at most 2.5 µm to go, which takes about 4 ms (2.5² / 1600 = 0.0039 s), so it doesn’t need T-tubules. It has small pits in its membrane, caveolae, instead, and it contracts far more slowly than skeletal muscle anyway.</div>
 </div>
 </div>
 
@@ -165,7 +165,7 @@
 <section class="chapter" id="s3-move" data-num="2" data-title="From muscle to movement" data-bench="rstudio" hidden>
   <h1>Optional: from muscle to movement</h1>
   <div class="meta-row"><span class="pill time">≈ 15 min</span></div>
-  <p class="lede">An optional exercise. Plot a muscle’s force–velocity curve and its power in R, and see how your arm works as a lever, in Anatomy.</p>
+  <p class="lede">Plot a muscle’s force–velocity curve and its power in R, and see how your arm works as a lever, in Anatomy.</p>
 <div class="optional whole">
 
 <div class="callout info">
@@ -174,7 +174,7 @@
 </div>
 
 <h2 id="mo-fv">Force, velocity and power</h2>
-<p>The heavier the load, the more slowly a muscle can lift it. A. V. Hill described the relationship in 1938 with the equation (<i>F</i> + <i>a</i>)(<i>v</i> + <i>b</i>) = (<i>F</i><sub>0</sub> + <i>a</i>)<i>b</i>, where <i>F</i><sub>0</sub> is the isometric force, the largest force the muscle can exert, and <i>a</i> and <i>b</i> are constants. If you measure the force as a fraction of <i>F</i><sub>0</sub> and the velocity as a fraction of the maximum, <i>v</i><sub>max</sub>, and take <i>a</i> to be a quarter of <i>F</i><sub>0</sub>, which is typical, it becomes <i>v</i> = 0.25(1 − <i>F</i>) / (<i>F</i> + 0.25). Each <b>show me</b> button types a line into RStudio’s Console for you. Press <kbd>Enter</kbd> to run it.</p>
+<p>The heavier the load, the more slowly a muscle can lift it. A. V. Hill described the relationship in 1938 with the equation (<i>F</i> + <i>a</i>)(<i>v</i> + <i>b</i>) = (<i>F</i><sub>0</sub> + <i>a</i>)<i>b</i>, where <i>F</i><sub>0</sub> is the isometric force, the force the muscle exerts when it’s held so that it can’t shorten, and <i>a</i> and <i>b</i> are constants. If you measure the force as a fraction of <i>F</i><sub>0</sub> and the velocity as a fraction of the maximum, <i>v</i><sub>max</sub>, and take <i>a</i> to be a quarter of <i>F</i><sub>0</sub>, which is typical, it becomes <i>v</i> = 0.25(1 − <i>F</i>) / (<i>F</i> + 0.25). Each <b>show me</b> button types a line into RStudio’s Console for you. Press <kbd>Enter</kbd> to run it.</p>
 <div class="activity">
   <div class="act-t">In R</div>
   <ol class="steps">
@@ -191,15 +191,15 @@
 </div>
 <div class="q" data-q="mo-q-max" data-accept="num:0.31±0.02" data-placeholder="fraction of F0">
   <div class="q-text">At what force is the power greatest, as a fraction of the isometric force?</div>
-  <div class="q-model">At 0.31 of <i>F</i><sub>0</sub>, where the velocity is also 0.31 of <i>v</i><sub>max</sub>, so the power there is only about a tenth of <i>F</i><sub>0</sub> × <i>v</i><sub>max</sub>. Power is zero at both ends of the curve. With no load the muscle shortens fastest but exerts no force, and at <i>F</i><sub>0</sub> it exerts its greatest force but doesn’t move. A muscle gives its most power at intermediate loads and speeds, about a third of its maximum force and velocity.</div>
+  <div class="q-model">At 0.31 of <i>F</i><sub>0</sub>, where the velocity is also 0.31 of <i>v</i><sub>max</sub>, so the power there is only about a tenth of <i>F</i><sub>0</sub> × <i>v</i><sub>max</sub>. Power is zero at both ends of the curve. With no load the muscle shortens fastest but exerts no force, and at <i>F</i><sub>0</sub> it exerts its full isometric force but doesn’t move. A muscle gives its most power at intermediate loads and speeds, about a third of its maximum force and velocity.</div>
 </div>
 <div class="q" data-q="mo-q-50g" data-accept="num:4.75±0.05" data-placeholder="times longer">
   <div class="q-text">Say a muscle can just hold 100 g, so that 5 g is 0.05 of its isometric force and 50 g is 0.5 of it. How many times longer does it take to lift the 50 g mass the same distance?</div>
-  <div class="q-model">About 4.75 times: <code>hill(0.05) / hill(0.5)</code> is 0.792 / 0.167. The time it takes to lift a mass through a given distance is the distance divided by the velocity (leaving out the moment it takes to get going), so ten times the load takes almost five times as long. That’s the first part of the first short-answer question in chapter 4.</div>
+  <div class="q-model">About 4.75 times: <code>hill(0.05) / hill(0.5)</code> is 0.792 / 0.167. The time it takes to lift a mass through a given distance is the distance divided by the velocity (leaving out the moment it takes to get going), so ten times the load takes almost five times as long. That’s the example that the first short-answer question in chapter 4 starts from.</div>
 </div>
 
 <h2 id="mo-lever">Your arm is a lever</h2>
-<p>A muscle can only pull, and it can only shorten by a fraction of its length. The skeleton turns that pull into movement. Bones act as levers, the joints are their pivots, and where a muscle’s tendon is attached decides what it trades for what.</p>
+<p>A muscle can only pull, and it can only shorten by a fraction of its length. The skeleton turns that pull into movement. Bones act as levers, the joints are their pivots, and where a muscle’s tendon is attached decides how much force it gives up for speed and range.</p>
 <div class="activity">
   <div class="act-t">The biceps, in Anatomy and R</div>
   <ol class="steps">
@@ -210,7 +210,7 @@
 </div>
 <div class="q" data-q="mo-q-lever">
   <div class="q-text">What does your arm gain from having the biceps attached so close to the elbow, and what does it lose?</div>
-  <div class="q-model">It gains speed and range. Every centimetre the biceps shortens moves the hand 8.75 cm in the same time, so the hand moves 8.75 times as far and as fast as the muscle shortens. It loses force. To hold 5 kg (49 N) in the hand with the forearm horizontal, the biceps has to pull with 8.75 times as much, about 430 N, and more once you add the weight of the forearm itself. Most of the levers of the limbs work like this, trading force for the speed and range of movement that limbs need. Different jobs are geared differently, though. Digging animals such as armadillos have a long olecranon, the lever the triceps pulls on, which gives their forelimbs force, while running animals such as horses have muscles that pull close to the joints, at the top of long, light legs, which gives them speed.</div>
+  <div class="q-model">It gains speed and range. Every centimetre the biceps shortens moves the hand 8.75 cm in the same time, so the hand moves 8.75 times as far and as fast as the muscle shortens. It loses force. To hold 5 kg (49 N) in the hand with the forearm horizontal, the biceps would have to pull with 8.75 times as much, about 430 N, if it worked alone (the brachialis and brachioradialis share the load), and more once you add the weight of the forearm itself. Most of the levers of the limbs work like this, trading force for the speed and range of movement that limbs need. Different jobs are geared differently, though. Digging animals such as armadillos have a long olecranon, the lever the triceps pulls on, which gives their forelimbs force, while running animals such as horses have muscles that pull close to the joints, at the top of long, light legs, which gives them speed.</div>
 </div>
 <div class="q" data-q="mo-q-gears">
   <div class="q-text">How do a bicycle’s gears let you cycle at close to your maximum power, whatever the slope of the road?</div>
@@ -223,7 +223,7 @@
   <ol class="steps">
     <li data-task="mo-soleus" data-auto="anat:find ok=true target~soleus">Two muscles of the calf share the calcaneal (Achilles) tendon, which pulls up the heel. <button class="do showme" type="button" data-anat-find="soleus-muscle">Find the soleus</button>, the deeper of the two.</li>
     <li data-task="mo-gastro" data-auto="anat:find ok=true target~gastrocnemius"><button class="do showme" type="button" data-anat-find="medial-head-of-gastrocnemius|lateral-head-of-gastrocnemius">Find the gastrocnemius</button>, which lies over it and crosses the knee as well as the ankle.</li>
-    <li data-task="mo-mb" data-auto="viewer:loaded id~1mbn">Slow, oxidative fibres are red because they’re full of myoglobin, which stores O<sub>2</sub> for them. Open it <button class="do showme" type="button" data-pdb="1MBN">show me</button>. This myoglobin is the sperm whale’s, whose muscles hold so much of it that they’re almost black.</li>
+    <li data-task="mo-mb" data-auto="viewer:loaded id~1mbn">Slow, oxidative fibres are red because they’re full of myoglobin, which stores O<sub>2</sub> for them. Have a look at its structure <button class="do showme" type="button" data-pdb="1MBN">show me</button>. This myoglobin is the sperm whale’s, whose muscles hold so much of it that they’re almost black.</li>
   </ol>
 </div>
 <div class="q" data-q="mo-q-types">
@@ -243,7 +243,7 @@
 <p class="essay-title">“How are movements on the cellular and molecular scale used to produce movement of whole animals?”</p>
 
 <h2 id="es3-title">Thinking about the title</h2>
-<p>The title covers an enormous range of scales. In one cross-bridge cycle a myosin head moves an actin filament about 10 nm, and a running animal covers metres in a second. The question is how you get from one to the other, so a good essay is about the steps in between: how the tiny movements of molecules are added up, switched on together, controlled, and passed on to the skeleton. These questions might help you plan.</p>
+<p>The title covers an enormous range of scales. In one cross-bridge cycle a myosin head moves an actin filament 5 to 10 nm, and a running animal covers metres in a second. The question is how you get from one to the other, so a good essay is about the steps in between: how the tiny movements of molecules are added up, switched on together, controlled, and passed on to the skeleton. These questions might help you plan.</p>
 <ul>
 <li><b>The motor.</b> What does one myosin head do in one cross-bridge cycle, and where does the energy come from?</li>
 <li><b>Adding up.</b> What happens to the shortening when thousands of sarcomeres are joined end to end, and to the force when myofibrils and fibres lie side by side?</li>
@@ -269,7 +269,7 @@
     <li data-task="es3-write" data-auto="exam:words paper=s3-essay words&gt;299">Plan, then write. Aim for an introduction that says what your essay will argue, paragraphs that each make one point and show how it helps to answer the question, and a conclusion that draws them together.</li>
     <li data-task="es3-submit" data-auto="exam:submit paper=s3-essay" data-check="paper:s3-essay.submitted">When you’ve finished, go to the submission page (the ✓ tile at the bottom right), check your essay and submit it.</li>
     <li data-task="es3-send" data-auto="exam:handin paper=s3-essay step=confirmed" data-check="paper:s3-essay.handedIn">Hand it in on the page that comes up next. Type in the hand-in password and press <b>Hand it in</b>. The page shows you a receipt once your essay has arrived.</li>
-    <li data-task="es3-word" data-auto="exam:download paper=s3-essay format=docx" data-check="paper:s3-essay.downloaded">To keep a copy, press <b>Download a copy for yourself</b>, under the password box (once you’ve handed in, the button says <b>Download your copy</b>). The copy is saved as a Word document in your Downloads folder.</li>
+    <li data-task="es3-word" data-auto="exam:download paper=s3-essay format=docx" data-check="paper:s3-essay.downloaded">To keep a copy, press <b>Download your copy</b> (before you hand in, it’s called <b>Download a copy for yourself</b>, under the password box). The copy is saved as a Word document in your Downloads folder.</li>
   </ol>
 </div>
 <div class="callout info">
@@ -278,7 +278,7 @@
 </div>
 <div class="callout info">
   <div class="co-t">After you’ve handed it in</div>
-  <p>Once you’ve submitted, <b>Review my answers</b> shows you the ground a good answer would cover. Read it after you’ve handed your essay in, and make a note of what you’d add or change. That’s what we’ll talk about in the supervision.</p><p>Your essay is kept in this browser, in Files → <code>essays</code>. It won’t be there on another computer, so download it before you leave.</p>
+  <p>Once you’ve submitted, <b>Review my answers</b> shows you the ground a good answer would cover. Read it after you’ve handed your essay in, and make a note of what you’d add or change. That’s what we’ll talk about in the supervision.</p><p>Your essay is kept in this browser, in Files → <code>essays</code>. It won’t be there on another computer, and some shared computers clear it when you log out, so download a copy before you finish.</p>
 </div>
 <div class="q" data-q="es3-q-next">
   <div class="q-text">Once you’ve read the guidance, which step from molecules to whole animals did your essay cover least well, and what would you add?</div>
@@ -292,9 +292,9 @@
   <p class="lede">This chapter is optional. It has three short-answer questions on this week’s lectures, and three more essay titles to note down for revision. Only the essay needs to be handed in.</p>
 
 <h2 id="m3-saq">Short-answer questions</h2>
-<p>These three go with this week’s lectures. Each is marked out of five, so answer in bullet points and make at least five.</p>
+<p>These three go with this week’s lectures. Each is marked out of five, so answer in bullet points and aim for at least five separate points.</p>
 <ol class="titles"><li>If you attach a 50 g mass to a muscle it takes longer to lift a given distance than a 5 g mass. Why does velocity decrease as force increases? Draw a graph to demonstrate the relationship. How does muscle power vary as a function of load?</li><li>Relate the clinical signs with the physiology of: (a) malignant hyperthermia, (b) Duchenne’s muscular dystrophy, (c) myasthenia gravis.</li><li>Outline similarities and differences between the skeletal and smooth muscle contractile apparatus.</li></ol>
-<p>They have a paper of their own in Supervision work <button class="do showme" type="button" data-exam="s3-saqs">open them</button>. There’s no time limit, but about 10 minutes for each is a good aim. Sketch the graph for the first one with <b>Insert drawing</b> (the pencil). After you submit, <b>Review my answers</b> shows you what a good answer covers.</p>
+<p>They have a paper of their own in Supervision work <button class="do showme" type="button" data-exam="s3-saqs">open them</button>. There’s no time limit, but about 10 minutes for each is a good aim. Sketch the graph for the first one with <b>Insert drawing</b> (the pencil), or draw it on paper and add a photo of it with <b>Insert picture</b>. After you submit, <b>Review my answers</b> shows you what a good answer covers.</p>
 
 <h2 id="m3-rev">Essay titles for revision</h2>
 <p>It’s worth noting these down. They go with this week’s lectures, and they’re the kind of title you could meet in the exam.</p>
