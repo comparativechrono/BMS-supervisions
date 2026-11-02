@@ -104,6 +104,45 @@
    "questions": 3,
    "description": "Three essay titles from this week’s lectures. Note them down for revision, and write any of them here for practice.",
    "order": 2
+  },
+  {
+   "id": "s3-essay",
+   "file": "s3-essay.json",
+   "title": "Supervision 3 essay",
+   "kind": "practice",
+   "minutes": null,
+   "suggestedMinutes": 40,
+   "week": 3,
+   "required": true,
+   "questions": 1,
+   "description": "How are movements on the cellular and molecular scale used to produce movement of whole animals?",
+   "order": 1
+  },
+  {
+   "id": "s3-saqs",
+   "file": "s3-saqs.json",
+   "title": "Supervision 3 short-answer questions",
+   "kind": "practice",
+   "minutes": null,
+   "suggestedMinutes": 30,
+   "week": 3,
+   "required": false,
+   "questions": 3,
+   "description": "Three short-answer questions (SAQs) on this week’s lectures. They’re for practice, not to hand in.",
+   "order": 2
+  },
+  {
+   "id": "s3-revision",
+   "file": "s3-revision.json",
+   "title": "Essay titles for revision",
+   "kind": "practice",
+   "minutes": null,
+   "suggestedMinutes": null,
+   "week": 3,
+   "required": false,
+   "questions": 3,
+   "description": "Three more essay titles from this week’s lectures. Note them down for revision, and write any of them here for practice.",
+   "order": 3
   }
  ]
 }

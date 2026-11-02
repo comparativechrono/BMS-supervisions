@@ -1571,6 +1571,8 @@
       }
       targets.forEach((id) => this.hidden.delete(id));
       if (this.isolated && !targets.some((id) => this.isolated.has(id))) this.isolated = null;
+      // (and the structure asked for isn't left faint because the others were faded round another one)
+      if (this.fadeRound && !targets.some((id) => this.fadeRound.has(id))) this.fadeRound = null;
       this._afterChange();
       await this._loadShown();
       const both = new Set(targets.map((id) => this.S[id].slug)).size === 1 && targets.length > 1;

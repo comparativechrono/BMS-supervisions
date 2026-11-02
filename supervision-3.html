@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supervision 3 – BMS supervisions</title>
+<meta name="description" content="Supervision 3 of NST IA Biomedical Sciences covers muscle and movement: the sarcomere and the cross-bridge cycle, excitation–contraction coupling in skeletal and smooth muscle, and muscle biomechanics. There’s an essay to hand in, written as in the online exam, and optional exercises in the workbench.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233b1c42'/%3E%3Ccircle cx='11' cy='11' r='5' fill='%23f2a7c3'/%3E%3Ccircle cx='21' cy='12' r='4' fill='%23a98bd8'/%3E%3Ccircle cx='15' cy='21' r='5' fill='%23d97aa5'/%3E%3C/svg%3E">
+<script src="assets/js/isolation.js"></script>
+<link rel="stylesheet" href="assets/vendor/codemirror/codemirror.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/wb.css">
+<link rel="stylesheet" href="assets/css/bms.css">
+<link rel="stylesheet" href="assets/css/r.css">
+<link rel="stylesheet" href="assets/css/rstudio.css">
+<link rel="stylesheet" href="assets/css/files.css">
+<link rel="stylesheet" href="assets/css/viewer.css">
+<link rel="stylesheet" href="assets/css/scope.css">
+<link rel="stylesheet" href="assets/css/flow.css">
+<link rel="stylesheet" href="assets/css/circuit.css">
+<link rel="stylesheet" href="assets/css/exam.css">
+<link rel="stylesheet" href="assets/css/anatomy.css">
+<link rel="stylesheet" href="assets/css/recorder.css">
+<link rel="stylesheet" href="assets/css/organbath.css">
+<link rel="stylesheet" href="assets/css/sims.css">
+</head>
+<body data-page="supervision-3" data-title="Supervision 3" data-week="3">
+<div class="app">
+
+  <header class="topbar">
+    <button class="btn top-toggle" id="tutToggle" type="button" title="Hide the instructions so that the workbench fills the window (Ctrl+\)" aria-controls="tut" aria-expanded="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M16 10l-2 2 2 2"/></svg></button>
+    <a class="brand" href="index.html" title="All the supervisions">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#4a2552"/><circle cx="11" cy="11" r="5.2" fill="#f2a7c3"/><circle cx="11" cy="11" r="2" fill="#6d3f9e"/><circle cx="21.5" cy="12" r="4" fill="#c9b3ee"/><circle cx="21.5" cy="12" r="1.5" fill="#5b3a8c"/><circle cx="15" cy="21.5" r="5.2" fill="#e48bb1"/><circle cx="15" cy="21.5" r="2" fill="#6d3f9e"/></svg>
+      <div>
+        <div class="brand-title">BMS supervisions</div>
+        <div class="brand-sub">Supervision 3: muscle and movement</div>
+      </div>
+    </a>
+    <div class="spacer"></div>
+    <div class="progress-wrap" title="The steps you have done and the questions you have answered (saved in this browser)"><span class="progress-label">0% done</span><div class="progress"><i></i></div></div>
+    <span class="store-status" id="storeStatus" title="Your files are saved in this browser, on this computer"></span>
+    <button class="btn" id="userBtn" type="button" title="Your name, as it appears in the workbench"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="user-name">Your name</span></button>
+    <button class="btn" id="projectBtn" type="button" title="Download all your files, add files, or start afresh"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H7l-4 9z"/><path d="M3 19l3.5-8H22l-3.5 8z"/></svg><span>My files</span></button>
+    <button class="btn" id="answersBtn" type="button"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg><span>My answers</span></button>
+    <button class="btn" id="helpBtn" type="button" title="How this page works"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.2 9a2.9 2.9 0 0 1 5.6 1c0 2-2.8 2.6-2.8 4M12 17.5h.01"/></svg><span>Help</span></button>
+    <button class="btn" id="fullBtn" type="button" title="Full screen"><span>Full screen</span></button>
+  </header>
+
+  <div class="main">
+    <aside class="tut" id="tut" aria-label="Instructions">
+      <nav class="ch-nav" aria-label="Chapters"></nav>
+<!--CHAPTERS-->
+<section class="chapter" id="s3-week" data-num="0" data-title="This week" data-bench="exam">
+  <h1>Supervision 3: muscle and movement</h1>
+  <div class="meta-row"><span class="pill time">≈ 5 min</span></div>
+  <p class="lede">This week’s lectures are on muscle: how the proteins of the sarcomere make force, how an action potential switches contraction on, and how muscles and the skeleton turn that force into movement. The essay you hand in asks you to put all of it together, from molecules to whole animals.</p>
+
+<div class="handin-box">
+  <div class="hb-k">To hand in this week</div>
+  <p class="hb-title">“How are movements on the cellular and molecular scale used to produce movement of whole animals?”</p>
+  <ul>
+    <li>You write the essay in <b>Supervision work</b>, as you did in Supervision 1 and as you will in the online exam: in one sitting, without your notes, and without pasting anything in.</li>
+    <li>There’s no time limit, but try to keep to about <b>40 minutes</b>.</li>
+    <li>Once you’ve submitted it, <b>hand it in</b> from the same page before your supervision. You’ll need the <b>hand-in password</b> I give you, and your essay then goes straight into my Google Drive.</li>
+  </ul>
+  <p class="hb-acts"><button class="do showme" type="button" data-goto="s3-write">how to write it and hand it in</button> <button class="do showme" type="button" data-exam="s3-essay">open the essay</button></p>
+</div>
+
+<h2 id="w3-plan">The week, step by step</h2>
+<ol class="plan">
+<li>If you’d like to, start with <b>two short exercises</b>. They’re optional and take about half an hour altogether, and they’ll give you numbers and examples to use in your essay. In chapter 1 you look at skeletal muscle in the <b>Microscope</b>, measure its fibres, and use <b>R</b> to work out why they need T-tubules. In chapter 2 you plot a muscle’s force–velocity curve and its power in <b>R</b>, and see how your arm works as a lever in <b>Anatomy</b>. <button class="do showme" type="button" data-goto="s3-fibres">start</button></li>
+<li>Then <b>write your essay</b> and hand it in (chapter 3, about 45 minutes). <button class="do showme" type="button" data-goto="s3-write">go there</button></li>
+<li>If you’d like more practice, chapter 4 has three short-answer questions, and three more essay titles to note down for revision. These are optional too. <button class="do showme" type="button" data-goto="s3-more">go there</button></li>
+</ol>
+<p>This week’s lecture on the autonomic nervous system goes with last week’s optional exercise in the <b>Organ bath</b>, so if you didn’t do it then, it’s still there in <a href="supervision-2.html#s2-ans" target="_blank" rel="noopener">Supervision 2, chapter 2</a>.</p>
+<div class="activity">
+  <div class="act-t">Before you start</div>
+  <ol class="steps">
+    <li data-task="w3-name" data-check="named">Check that your name is at the top of the page. If it says <b>Your name</b>, click it and add yours. It goes at the top of the essay you hand in, and every supervision’s page shares it.</li>
+  </ol>
+</div>
+
+<h2 id="w3-how">How this page works</h2>
+<ul>
+<li>It works in the same way as the last two. The steps tick themselves off as you do them, the buttons do things for you in the workbench on the right, and every question has a <b>model answer</b> you can look at once you’ve had a go.</li>
+<li>Chapters 1, 2 and 4 are optional, so their steps don’t count towards finishing the page. The rest do.</li>
+<li>If you haven’t used one of the workbench’s tabs before, the <a href="workbench.html" target="_blank" rel="noopener">workbench guide</a> shows you how it works.</li>
+</ul>
+
+</section>
+
+<section class="chapter" id="s3-fibres" data-num="1" data-title="Muscle fibres" data-bench="scope" hidden>
+  <h1>Optional: from the whole muscle to the fibre</h1>
+  <div class="meta-row"><span class="pill time">≈ 15 min</span></div>
+  <p class="lede">An optional exercise. Look at skeletal muscle in the Microscope, measure the width of its fibres, and use R to work out why fibres that wide need T-tubules.</p>
+<div class="optional whole">
+
+<div class="callout info">
+  <div class="co-t">Optional, about 15 minutes</div>
+  <p>This exercise isn’t part of the work to hand in, and its steps don’t count towards finishing the page. It goes with the first two lectures, and it gives you some numbers you could use in your essay.</p>
+</div>
+
+<h2 id="fb-levels">A muscle, level by level</h2>
+<p>A skeletal muscle is built in levels. The whole muscle is made of bundles of fibres, the <b>fascicles</b>. Each <b>fibre</b> is a single cell, very long and with many nuclei, packed with <b>myofibrils</b>. Each myofibril is a chain of <b>sarcomeres</b>, and each sarcomere is an array of actin and myosin filaments. The Microscope shows you the first few levels.</p>
+<div class="activity">
+  <div class="act-t">Skeletal muscle</div>
+  <ol class="steps">
+    <li data-task="fb-open" data-auto="scope:open slide=skeletal-muscle">Open a section of human skeletal muscle at low power <button class="do showme" type="button" data-scope="skeletal-muscle@1.6,1.6,2x">show me</button>. Some of its fibres were cut lengthways and some across. You can see how they’re grouped into fascicles, with pale connective tissue between them.</li>
+    <li data-task="fb-peri" data-auto="scope:label slide=skeletal-muscle text~perimys">Choose the <b>Label</b> tool <button class="do showme" type="button" data-scope-tool="label">show me</button> and click on the connective tissue between two fascicles. Call the label <i>Perimysium</i>. It carries blood vessels and nerves into the muscle. Like the endomysium round each fibre and the epimysium round the whole muscle, it runs into the tendon, so it helps to pass the pull of the fibres on to the bone.</li>
+    <li data-task="fb-across" data-auto="scope:mag slide=skeletal-muscle mag&gt;9||scope:view slide=skeletal-muscle mag&gt;9">Now go to some fibres cut across, at 10× <button class="do showme" type="button" data-scope="skeletal-muscle@0.642,3.113,10x">show me</button>. Each of these shapes is one fibre, and so one cell.</li>
+    <li data-task="fb-nuc" data-auto="scope:label slide=skeletal-muscle text~nucle">With the <b>Label</b> tool, label one of the nuclei at the edge of a fibre, and call it <i>Nucleus</i>. Look at how many nuclei each fibre has, and where they are.</li>
+    <li data-task="fb-width" data-auto="scope:measure slide=skeletal-muscle kind=length n&gt;2">Measure three fibres. Choose the <b>Measure</b> tool <button class="do showme" type="button" data-scope-tool="measure:fibre width">show me</button> and drag across a fibre at its narrowest, from one edge to the other. Then do the same for two more fibres.</li>
+  </ol>
+</div>
+<div class="callout tip">
+  <div class="co-t">Why the narrowest width?</div>
+  <p>A fibre that was cut at a slant looks longer than it should in one direction, but its narrowest width hardly changes. That’s why pathologists who measure the fibres in a muscle biopsy use the narrowest width too. They call it the lesser diameter.</p>
+</div>
+<div class="q" data-q="fb-q-nuclei">
+  <div class="q-text">Why does a skeletal muscle fibre need so many nuclei? And why might they sit at its edge?</div>
+  <div class="q-model">A fibre is a huge cell. These are 60 to 80 µm across, and a fibre can be many centimetres long, sometimes running the whole length of its muscle. One nucleus couldn’t make enough mRNA for the proteins of so much cytoplasm, so each nucleus looks after the stretch of fibre around it. The nuclei come from the many myoblasts that fused to make the fibre as it developed. Satellite cells, which lie just outside the fibre under its basement membrane, can fuse with it to add more nuclei when it grows or is repaired. Keeping the nuclei at the edge leaves the middle of the fibre to the myofibrils. A row of nuclei down the middle of a fibre is a sign that it has regenerated after damage, as happens again and again in Duchenne muscular dystrophy.</div>
+</div>
+
+<h2 id="fb-sarc">Smaller than the scan can show</h2>
+<p>A sarcomere is only about 2.5 µm long, and each pixel of this scan is half a micrometre across, so the cross-striations that the sarcomeres make are too fine for it. Look at some fibres cut lengthways at 40× <button class="do showme" type="button" data-scope="skeletal-muscle@1.137,0.494,40x">show me</button>, though, and you may just make out fine lines running along them. Those are the myofibrils, each about a micrometre across.</p>
+<div class="q" data-q="fb-q-band" data-type="mcq">
+  <div class="q-text">As a sarcomere shortens, which of these stays the same length?</div>
+  <div class="mcq"><label data-why="No. The I band is the part of each thin filament that the thick filaments don’t overlap, so it gets narrower as the filaments slide past each other."><input type="radio"> <span>The I band</span></label><label data-correct data-why="Yes. The A band is the length of the thick filaments, so it stays the same however much the sarcomere shortens, while the I band and the H zone get narrower. That was the key observation of the two papers of 1954 that proposed the sliding filament theory: the filaments slide past each other, and neither kind changes its length."><input type="radio"> <span>The A band</span></label><label data-why="No. The H zone is the middle of the A band, where the thin filaments don’t reach. It narrows as they slide in, and it can disappear."><input type="radio"> <span>The H zone</span></label><label data-why="No. That’s the length of the sarcomere itself, which is what shortens."><input type="radio"> <span>The distance from one Z disc to the next</span></label></div>
+</div>
+
+<h2 id="fb-tt">Why T-tubules?</h2>
+<p>In the second lecture you saw that the action potential spreads from the surface of a fibre into its middle along the <b>T-tubules</b>, so that the sarcoplasmic reticulum releases its Ca²⁺ right next to every myofibril. Why not just let Ca²⁺ in through the surface membrane? Your measurements can tell you. The time a molecule takes to diffuse a distance <i>x</i> is roughly <i>t</i> = <i>x</i>² / 2<i>D</i>, where <i>D</i> is its diffusion coefficient. For Ca²⁺ in water, <i>D</i> is about 800 µm² per second. Each <b>show me</b> button types a line into RStudio’s Console for you. Press <kbd>Enter</kbd> to run it.</p>
+<div class="activity">
+  <div class="act-t">In R</div>
+  <ol class="steps">
+    <li data-task="fb-read" data-auto="r:input kind=rstudio line~measurements.csv">Read your measurements into R: <code>m &lt;- read.csv(&quot;~/microscope/measurements.csv&quot;)</code> <button class="do showme" type="button" data-rcon="m &lt;- read.csv(&quot;~/microscope/measurements.csv&quot;)">show me</button></li>
+    <li data-task="fb-w" data-auto="r:input kind=rstudio line~mean(w)">Pick out the widths of your fibres, in µm: <code>w &lt;- subset(m, slide == &quot;skeletal-muscle&quot; &amp; kind == &quot;length&quot;)$value</code> <button class="do showme" type="button" data-rcon="w &lt;- subset(m, slide == &quot;skeletal-muscle&quot; &amp; kind == &quot;length&quot;)$value">show me</button>. Then work out their mean: <code>mean(w)</code> <button class="do showme" type="button" data-rcon="mean(w)">show me</button></li>
+    <li data-task="fb-t" data-auto="r:input kind=rstudio line~x^2 / (2 * 800)">Halve it, to get the distance from the edge of a fibre to its middle: <code>x &lt;- mean(w) / 2</code> <button class="do showme" type="button" data-rcon="x &lt;- mean(w) / 2">show me</button>. Then work out how long Ca²⁺ would take to diffuse that far, in seconds: <code>x^2 / (2 * 800)</code> <button class="do showme" type="button" data-rcon="x^2 / (2 * 800)">show me</button></li>
+    <li data-task="fb-t1" data-auto="r:input kind=rstudio line~1^2 / (2 * 800)">Inside the fibre, Ca²⁺ released from the sarcoplasmic reticulum has only about 1 µm to go to reach the filaments. Work that out too: <code>1^2 / (2 * 800)</code> <button class="do showme" type="button" data-rcon="1^2 / (2 * 800)">show me</button></li>
+  </ol>
+</div>
+<div class="q" data-q="fb-q-tt">
+  <div class="q-text">How long would Ca²⁺ take to diffuse from the surface of one of your fibres to its middle, and how long from the sarcoplasmic reticulum to the filaments? What does that tell you?</div>
+  <div class="q-model">For these fibres, 60 to 80 µm across, the distance from the surface to the middle is about 33 µm, and 33² / 1600 gives about 0.7 s. From the sarcoplasmic reticulum to the filaments, 1 µm, it’s about 0.6 ms. That’s a thousand times quicker for a distance only 33 times shorter, because the time goes with the square of the distance. A twitch develops its force within a few tens of milliseconds of the action potential, so Ca²⁺ coming in through the surface would be far too slow. The edge of the fibre would contract long before the middle, and much of the Ca²⁺ would be pumped away before it got there. In real cytoplasm it would be slower still, because proteins bind Ca²⁺ as it goes. The T-tubules solve the problem by carrying the action potential into the middle of the fibre within about a millisecond, so that the sarcoplasmic reticulum releases its Ca²⁺ right next to every myofibril, and the whole width of the fibre contracts at once.</div>
+</div>
+<div class="optional">
+<h2>If you have time</h2>
+<div class="activity">
+  <div class="act-t">Smooth and cardiac muscle</div>
+  <ol class="steps">
+    <li data-task="fb-smooth" data-auto="scope:open slide=smooth-muscle">Open the smooth muscle of the oesophagus at 10× <button class="do showme" type="button" data-scope="smooth-muscle@2.471,2.273,10x">show me</button>, the same magnification as the skeletal muscle. Its cells are long, thin spindles, each with one nucleus in the middle, packed together in bundles. There are no striations, even at higher power.</li>
+    <li data-task="fb-smooth-t" data-auto="r:input kind=rstudio line~2.5^2">A smooth muscle cell is only about 5 µm across at its widest. How long would Ca²⁺ take to reach its middle from the membrane? <code>2.5^2 / (2 * 800)</code> <button class="do showme" type="button" data-rcon="2.5^2 / (2 * 800)">show me</button></li>
+    <li data-task="fb-heart" data-auto="scope:open slide=heart">Now open the heart, at 40× <button class="do showme" type="button" data-scope="heart@2.2,1.46,40x">show me</button>. Cardiac muscle is striated, like skeletal muscle, but its cells are much smaller, with one or two nuclei in the middle. They branch, and they’re joined end to end by intercalated discs, the dark lines across the fibres.</li>
+  </ol>
+</div>
+<div class="q" data-q="fb-q-smooth">
+  <div class="q-text">Smooth muscle has actin and myosin too. Why does it have no striations, and why doesn’t it need T-tubules?</div>
+  <div class="q-model">Its actin and myosin aren’t lined up in sarcomeres. Bundles of filaments run at an angle across the cell, anchored to dense bodies in the cytoplasm, which do the job of Z discs and are linked to each other by intermediate filaments, and to adhesion plaques on the membrane. With nothing in register, there’s nothing to make stripes, and when the cell contracts it gets shorter and fatter rather than pulling along a single line. It’s so thin that Ca²⁺ coming in through its membrane has at most 2.5 µm to go, which takes about 4 ms (2.5² / 1600 = 0.0039 s), so it doesn’t need T-tubules. It has small pits in its membrane, caveolae, instead, and it contracts far more slowly than skeletal muscle anyway.</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="chapter" id="s3-move" data-num="2" data-title="From muscle to movement" data-bench="rstudio" hidden>
+  <h1>Optional: from muscle to movement</h1>
+  <div class="meta-row"><span class="pill time">≈ 15 min</span></div>
+  <p class="lede">An optional exercise. Plot a muscle’s force–velocity curve and its power in R, and see how your arm works as a lever, in Anatomy.</p>
+<div class="optional whole">
+
+<div class="callout info">
+  <div class="co-t">Optional, about 15 minutes</div>
+  <p>This exercise isn’t part of the work to hand in, and its steps don’t count towards finishing the page. It goes with the third lecture, and with the first short-answer question in chapter 4.</p>
+</div>
+
+<h2 id="mo-fv">Force, velocity and power</h2>
+<p>The heavier the load, the more slowly a muscle can lift it. A. V. Hill described the relationship in 1938 with the equation (<i>F</i> + <i>a</i>)(<i>v</i> + <i>b</i>) = (<i>F</i><sub>0</sub> + <i>a</i>)<i>b</i>, where <i>F</i><sub>0</sub> is the isometric force, the largest force the muscle can exert, and <i>a</i> and <i>b</i> are constants. If you measure the force as a fraction of <i>F</i><sub>0</sub> and the velocity as a fraction of the maximum, <i>v</i><sub>max</sub>, and take <i>a</i> to be a quarter of <i>F</i><sub>0</sub>, which is typical, it becomes <i>v</i> = 0.25(1 − <i>F</i>) / (<i>F</i> + 0.25). Each <b>show me</b> button types a line into RStudio’s Console for you. Press <kbd>Enter</kbd> to run it.</p>
+<div class="activity">
+  <div class="act-t">In R</div>
+  <ol class="steps">
+    <li data-task="mo-hill" data-auto="r:input kind=rstudio line~hill(f)">Make Hill’s equation into a function: <code>hill &lt;- function(f) 0.25 * (1 - f) / (f + 0.25)</code> <button class="do showme" type="button" data-rcon="hill &lt;- function(f) 0.25 * (1 - f) / (f + 0.25)">show me</button>. Then make a series of forces from 0 to 1, and work out the velocity at each: <code>f &lt;- seq(0, 1, by = 0.01)</code> <button class="do showme" type="button" data-rcon="f &lt;- seq(0, 1, by = 0.01)">show me</button> and <code>v &lt;- hill(f)</code> <button class="do showme" type="button" data-rcon="v &lt;- hill(f)">show me</button></li>
+    <li data-task="mo-plotv" data-auto="r:input kind=rstudio line~plot(f, v">Plot the force–velocity curve: <code>plot(f, v, type = &quot;l&quot;, xlab = &quot;Force (fraction of the isometric force)&quot;, ylab = &quot;Velocity (fraction of the maximum)&quot;)</code> <button class="do showme" type="button" data-rcon="plot(f, v, type = &quot;l&quot;, xlab = &quot;Force (fraction of the isometric force)&quot;, ylab = &quot;Velocity (fraction of the maximum)&quot;)">show me</button></li>
+    <li data-task="mo-plotp" data-auto="r:input kind=rstudio line~plot(f, p">Power is force × velocity. Work it out, and plot it: <code>p &lt;- f * v</code> <button class="do showme" type="button" data-rcon="p &lt;- f * v">show me</button> and <code>plot(f, p, type = &quot;l&quot;, xlab = &quot;Force (fraction of the isometric force)&quot;, ylab = &quot;Power&quot;)</code> <button class="do showme" type="button" data-rcon="plot(f, p, type = &quot;l&quot;, xlab = &quot;Force (fraction of the isometric force)&quot;, ylab = &quot;Power&quot;)">show me</button></li>
+    <li data-task="mo-max" data-auto="r:input kind=rstudio line~which.max(p">Find the force at which the power is greatest: <code>f[which.max(p)]</code> <button class="do showme" type="button" data-rcon="f[which.max(p)]">show me</button></li>
+    <li data-task="mo-ratio" data-auto="r:input kind=rstudio line~hill(0.05)">Compare a light load with a heavy one, 0.05 of <i>F</i><sub>0</sub> and 0.5 of it: <code>hill(0.05) / hill(0.5)</code> <button class="do showme" type="button" data-rcon="hill(0.05) / hill(0.5)">show me</button></li>
+  </ol>
+</div>
+<div class="q" data-q="mo-q-why">
+  <div class="q-text">Why does a muscle shorten more slowly as the load gets heavier?</div>
+  <div class="q-model">Because the load is carried by the cross-bridges that are attached at that moment. With no load, the filaments slide as fast as the cross-bridges can cycle, which sets <i>v</i><sub>max</sub>. That depends on how fast the muscle’s myosin uses ATP, and it’s higher in fast fibres. The heavier the load, the more cross-bridges have to be attached at any one time to bear it, so each spends more of its time attached and pulling, and less of it detaching and moving on, and the filaments slide more slowly. At the isometric force, <i>F</i><sub>0</sub>, all the attached cross-bridges are needed just to hold the load, and the muscle doesn’t shorten at all.</div>
+</div>
+<div class="q" data-q="mo-q-max" data-accept="num:0.31±0.02" data-placeholder="fraction of F0">
+  <div class="q-text">At what force is the power greatest, as a fraction of the isometric force?</div>
+  <div class="q-model">At 0.31 of <i>F</i><sub>0</sub>, where the velocity is also 0.31 of <i>v</i><sub>max</sub>, so the power there is only about a tenth of <i>F</i><sub>0</sub> × <i>v</i><sub>max</sub>. Power is zero at both ends of the curve. With no load the muscle shortens fastest but exerts no force, and at <i>F</i><sub>0</sub> it exerts its greatest force but doesn’t move. A muscle gives its most power at intermediate loads and speeds, about a third of its maximum force and velocity.</div>
+</div>
+<div class="q" data-q="mo-q-50g" data-accept="num:4.75±0.05" data-placeholder="times longer">
+  <div class="q-text">Say a muscle can just hold 100 g, so that 5 g is 0.05 of its isometric force and 50 g is 0.5 of it. How many times longer does it take to lift the 50 g mass the same distance?</div>
+  <div class="q-model">About 4.75 times: <code>hill(0.05) / hill(0.5)</code> is 0.792 / 0.167. The time it takes to lift a mass through a given distance is the distance divided by the velocity (leaving out the moment it takes to get going), so ten times the load takes almost five times as long. That’s the first part of the first short-answer question in chapter 4.</div>
+</div>
+
+<h2 id="mo-lever">Your arm is a lever</h2>
+<p>A muscle can only pull, and it can only shorten by a fraction of its length. The skeleton turns that pull into movement. Bones act as levers, the joints are their pivots, and where a muscle’s tendon is attached decides what it trades for what.</p>
+<div class="activity">
+  <div class="act-t">The biceps, in Anatomy and R</div>
+  <ol class="steps">
+    <li data-task="mo-bic" data-auto="anat:find ok=true target~biceps-brachii"><button class="do showme" type="button" data-anat-find="long-head-of-biceps-brachii">Find the long head of the biceps</button> (biceps brachii, in the front of the upper arm).</li>
+    <li data-task="mo-fade" data-auto="anat:fade on=true base~biceps">Once you’ve found it, the panel on the right tells you about it. Press <b>Fade the others</b> there, then <b>Frame it</b>, and follow the biceps down past the elbow. Its tendon attaches to the radius, just below the elbow.</li>
+    <li data-task="mo-arm" data-auto="r:input kind=rstudio line~9.81 * 35">The tendon pulls on the radius about 4 cm from the elbow, and your hand is about 35 cm from it. Work out how many times as far, and as fast, the hand moves as the biceps shortens: <code>35 / 4</code> <button class="do showme" type="button" data-rcon="35 / 4">show me</button>. Then work out the force, in newtons, that the biceps needs to hold 5 kg in your hand with your forearm horizontal: <code>5 * 9.81 * 35 / 4</code> <button class="do showme" type="button" data-rcon="5 * 9.81 * 35 / 4">show me</button></li>
+  </ol>
+</div>
+<div class="q" data-q="mo-q-lever">
+  <div class="q-text">What does your arm gain from having the biceps attached so close to the elbow, and what does it lose?</div>
+  <div class="q-model">It gains speed and range. Every centimetre the biceps shortens moves the hand 8.75 cm in the same time, so the hand moves 8.75 times as far and as fast as the muscle shortens. It loses force. To hold 5 kg (49 N) in the hand with the forearm horizontal, the biceps has to pull with 8.75 times as much, about 430 N, and more once you add the weight of the forearm itself. Most of the levers of the limbs work like this, trading force for the speed and range of movement that limbs need. Different jobs are geared differently, though. Digging animals such as armadillos have a long olecranon, the lever the triceps pulls on, which gives their forelimbs force, while running animals such as horses have muscles that pull close to the joints, at the top of long, light legs, which gives them speed.</div>
+</div>
+<div class="q" data-q="mo-q-gears">
+  <div class="q-text">How do a bicycle’s gears let you cycle at close to your maximum power, whatever the slope of the road?</div>
+  <div class="q-model">Your leg muscles give their most power at one particular combination of force and speed, about a third of their maximum of each, which for cycling means a particular rate of pedalling. The gears change how fast your legs have to turn for a given speed of the bicycle, and so how much force they have to exert. Uphill, a low gear lets your legs keep turning quickly against a force they can manage, though the bicycle moves slowly. On the flat, or downhill, a high gear stops your legs having to spin faster than they can usefully go. Either way the muscles stay near the load and speed at which they give their most power. The levers of the skeleton are gears too, but fixed ones, which is one reason why muscles that do different jobs have different fibre types and shapes.</div>
+</div>
+<div class="optional">
+<h2>If you have time</h2>
+<div class="activity">
+  <div class="act-t">Fast and slow muscles</div>
+  <ol class="steps">
+    <li data-task="mo-soleus" data-auto="anat:find ok=true target~soleus">Two muscles of the calf share the calcaneal (Achilles) tendon, which pulls up the heel. <button class="do showme" type="button" data-anat-find="soleus-muscle">Find the soleus</button>, the deeper of the two.</li>
+    <li data-task="mo-gastro" data-auto="anat:find ok=true target~gastrocnemius"><button class="do showme" type="button" data-anat-find="medial-head-of-gastrocnemius|lateral-head-of-gastrocnemius">Find the gastrocnemius</button>, which lies over it and crosses the knee as well as the ankle.</li>
+    <li data-task="mo-mb" data-auto="viewer:loaded id~1mbn">Slow, oxidative fibres are red because they’re full of myoglobin, which stores O<sub>2</sub> for them. Open it <button class="do showme" type="button" data-pdb="1MBN">show me</button>. This myoglobin is the sperm whale’s, whose muscles hold so much of it that they’re almost black.</li>
+  </ol>
+</div>
+<div class="q" data-q="mo-q-types">
+  <div class="q-text">In most people the soleus has more type I fibres than the gastrocnemius. How does that fit what each muscle does?</div>
+  <div class="q-model">The soleus is a postural muscle. It works almost all the time you’re standing, to stop you falling forwards over your ankles, so it needs fibres that hold a force economically and don’t tire. Those are type I fibres: slow and oxidative, with plenty of mitochondria, capillaries and myoglobin. Most of the soleus’s fibres are type I, often 70 to 90 per cent. The gastrocnemius is used for quick, powerful movements, such as jumping, sprinting and pushing off, and about half its fibres are fast, type II fibres, which contract quickly but tire sooner, especially the glycolytic type IIb (called IIx in people). The nervous system recruits the small, slow motor units first, for standing and walking, and adds the large, fast ones only when more force is needed. That’s the size principle.</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="chapter" id="s3-write" data-num="3" data-title="Write your essay" data-bench="exam" hidden>
+  <h1>Write your essay, and hand it in</h1>
+  <div class="meta-row"><span class="pill time">≈ 45 min</span></div>
+  <p class="lede">This is the work to hand in this week. As before, you write it in Supervision work, as you will in the online exam, and then hand it in from the same page. It goes straight into my Google Drive.</p>
+
+<p class="essay-title">“How are movements on the cellular and molecular scale used to produce movement of whole animals?”</p>
+
+<h2 id="es3-title">Thinking about the title</h2>
+<p>The title covers an enormous range of scales. In one cross-bridge cycle a myosin head moves an actin filament about 10 nm, and a running animal covers metres in a second. The question is how you get from one to the other, so a good essay is about the steps in between: how the tiny movements of molecules are added up, switched on together, controlled, and passed on to the skeleton. These questions might help you plan.</p>
+<ul>
+<li><b>The motor.</b> What does one myosin head do in one cross-bridge cycle, and where does the energy come from?</li>
+<li><b>Adding up.</b> What happens to the shortening when thousands of sarcomeres are joined end to end, and to the force when myofibrils and fibres lie side by side?</li>
+<li><b>Switching on.</b> How does an action potential at the surface of a fibre make every sarcomere in it contract at once? Chapter 1 has some numbers for this.</li>
+<li><b>Control.</b> How does the nervous system grade the force of a whole muscle?</li>
+<li><b>From muscle to limb.</b> How do tendons and the levers of the skeleton turn the shortening of a muscle into the movement of a limb, and what do they trade? Chapter 2 has some numbers for this too.</li>
+<li><b>Whole animals.</b> Which examples will you use? And do all animals move in the same way?</li>
+</ul>
+<p>Don’t try to write down everything you know about each step. Choose the points that show how one scale produces the next, and say how as you go.</p>
+
+<h2 id="es3-before">Before you start</h2>
+<ul>
+<li>Look back at the feedback on your first essay, and pick one thing to do better this time. If you’d like a reminder of the six criteria I mark against, they’re in <a href="supervision-1.html#s1-marking" target="_blank" rel="noopener">Supervision 1, chapter 4</a>.</li>
+<li>Revise the lectures first if you like. Then put your notes away and find about 45 minutes when you won’t be interrupted.</li>
+<li>Make sure you have the <b>hand-in password</b> I gave you, because you’ll need it at the end. You won’t find it anywhere on this site.</li>
+<li>Give yourself about <b>40 minutes</b>, as you would in the exam, and spend the first five of them planning. The clock at the top of the paper tells you when you reach 40 minutes.</li>
+<li>A diagram can save you a lot of words in this essay: a labelled sarcomere, say, or the cross-bridge cycle, or the forearm as a lever. Draw it with <b>Insert drawing</b> (the pencil), or draw it on paper and add a photo of it with <b>Insert picture</b>. Type a caption under it, and refer to it in your text.</li>
+</ul>
+<div class="activity">
+  <div class="act-t">Write it, and hand it in</div>
+  <ol class="steps">
+    <li data-task="es3-start" data-auto="exam:start paper=s3-essay" data-check="paper:s3-essay.started">Open the essay <button class="do showme" type="button" data-exam="s3-essay">show me</button>, read its first page, and press <b>Start</b> when you’re ready to write.</li>
+    <li data-task="es3-write" data-auto="exam:words paper=s3-essay words&gt;299">Plan, then write. Aim for an introduction that says what your essay will argue, paragraphs that each make one point and show how it helps to answer the question, and a conclusion that draws them together.</li>
+    <li data-task="es3-submit" data-auto="exam:submit paper=s3-essay" data-check="paper:s3-essay.submitted">When you’ve finished, go to the submission page (the ✓ tile at the bottom right), check your essay and submit it.</li>
+    <li data-task="es3-send" data-auto="exam:handin paper=s3-essay step=confirmed" data-check="paper:s3-essay.handedIn">Hand it in on the page that comes up next. Type in the hand-in password and press <b>Hand it in</b>. The page shows you a receipt once your essay has arrived.</li>
+    <li data-task="es3-word" data-auto="exam:download paper=s3-essay format=docx" data-check="paper:s3-essay.downloaded">To keep a copy, press <b>Download a copy for yourself</b>, under the password box (once you’ve handed in, the button says <b>Download your copy</b>). The copy is saved as a Word document in your Downloads folder.</li>
+  </ol>
+</div>
+<div class="callout info">
+  <div class="co-t">Handing in</div>
+  <p>Your essay goes straight from this page into my Google Drive, and you don’t need a Google account for that. The hand-in password I give you stops anyone else from handing work in, so please keep it to yourself. Once your essay has arrived, the page tells you so and gives you a receipt. If it can’t be handed in, the page will tell you why. If you try again and it still won’t go, download a copy and send it to me some other way.</p>
+</div>
+<div class="callout info">
+  <div class="co-t">After you’ve handed it in</div>
+  <p>Once you’ve submitted, <b>Review my answers</b> shows you the ground a good answer would cover. Read it after you’ve handed your essay in, and make a note of what you’d add or change. That’s what we’ll talk about in the supervision.</p><p>Your essay is kept in this browser, in Files → <code>essays</code>. It won’t be there on another computer, so download it before you leave.</p>
+</div>
+<div class="q" data-q="es3-q-next">
+  <div class="q-text">Once you’ve read the guidance, which step from molecules to whole animals did your essay cover least well, and what would you add?</div>
+  <div class="q-model">There’s no single right answer here, so bring yours to the supervision. Many essays on this title spend most of their words on the cross-bridge cycle and excitation–contraction coupling, and then rush the end: how the force of many fibres is graded and passed through tendons and levers to move a limb, and what that means for a whole animal as it walks, runs, swims or flies. Others describe each scale well but never say how one produces the next, which is what the title asks.</div>
+</div>
+
+</section>
+
+<section class="chapter" id="s3-more" data-num="4" data-title="More practice" data-bench="exam" hidden>
+  <h1>More practice: short answers and revision</h1>
+  <p class="lede">This chapter is optional. It has three short-answer questions on this week’s lectures, and three more essay titles to note down for revision. Only the essay needs to be handed in.</p>
+
+<h2 id="m3-saq">Short-answer questions</h2>
+<p>These three go with this week’s lectures. Each is marked out of five, so answer in bullet points and make at least five.</p>
+<ol class="titles"><li>If you attach a 50 g mass to a muscle it takes longer to lift a given distance than a 5 g mass. Why does velocity decrease as force increases? Draw a graph to demonstrate the relationship. How does muscle power vary as a function of load?</li><li>Relate the clinical signs with the physiology of: (a) malignant hyperthermia, (b) Duchenne’s muscular dystrophy, (c) myasthenia gravis.</li><li>Outline similarities and differences between the skeletal and smooth muscle contractile apparatus.</li></ol>
+<p>They have a paper of their own in Supervision work <button class="do showme" type="button" data-exam="s3-saqs">open them</button>. There’s no time limit, but about 10 minutes for each is a good aim. Sketch the graph for the first one with <b>Insert drawing</b> (the pencil). After you submit, <b>Review my answers</b> shows you what a good answer covers.</p>
+
+<h2 id="m3-rev">Essay titles for revision</h2>
+<p>It’s worth noting these down. They go with this week’s lectures, and they’re the kind of title you could meet in the exam.</p>
+<ol class="titles"><li>What factors affect the contractile force developed by a skeletal muscle?</li><li>Explain how the molecular organisation of the sarcomere enables skeletal muscle contraction and discuss consequences of defects in structural muscle proteins.</li><li>Compare and contrast mechanisms of excitation-contraction coupling in skeletal and smooth muscle.</li></ol>
+<p>Planning an answer to each one (your argument, your evidence, and the order you’d put them in) is good revision. You could also write one up in Supervision work <button class="do showme" type="button" data-exam="s3-revision">open them</button> in 40 minutes, for practice. After you submit, the guidance shows you the ground each title should cover.</p>
+<div class="optional">
+<h2>Practice</h2>
+<div class="activity">
+  <div class="act-t">If you want the practice</div>
+  <ol class="steps">
+    <li data-task="m3-saq" data-auto="exam:submit paper=s3-saqs">Answer one or more of the short-answer questions, and submit them.</li>
+    <li data-task="m3-plan">Plan an answer to one of the revision titles. Sum up your position in a sentence, then jot down the three or four points, with the evidence for each, that would support it.</li>
+  </ol>
+</div>
+</div>
+
+</section>
+<!--/CHAPTERS-->
+    </aside>
+
+    <div class="splitter" role="separator" aria-orientation="vertical" title="Drag to resize, or double-click to reset"></div>
+
+    <section class="bench" aria-label="Workbench">
+      <div class="wb-tabs" role="tablist">
+        <button class="wb-tab rail-btn" type="button" id="tutRail" title="Show the instructions (Ctrl+\)" hidden><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M13 10l2 2-2 2"/></svg><span>Instructions</span></button>
+        <button class="wb-tab on" type="button" role="tab" data-wb="exam" title="Supervision work: the essay and the questions set for your supervision, written as in the online exam"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3H6.5A2.5 2.5 0 0 0 4 5.5v13A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg><span class="lbl">Supervision work</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="scope" title="A virtual microscope with slides of human tissues"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9.5 2.8l3.6 1.4-3 7.6-3.6-1.4z"/><path d="M7.7 12.4l-.9 2.2"/><path d="M4 16.5h9"/><path d="M13.6 7.6a6.5 6.5 0 0 1 1.9 11.2"/><path d="M5 21h14"/><path d="M15.5 18.8V21"/></svg><span class="lbl">Microscope</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="anatomy" title="The anatomy of the human body in 3D (from Z-Anatomy)"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="4.6" r="2.3"/><path d="M12 7.6v6.6M6.2 10.6L12 8.8l5.8 1.8M8.8 21l3.2-6.8 3.2 6.8"/></svg><span class="lbl">Anatomy</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="viewer" title="Proteins and other molecules in 3D"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="6" cy="7" r="2.6"/><circle cx="18" cy="7" r="2.6"/><circle cx="12" cy="17.5" r="2.6"/><path d="M8.6 7h6.8M7.3 9.3l3.4 5.9M16.7 9.3l-3.4 5.9"/></svg><span class="lbl">Molecules</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="recorder" title="A chart recorder with real recordings of people (the ECG, heart sounds, blood pressure, breathing, muscle and the brain), from PhysioNet"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M6 13h2.5l1.5-4.5 2.5 8 1.8-5.5 1 2H18"/></svg><span class="lbl">Recorder</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="bath" title="An organ bath: isolated tissues, drugs and concentration–response curves"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5.5 3h13"/><path d="M7 3v13.5A4.5 4.5 0 0 0 11.5 21h1a4.5 4.5 0 0 0 4.5-4.5V3"/><path d="M12 3v4.5"/><rect x="10.7" y="7.5" width="2.6" height="6" rx="1.3"/><path d="M9.3 17.6h.01M14.4 16.4h.01M11.8 18.9h.01"/></svg><span class="lbl">Organ bath</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="flow" title="Flow diagrams of physiological control, with a simulator"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="5" rx="1.2"/><rect x="14" y="3" width="7" height="5" rx="1.2"/><rect x="14" y="16" width="7" height="5" rx="1.2"/><path d="M10 5.5h4M17.5 8v8M14 18.5H7.5a1.5 1.5 0 0 1-1.5-1.5V8"/></svg><span class="lbl">Diagrams</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="circuit" title="Electrical circuits, and the circuit models of physiology"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12h3.5l1.7-4 2.6 8 2.6-8 2.6 8 1.7-4H22"/></svg><span class="lbl">Circuits</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="sims" title="Interactive simulations from PhET (University of Colorado Boulder)"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h8.5M16.5 6H20M4 12h2.5M10.5 12H20M4 18h10.5M18.5 18H20"/><circle cx="14.5" cy="6" r="2"/><circle cx="8.5" cy="12" r="2"/><circle cx="16.5" cy="18" r="2"/></svg><span class="lbl">Simulations</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="rstudio" title="RStudio, for analysing data in R"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/></svg><span class="lbl">RStudio</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="editor" title="Your files"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H7l-4 9z"/><path d="M3 19l3.5-8H22l-3.5 8z"/></svg><span class="lbl">Files</span><span class="dot"></span></button>
+        <button class="bench-close" type="button" aria-label="Back to the instructions" title="Back to the instructions">✕<span class="lbl">Instructions</span></button>
+      </div>
+      <div class="wb-body">
+        <div class="wb-pane" data-wb="scope" hidden><div id="scopeRoot"></div></div>
+        <div class="wb-pane" data-wb="anatomy" hidden><div id="anatRoot"></div></div>
+        <div class="wb-pane" data-wb="viewer" hidden><div id="viewerRoot"></div></div>
+        <div class="wb-pane" data-wb="recorder" hidden><div id="recRoot"></div></div>
+        <div class="wb-pane" data-wb="bath" hidden><div id="bathRoot"></div></div>
+        <div class="wb-pane" data-wb="flow" hidden><div id="flowRoot"></div></div>
+        <div class="wb-pane" data-wb="circuit" hidden><div id="circuitRoot"></div></div>
+        <div class="wb-pane" data-wb="sims" hidden><div id="simsRoot"></div></div>
+        <div class="wb-pane" data-wb="exam"><div id="examRoot"></div></div>
+        <div class="wb-pane" data-wb="rstudio" hidden><div id="rsRoot"></div></div>
+        <div class="wb-pane" data-wb="editor" hidden><div id="edRoot"></div></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<button class="bench-fab" type="button" aria-label="Open the workbench"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/></svg>Workbench</button>
+<noscript><p style="padding:20px">This page needs JavaScript.</p></noscript>
+
+<script>window.BMS_STARTERS = [{"p":"data/heart-rate-24h.csv","s":12626}];
+window.BMS_STARTERS_VERSION = 1;</script>
+<script>window.BMS_PAGE = {"week": 3, "page": "supervision-3.html", "title": "Supervision 3"};</script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/vfs.js"></script>
+<script src="assets/js/project.js"></script>
+<script src="assets/vendor/codemirror/codemirror.js"></script>
+<script src="assets/vendor/codemirror/r.js"></script>
+<script src="assets/vendor/codemirror/markdown.js"></script>
+<script src="assets/vendor/codemirror/yaml.js"></script>
+<script src="assets/vendor/codemirror/shell.js"></script>
+<script src="assets/vendor/codemirror/javascript.js"></script>
+<script src="assets/vendor/codemirror/python.js"></script>
+<script src="assets/vendor/codemirror/overlay.js"></script>
+<script src="assets/vendor/codemirror/multiplex.js"></script>
+<script src="assets/vendor/codemirror/yaml-frontmatter.js"></script>
+<script src="assets/vendor/codemirror/rmarkdown.js"></script>
+<script src="assets/vendor/codemirror/matchbrackets.js"></script>
+<script src="assets/vendor/codemirror/closebrackets.js"></script>
+<script src="assets/vendor/codemirror/comment.js"></script>
+<script src="assets/vendor/codemirror/searchcursor.js"></script>
+<script src="assets/vendor/codemirror/active-line.js"></script>
+<script src="assets/vendor/codemirror/runmode.js"></script>
+<script src="assets/vendor/dompurify/purify.min.js"></script>
+<script src="assets/vendor/marked/marked.min.js"></script>
+<script src="assets/js/rsession.js"></script>
+<script src="assets/js/rui.js"></script>
+<script src="assets/js/dataview.js"></script>
+<script src="assets/js/knit.js"></script>
+<script src="assets/js/rstudio.js"></script>
+<script src="assets/js/rsource.js"></script>
+<script src="assets/js/shiny.js"></script>
+<script src="assets/js/pdfview.js"></script>
+<script src="assets/js/editor.js"></script>
+<script src="assets/js/page.js"></script>
+<script src="assets/js/tutorial.js"></script>
+<script src="assets/js/workbench.js"></script>
+</body>
+</html>

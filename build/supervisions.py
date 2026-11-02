@@ -54,7 +54,23 @@ SUPERVISIONS = [
         'handin_noun': 'Practical and short answers',
         'time': 'About an hour for the work to hand in, and half an hour for the optional exercises',
     },
+    {
+        'n': 3, 'status': 'ready', 'page': 'supervision-3.html', 'data_page': 'supervision-3', 'module': 's3',
+        'title': 'Supervision 3', 'topic': 'Muscle and movement',
+        'subtitle': 'Supervision 3: muscle and movement',
+        'description': 'Supervision 3 of NST IA Biomedical Sciences covers muscle and movement: the sarcomere and the '
+                       'cross-bridge cycle, excitation–contraction coupling in skeletal and smooth muscle, and muscle '
+                       'biomechanics. There’s an essay to hand in, written as in the online exam, and optional exercises in '
+                       'the workbench.',
+        'card': 'The sarcomere and the cross-bridge cycle, excitation–contraction coupling in skeletal and smooth muscle, '
+                'and how muscles and the skeleton move the body.',
+        'handin': 'How are movements on the cellular and molecular scale used to produce movement of whole animals?',
+        'handin_short': 'an essay on how movements of molecules and cells move whole animals',
+        'handin_paper': 's3-essay',
+        'handin_noun': 'Essay',
+        'time': 'About 40 minutes for the essay, and half an hour for the optional exercises',
+    },
 ] + [
     {'n': n, 'status': 'soon', 'page': GUIDE['page'], 'title': f'Supervision {n}', 'topic': '', 'card': '', 'time': ''}
-    for n in range(3, 9)
+    for n in range(4, 9)
 ]

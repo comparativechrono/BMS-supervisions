@@ -111,7 +111,7 @@ check(t2[0] == 'supervision-2.html' and t2[1], f'tile 2 opens Supervision 2’s 
 check('Nerves, synapses and the autonomic nervous system' in t2[2] and 'To hand in: a practical question on the thyroid gland, and two short-answer questions' in t2[2]
       and 'Practical and short answers not started yet' in t2[2], f'it names the topic and the work to hand in, and nothing is started: {t2[2][:300]!r}')
 rest = p.js("() => [...document.querySelectorAll('.tile')].slice(2).map(t => t.getAttribute('href') + (t.classList.contains('soon') ? ':soon' : ''))")
-check(rest == ['workbench.html:soon'] * 6, f'Supervisions 3 to 8 are still to come: {rest}')
+check(rest == ['supervision-3.html'] + ['workbench.html:soon'] * 5, f'Supervision 3 has its own page, and 4 to 8 are still to come: {rest}')
 p.js(f"() => MG.user.setFullName('{NAME}')")
 
 # ====================================================================== Supervision 2's page
@@ -125,7 +125,7 @@ p.wait("() => document.querySelectorAll('.ex-card').length >= 6", timeout=30000)
 cards = p.js("() => [...document.querySelectorAll('.ex-card')].filter(c => !c.closest('details')).map(c => c.dataset.paper + ':' + (c.querySelector('.ex-badge') ? c.querySelector('.ex-badge').textContent : ''))")
 check(cards[:2] == ['s2-work:To hand in', 's2-revision:Optional'], f'this week’s papers come first, the work to hand in at the top: {cards[:2]}')
 others = p.js("() => [...document.querySelectorAll('details.ex-others .ex-card')].map(c => c.dataset.paper)")
-check(others == ['s1-essay', 's1-saqs', 's1-revision'], f'last week’s papers are kept apart: {others}')
+check(others == ['s1-essay', 's1-saqs', 's1-revision', 's3-essay', 's3-saqs', 's3-revision'], f'the other weeks’ papers are kept apart: {others}')
 meta = p.js("() => document.querySelector('.ex-card[data-paper=\"s2-work\"] .ex-cmeta').textContent")
 check(meta == 'No time limit · 4 questions', f'the work to hand in: no time limit and four questions, with no marks given ({meta})')
 box = p.js("() => document.querySelector('#s2-week .handin-box').innerText")
