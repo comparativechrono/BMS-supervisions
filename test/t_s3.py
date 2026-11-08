@@ -126,7 +126,7 @@ check(t3[0] == 'supervision-3.html' and t3[1], f'tile 3 opens Supervision 3’s 
 check('Muscle and movement' in t3[2] and 'To hand in: an essay on how movements of molecules and cells move whole animals' in t3[2]
       and 'Essay not started yet' in t3[2], f'it names the topic and the essay to hand in, and nothing is started: {t3[2][:300]!r}')
 rest = p.js("() => [...document.querySelectorAll('.tile')].slice(3).map(t => t.getAttribute('href') + (t.classList.contains('soon') ? ':soon' : ''))")
-check(rest == ['workbench.html:soon'] * 5, f'Supervisions 4 to 8 are still to come: {rest}')
+check(rest == ['supervision-4.html'] + ['workbench.html:soon'] * 4, f'Supervision 4 has its own page, and 5 to 8 are still to come: {rest}')
 p.js(f"() => MG.user.setFullName('{NAME}')")
 
 # ====================================================================== Supervision 3's page
@@ -140,7 +140,7 @@ p.wait("() => document.querySelectorAll('.ex-card').length >= 8", timeout=30000)
 cards = p.js("() => [...document.querySelectorAll('.ex-card')].filter(c => !c.closest('details')).map(c => c.dataset.paper + ':' + (c.querySelector('.ex-badge') ? c.querySelector('.ex-badge').textContent : ''))")
 check(cards[:3] == ['s3-essay:To hand in', 's3-saqs:Optional', 's3-revision:Optional'], f'this week’s papers come first, the essay to hand in at the top: {cards[:3]}')
 others = p.js("() => [...document.querySelectorAll('details.ex-others .ex-card')].map(c => c.dataset.paper)")
-check(others == ['s1-essay', 's1-saqs', 's1-revision', 's2-work', 's2-revision'], f'the earlier weeks’ papers are kept apart: {others}')
+check(others == ['s1-essay', 's1-saqs', 's1-revision', 's2-work', 's2-revision', 's4-essay', 's4-saqs', 's4-revision'], f'the other weeks’ papers are kept apart: {others}')
 meta = p.js("() => document.querySelector('.ex-card[data-paper=\"s3-essay\"] .ex-cmeta').textContent")
 check('No time limit (about 40 minutes suggested)' in meta, f'the essay has no time limit, and suggests 40 minutes: {meta}')
 box = p.js("() => document.querySelector('#s3-week .handin-box').innerText")

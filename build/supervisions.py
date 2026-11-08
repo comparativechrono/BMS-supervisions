@@ -70,7 +70,24 @@ SUPERVISIONS = [
         'handin_noun': 'Essay',
         'time': 'About 40 minutes for the essay, and half an hour for the optional exercises',
     },
+    {
+        'n': 4, 'status': 'ready', 'page': 'supervision-4.html', 'data_page': 'supervision-4', 'module': 's4',
+        'title': 'Supervision 4', 'topic': 'The heart and the circulation',
+        'subtitle': 'Supervision 4: the heart and the circulation',
+        'description': 'Supervision 4 of NST IA Biomedical Sciences covers the heart and the circulation: cardiac muscle '
+                       'and the heartbeat, the exchange of solutes and water across the capillaries, and how the '
+                       'arterioles control blood flow. There’s an essay to hand in, written as in the online exam, and '
+                       'optional exercises in the workbench.',
+        'card': 'Cardiac muscle and the heartbeat, capillary exchange and oedema, and how the arterioles control the '
+                'flow of blood.',
+        'handin': 'Explain how the structural and electrical properties of cardiac muscle enable coordinated, rhythmic '
+                  'pumping of blood while allowing relaxation between beats.',
+        'handin_short': 'an essay on how cardiac muscle makes the heart a rhythmic pump',
+        'handin_paper': 's4-essay',
+        'handin_noun': 'Essay',
+        'time': 'About 40 minutes for the essay, and half an hour for the optional exercises',
+    },
 ] + [
     {'n': n, 'status': 'soon', 'page': GUIDE['page'], 'title': f'Supervision {n}', 'topic': '', 'card': '', 'time': ''}
-    for n in range(4, 9)
+    for n in range(5, 9)
 ]

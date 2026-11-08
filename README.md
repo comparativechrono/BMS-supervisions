@@ -4,7 +4,7 @@
 
 Everything runs in the student's web browser. Students don't need to install anything, there is no server-side code, and their files, answers and essays are stored in their own browser. The site is static (HTML, CSS, JavaScript and the data: slides, models, recordings and simulations), so it can be hosted for free on **GitHub Pages**.
 
-**Supervisions 1 to 3** are ready: feedback, hormones and the hypothalamus, seen through the body's daily clock; nerves, synapses and the autonomic nervous system; and muscle and movement. The tiles of Supervisions 4 to 8 open the workbench and its guide until their work is added (see [Adding a supervision](#adding-a-supervision)).
+**Supervisions 1 to 4** are ready: feedback, hormones and the hypothalamus, seen through the body's daily clock; nerves, synapses and the autonomic nervous system; muscle and movement; and the heart and the circulation. The tiles of Supervisions 5 to 8 open the workbench and its guide until their work is added (see [Adding a supervision](#adding-a-supervision)).
 
 ---
 
@@ -14,21 +14,22 @@ Everything runs in the student's web browser. Students don't need to install any
 2. [Supervision 1](#supervision-1)
 3. [Supervision 2](#supervision-2)
 4. [Supervision 3](#supervision-3)
-5. [Adding a supervision](#adding-a-supervision)
-6. [What's in the workbench](#whats-in-the-workbench)
-7. [The workbench guide](#the-workbench-guide)
-8. [Before students use it](#before-students-use-it)
-9. [Publishing it on GitHub Pages](#publishing-it-on-github-pages)
-10. [Trying it on your own computer](#trying-it-on-your-own-computer)
-11. [Settings in `config.js`](#settings-in-configjs)
-12. [Writing chapters](#writing-chapters)
-13. [Slides, models, recordings, simulations, papers and examples](#slides-models-recordings-simulations-papers-and-examples)
-14. [What students keep](#what-students-keep)
-15. [Privacy](#privacy)
-16. [Browser support and limitations](#browser-support-and-limitations)
-17. [How it was tested](#how-it-was-tested)
-18. [Files](#files)
-19. [Credits and licences](#credits-and-licences)
+5. [Supervision 4](#supervision-4)
+6. [Adding a supervision](#adding-a-supervision)
+7. [What's in the workbench](#whats-in-the-workbench)
+8. [The workbench guide](#the-workbench-guide)
+9. [Before students use it](#before-students-use-it)
+10. [Publishing it on GitHub Pages](#publishing-it-on-github-pages)
+11. [Trying it on your own computer](#trying-it-on-your-own-computer)
+12. [Settings in `config.js`](#settings-in-configjs)
+13. [Writing chapters](#writing-chapters)
+14. [Slides, models, recordings, simulations, papers and examples](#slides-models-recordings-simulations-papers-and-examples)
+15. [What students keep](#what-students-keep)
+16. [Privacy](#privacy)
+17. [Browser support and limitations](#browser-support-and-limitations)
+18. [How it was tested](#how-it-was-tested)
+19. [Files](#files)
+20. [Credits and licences](#credits-and-licences)
 
 ---
 
@@ -37,7 +38,7 @@ Everything runs in the student's web browser. Students don't need to install any
 | Page | What it is |
 | --- | --- |
 | `index.html` | The landing page: a tile for each supervision, showing how far the student has got with its exercises and what they have done with its work to hand in (started, submitted, handed in), and the student's name, which goes on the work they hand in (every page of the site shares it) |
-| `supervision-1.html`, `supervision-2.html`, `supervision-3.html` | Supervisions 1 to 3: each one's chapters on the left and the workbench on the right, opening on Supervision work |
+| `supervision-1.html` to `supervision-4.html` | Supervisions 1 to 4: each one's chapters on the left and the workbench on the right, opening on Supervision work |
 | `workbench.html` | The workbench's guide: a tour of its tabs (the BMS workbench's starter practical). The tiles of the supervisions whose work isn't ready yet open it |
 
 Each supervision's page is the workbench, with that supervision's chapters. Its first tab, **Supervision work** (the BMS workbench's *Exam practice*, renamed and moved to the front), lists the supervision's own papers first – the work to hand in, marked *To hand in*, then the optional papers – then the practice papers, and, closed, the other supervisions' papers. A paper to hand in has no time limit, and may suggest a time: its clock counts the time spent writing up to the suggested time, says when it is reached, and locks nothing. **Handing in is built in**, as at the end of an exam. After submitting, the student types the hand-in password that the supervisor gives them (it is not on the site) and presses *Hand it in*. The page sends the Word document – named after the paper and the student, with their name at the top – to the hand-in script, which runs in Tim Hearn's Google account (`handIn.script` in `config.js`; [handin/README.md](handin/README.md) says how it was set up): it checks the password, saves the document in his Google Drive (a folder for each supervision), adds a line to a Google Sheet that lists the work handed in, and sends back a receipt, which the page shows. Students don't need a Google account. If the work can't be handed in, the page says why, and what to do. The paper's first page offers to hand it in later (or again), and the list of papers says whether each piece of work has been handed in. For the landing page, the site remembers when each supervision's paper to hand in was started, submitted, downloaded and handed in.
@@ -96,13 +97,29 @@ Only chapters 0, 3 and 4 count towards finishing the page: the optional chapters
 
 Only chapters 0 and 3 count towards finishing the page. The widths of the fibres in the model answers were measured on the slide (`slides/skeletal-muscle`, from GTEx) at the place the button opens. For this chapter, a *find* task in Anatomy now also ends *Fade the others* when the others were faded round a different structure (as it already ended *Isolate*), so that the structure asked for isn't left faint.
 
+## Supervision 4
+
+*The heart and the circulation*: Prof. Giussani's lecture on the cardiovascular system and cardiac muscle, and Dr Fraser's two lectures on capillary exchange and on the arterioles and the control of capillary blood flow.
+
+**To hand in:** an essay on the title Prof. Giussani's handout suggests, *Explain how the structural and electrical properties of cardiac muscle enable coordinated, rhythmic pumping of blood while allowing relaxation between beats* (`exams/s4-essay.json`), written and handed in as in Supervisions 1 and 3. Its guidance, shown after submitting, is organised around the three demands the title names (coordination, rhythm and relaxation). **Optional:** the three short-answer questions the handouts suggest (`exams/s4-saqs.json`; the guidance for the first draws a pressure–volume loop, EDV 120 mL and ESV 50 mL) and Dr Fraser's two essay titles, for revision (`exams/s4-revision.json`). All six are the handouts' own wording.
+
+| Chapter | Tabs | What students do |
+| --- | --- | --- |
+| 0. This week (5 min) | Supervision work | The essay to hand in, the week step by step, their name, and how the page works |
+| 1. The heartbeat (15 min, optional) | Microscope, Recorder | Cardiac muscle cut lengthways at 20× (labels on an intercalated disc and a nucleus; branching cells, central nuclei, lipofuscin); then the heart sounds with the ECG (PhysioNet 2016 challenge, record a0029), played, with systole (S1 to S2, about 0.26 s) and diastole (S2 to S1, about 0.53 s) measured with the calipers between the hand-marked sounds; then one beat of lead II of the 12-lead ECG, with the PR (0.18 s) and QT (0.36 s) intervals measured and recognised by the Recorder; why S1 follows the QRS and S2 the T wave, what the AV nodal delay is for, and what a long action potential does for the heart. If they have time: second-degree heart block |
+| 2. Furchgott's experiment (15 min, optional) | Organ bath | A ring of rat aorta (seed 1, the same for everyone) contracted with phenylephrine and relaxed by acetylcholine (83% of the tone); a ring from the same aorta with its endothelium rubbed off, which acetylcholine hardly relaxes (2%) but nitroprusside relaxes fully; how NO relaxes the muscle; sildenafil. If they have time: acetylcholine at 10⁻⁴ M contracting the rubbed ring (about 0.55 g), the handout's question about where its receptors are, and Poiseuille's fourth power (0.84⁴ = 0.5) |
+| 3. Write your essay (45 min) | Supervision work | Thinking about the title (coordination, rhythm and relaxation, and which properties meet each) and before they start (their earlier feedback, with a link to Supervision 1's marking criteria; diagrams); then write the essay, submit it and hand it in, and download a copy |
+| 4. More practice | Supervision work | The short-answer questions and the revision titles (optional) |
+
+Only chapters 0 and 3 count towards finishing the page. The numbers in the model answers were measured in the workbench, at the places and with the seed the buttons give.
+
 ## Adding a supervision
 
 1. **Its papers.** One JSON file for each paper, in `exams/`, named `sN-….json` and with `"week": N`. The paper to hand in has `"required": true`, `"minutes": null` (no time limit), `"suggestedMinutes": 40` and `"handIn": true`, which hands it in the way that `config.js` sets up (`handIn`). Optional papers leave out `required` and `handIn`. Copy `exams/s1-essay.json` to start.
 2. **Its chapters.** A module `build/sN.py` with a function `ALL()` that returns the chapters, as in `build/s1.py`, using the helpers of `build/lib.py` (see [Writing chapters](#writing-chapters)). Give the chapters, steps and questions ids of their own (`sN-…`, checked when the page is built), and put the extras inside `optional()`, so that they don't count towards finishing the page.
 3. **Its data**, if it has any: files in `starter/` are copied into each student's home folder (increase `STARTERS_VERSION` in `build/make_page.py` when you add files after students have started), and diagrams and circuits go in `examples/`.
 4. **Its entry** in `build/supervisions.py`: set its `status` to `'ready'`, and give its `page` (`supervision-N.html`), `data_page`, `module`, `title`, `topic`, `subtitle`, `description`, the texts of its tile (`card`, `handin`, `handin_short`, `time`), `handin_paper` (the id of its paper to hand in) and `handin_noun` (what the tile's status calls that work: *Essay*, or *Practical and short answers*).
-5. Run `python3 build/make_page.py`, which writes `supervision-N.html` and the landing page; try it with `python3 serve.py`; and test it as a student would use it (`test/t_s1.py`, `test/t_s2.py` and `test/t_s3.py` do this for Supervisions 1 to 3).
+5. Run `python3 build/make_page.py`, which writes `supervision-N.html` and the landing page; try it with `python3 serve.py`; and test it as a student would use it (`test/t_s1.py` to `test/t_s4.py` do this for Supervisions 1 to 4).
 
 ## What's in the workbench
 
@@ -340,6 +357,7 @@ The site was tested in Chromium (using Playwright) on 20 October 2026, with the 
 | `t_s1.py` | Supervision 1 and the landing page, used as a student would: the eight tiles and the shared name, Supervision work first with the week's papers at the top, every chapter's buttons and the steps that tick themselves – the thirst and clock diagrams (the overshoot, the periods of the mutants and of the entrained clock, as the model answers give them), the finds in Anatomy and the Microscope, the molecules, an R–R interval, every line of R typed for the student (and the numbers it gives), the multiple-choice questions of the marking and plagiarism chapters – the essay (no time limit and the suggested 40 minutes, pasting refused, a diagram added as a picture with its caption, and submitting), and handing it in straight to Google Drive, through a stand-in for the hand-in script (so that the tests hand nothing in): no password, a wrong one, no answer, the hand-in busy, a garbled answer and an essay too big to send (each said, with what to do), then the right password and the receipt; what is sent (the Word document is opened and checked: the essay, and its picture) and that the password is kept nowhere; the form on a phone; and, from the paper's first page, handing it in again. Given the hand-in password as `BMS_HANDIN_PASSWORD`, it checks that it is in none of the site's files. Then the landing page's progress and essay status, and the layout on a phone |
 | `t_s2.py` | Supervision 2, used as a student would: tile 2 on the landing page, this week's papers first, the optional chapters (E<sub>K</sub>, E<sub>Na</sub> and the GHK equation in R, against the model answers; the resting-potential circuit and its Na<sup>+</sup> switch; the Neuron simulation and its refractory period; nicotine, acetylcholine and hexamethonium in the organ bath) and that they don't count towards finishing the page; the thyroid in the Microscope (the follicle at 20×, three labels, the lumen traced with the Area tool, the photograph) and the area in R; the paper: the photograph put into part (a) from the workbench's files with *Insert picture*, part (b) under its 200-word limit, the two short answers as bulleted lists, submitting, and handing in through a stand-in for the hand-in script (a wrong password, then the receipt), with the Word document opened and checked (the name, the four questions, the photograph and its caption, the bullet points); the guidance; the revision titles; the landing page afterwards; and a phone |
 | `t_s3.py` | Supervision 3, used as a student would: tile 3 on the landing page, this week's papers first, and that only the essay counts towards finishing the page; the optional chapters: skeletal muscle in the Microscope (two labels, and three fibres measured by dragging across them: 60–80 µm) and the times for Ca<sup>2+</sup> to diffuse, worked out in R from the student's own measurements, against the model answers; smooth and cardiac muscle; Hill's curves in R (the power greatest at 0.31 *F*<sub>0</sub>, 4.75 times as long for 50 g as for 5 g), the biceps found and the others faded in Anatomy, the lever's numbers in R, the soleus, the gastrocnemius and myoglobin; the essay written, submitted and handed in through a stand-in for the hand-in script (a wrong password, then the receipt), with the Word document opened and checked; the guidance; the short-answer questions submitted, with the force–velocity graph in their guidance; the revision titles; the landing page afterwards; and a phone |
+| `t_s4.py` | Supervision 4, used as a student would: tile 4 on the landing page, this week's papers first, and that only the essay counts towards finishing the page; the optional chapters: cardiac muscle in the Microscope (two labels), the heart sounds played and systole and diastole measured by dragging the calipers between the marked sounds, the PR and QT intervals of one beat of lead II measured and recognised, the heart block; Furchgott's experiment in the Organ bath, with the relaxations read from the bath's own responses (83% with the endothelium, 2% without, nitroprusside 100%) and acetylcholine's contraction of the rubbed ring, all against the model answers; the essay written, submitted and handed in through a stand-in for the hand-in script (a wrong password, then the receipt), with the Word document opened and checked; the guidance; the short-answer questions submitted, with the pressure–volume loop in their guidance; the revision titles; the landing page afterwards; and a phone |
 | `t_handin.js` | The hand-in script (`handin/Code.gs`), in Node, with stand-ins for Google's services (`node test/t_handin.js`): `setup`, the password (and resting after too many wrong ones), saving the document in a folder for its supervision with a name that replaces nothing, the line in the sheet, refusing what isn't a Word document or is too big, names made safe, the lock, and errors |
 | `t_s1_data.py` | Supervision 1's heart-rate data (18 people × 24 hours, lower at night in every one) and its two diagrams, run with the workbench's simulator (the clock's free-running and entrained periods, its mutants, and the overshoot that feed-forward removes) |
 | `t_practical.py` | The guide's chapters on the microscope, measuring, molecules and R, worked through as a student would do it (the chapters of the newer tabs are worked through by their own scripts), checking that each step ticks itself (and none before it is done), that *find* tasks say what a wrong click was on and that *Show me* rings an example, and that the numerical answers are marked correctly |
@@ -352,7 +370,7 @@ To run the tests, install Playwright (`pip install playwright`, then `playwright
 
 ```
 index.html             the landing page (built by build/make_page.py from build/landing.html)
-supervision-N.html     Supervisions 1 to 3 (built from build/template.html and build/s1.py, s2.py and s3.py)
+supervision-N.html     Supervisions 1 to 4 (built from build/template.html and build/s1.py to s4.py)
 workbench.html         the workbench's guide (built from build/template.html and build/chapters.py)
 isolation-sw.js        the service worker for cross-origin isolation and Shiny apps (keep it next to index.html)
 assets/js/             the workbench's code: config.js (settings), page.js (the tabs, and the actions and checks used by
@@ -371,8 +389,8 @@ exams/                 the papers of Supervision work (index.json lists them; sN
 examples/              the examples of Diagrams and Circuits (index.json lists them)
 molecules/             the Molecules tab's library (molecules/README.md)
 starter/               the files copied into each student's home folder: data/heart-rate-24h.csv (starter/data/README.md)
-build/                 make_page.py, supervisions.py (the pages and their tiles), landing.html, s1.py, s2.py and s3.py
-                       (the supervisions' chapters), s1/heart_rate.py (Supervision 1's data), chapters.py (the guide; the chapters of the newer tabs are in
+build/                 make_page.py, supervisions.py (the pages and their tiles), landing.html, s1.py to s4.py (the
+                       supervisions' chapters), s1/heart_rate.py (Supervision 1's data), chapters.py (the guide; the chapters of the newer tabs are in
                        ch_anatomy.py, ch_recorder.py, ch_organbath.py and ch_sims.py), lib.py (the helper functions),
                        template.html, and the scripts that make the data: slides/, anatomy/, recordings/ and sims/
                        (organbath/ describes the organ bath's model)

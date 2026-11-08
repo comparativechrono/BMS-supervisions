@@ -1,0 +1,33 @@
+{
+ "id": "s4-revision",
+ "week": 4,
+ "required": false,
+ "order": 3,
+ "title": "Essay titles for revision",
+ "description": "Two more essay titles from this week’s lectures. Note them down for revision, and write either of them here for practice.",
+ "minutes": null,
+ "suggestedMinutes": null,
+ "autoSubmit": false,
+ "spellcheck": false,
+ "showWordCount": true,
+ "clipboard": "exam",
+ "instructions": "<p><b>Optional, for revision.</b> These are more essay titles that go with this week’s lectures. It’s worth noting them down, as they’re good practice for the exam. Only the Supervision 4 essay needs to be handed in.</p><ul><li>You can write either of them here for practice, as you would in the exam: about <b>40 minutes</b> each, without notes.</li><li>Planning an answer to each one (your argument, your evidence and the order you’d put them in) is good revision too.</li><li>After you submit, <b>Review my answers</b> shows you the ground each title covers.</li></ul>",
+ "questions": [
+  {
+   "id": "exchange",
+   "type": "essay",
+   "title": "Capillary exchange and oedema",
+   "text": "<p>Discuss the factors that govern the exchange of solutes and water across the capillary wall, and explain how disturbances of these factors can lead to oedema.</p>",
+   "lines": 18,
+   "guidance": "<p>Here are some points to consider. It isn’t a model answer. As Dr Fraser suggests, the two equations make a good frame: Fick’s law for solutes, and the Starling equation for water.</p><ul><li><b>The capillaries.</b> A huge exchange surface (about 5000 m<sup>2</sup>) with a wall one cell thick. Continuous, fenestrated and sinusoidal capillaries are matched to what each tissue needs to exchange: tight junctions in the brain, fenestrae in the kidney and gut, large gaps in the liver.</li><li><b>Solutes, by diffusion.</b> By Fick’s law, the rate depends on the surface area, the permeability and the concentration difference. Diffusion time goes with the square of the distance, so no cell can be far from a capillary. Exchange is matched to demand by opening more capillaries (recruitment, which matters in the lung; in muscle, more red cells in capillaries that are already open), by changes in permeability (histamine), and by blood flow, which keeps the concentration gradient up.</li><li><b>Water, by convection.</b> The Starling equation, term by term: <i>K</i><sub>f</sub>; the hydrostatic pressure difference (with capillary pressure following venous pressure); the colloid osmotic pressure difference, set by the plasma proteins; and σ. The glycocalyx is the real filtration barrier, which predicts a small net filtration along most capillaries, and makes autotransfusion self-limiting.</li><li><b>The lymphatics</b> return the net filtration, 2 to 4 litres a day, and the protein that leaks.</li><li><b>Oedema, term by term.</b> Raised capillary pressure, most often from raised venous pressure in heart failure (failure of the right ventricle swells the ankles, failure of the left fills the lungs); fallen plasma protein, in malnutrition, liver disease or the nephrotic syndrome; leakier capillaries in inflammation; and blocked or removed lymphatics in lymphoedema. Gravity makes it worst in the lowest parts of the body.</li><li><b>Consequences.</b> Oedema lengthens the distance between capillaries and cells, so it slows the exchange of solutes, and in the lungs fluid in the alveoli interferes with gas exchange.</li><li><b>Evaluate.</b> Tissues resist oedema: as fluid collects, interstitial pressure rises and lymph flow increases, so filtration has to rise a long way before swelling appears. And the classical Starling model, with reabsorption at the venous end, has been replaced by the glycocalyx model, which is worth discussing.</li></ul>"
+  },
+  {
+   "id": "arterioles",
+   "type": "essay",
+   "title": "Arterioles: local needs and arterial pressure",
+   "text": "<p>Arteriolar resistance must meet the needs of individual tissues while also maintaining arterial blood pressure. Discuss how these demands may conflict and how they are reconciled.</p>",
+   "lines": 18,
+   "guidance": "<p>Here are some points to consider. It isn’t a model answer. As Dr Fraser suggests, for each signal that acts on the smooth muscle, ask whether it changes [Ca<sup>2+</sup>]<sub>i</sub>, the Ca<sup>2+</sup> sensitivity of the contractile machinery, or both.</p><ul><li><b>Why the arterioles.</b> Flow through a tissue is (<i>P</i><sub>a</sub> − <i>P</i><sub>v</sub>)/<i>R</i>, and the arterioles make up most of the resistance and are the only part that’s actively regulated. Because resistance goes with 1/<i>r</i><sup>4</sup>, a fourfold change in diameter changes flow about 250 times. The circulation works as a constant-pressure, variable-flow system.</li><li><b>Local control matches flow to need, mainly by dilatation.</b> Metabolic signals (low P<sub>O₂</sub>, high P<sub>CO₂</sub>, H<sup>+</sup>, adenosine and K<sup>+</sup>) in functional and reactive hyperaemia; the myogenic response and autoregulation in the brain, heart and kidney; and the endothelium, with NO.</li><li><b>Central control keeps the arterial pressure up, mainly by constriction.</b> Sympathetic noradrenaline on α<sub>1</sub>-adrenoceptors sets the total peripheral resistance, and circulating adrenaline dilates the arterioles of skeletal muscle and the heart through β<sub>2</sub>-adrenoceptors.</li><li><b>The conflict.</b> ABP = CO × TPR. Every tissue that dilates to meet its own needs lowers TPR, and in hard exercise TPR can fall five- or six-fold. Unless cardiac output rises, the pressure falls, and with it the flow to every tissue, as a shower weakens when too many taps are opened.</li><li><b>How it’s reconciled.</b> Cardiac output rises to match the fall in TPR. The sympathetic nerves constrict the arterioles of tissues that can wait (the gut, kidneys and skin) to divert blood to the active muscles and the heart. In active muscle, local metabolites can override sympathetic constriction, but sympathetic nerves can still reduce muscle blood flow, which keeps the pressure up. After a haemorrhage, constriction becomes almost general, sparing the brain and heart, whose arterioles respond little to sympathetic nerves and autoregulate.</li><li><b>Evaluate.</b> There’s a hierarchy: the brain and heart are protected, and other tissues give way. The systems overlap and are partly redundant, so blocking one often changes little. The balance can also fail, as when endothelial dysfunction raises resistance, or in shock, when widespread dilatation can’t be matched by cardiac output.</li></ul>"
+  }
+ ]
+}

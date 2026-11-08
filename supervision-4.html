@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supervision 4 – BMS supervisions</title>
+<meta name="description" content="Supervision 4 of NST IA Biomedical Sciences covers the heart and the circulation: cardiac muscle and the heartbeat, the exchange of solutes and water across the capillaries, and how the arterioles control blood flow. There’s an essay to hand in, written as in the online exam, and optional exercises in the workbench.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233b1c42'/%3E%3Ccircle cx='11' cy='11' r='5' fill='%23f2a7c3'/%3E%3Ccircle cx='21' cy='12' r='4' fill='%23a98bd8'/%3E%3Ccircle cx='15' cy='21' r='5' fill='%23d97aa5'/%3E%3C/svg%3E">
+<script src="assets/js/isolation.js"></script>
+<link rel="stylesheet" href="assets/vendor/codemirror/codemirror.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/wb.css">
+<link rel="stylesheet" href="assets/css/bms.css">
+<link rel="stylesheet" href="assets/css/r.css">
+<link rel="stylesheet" href="assets/css/rstudio.css">
+<link rel="stylesheet" href="assets/css/files.css">
+<link rel="stylesheet" href="assets/css/viewer.css">
+<link rel="stylesheet" href="assets/css/scope.css">
+<link rel="stylesheet" href="assets/css/flow.css">
+<link rel="stylesheet" href="assets/css/circuit.css">
+<link rel="stylesheet" href="assets/css/exam.css">
+<link rel="stylesheet" href="assets/css/anatomy.css">
+<link rel="stylesheet" href="assets/css/recorder.css">
+<link rel="stylesheet" href="assets/css/organbath.css">
+<link rel="stylesheet" href="assets/css/sims.css">
+</head>
+<body data-page="supervision-4" data-title="Supervision 4" data-week="4">
+<div class="app">
+
+  <header class="topbar">
+    <button class="btn top-toggle" id="tutToggle" type="button" title="Hide the instructions so that the workbench fills the window (Ctrl+\)" aria-controls="tut" aria-expanded="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M16 10l-2 2 2 2"/></svg></button>
+    <a class="brand" href="index.html" title="All the supervisions">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#4a2552"/><circle cx="11" cy="11" r="5.2" fill="#f2a7c3"/><circle cx="11" cy="11" r="2" fill="#6d3f9e"/><circle cx="21.5" cy="12" r="4" fill="#c9b3ee"/><circle cx="21.5" cy="12" r="1.5" fill="#5b3a8c"/><circle cx="15" cy="21.5" r="5.2" fill="#e48bb1"/><circle cx="15" cy="21.5" r="2" fill="#6d3f9e"/></svg>
+      <div>
+        <div class="brand-title">BMS supervisions</div>
+        <div class="brand-sub">Supervision 4: the heart and the circulation</div>
+      </div>
+    </a>
+    <div class="spacer"></div>
+    <div class="progress-wrap" title="The steps you have done and the questions you have answered (saved in this browser)"><span class="progress-label">0% done</span><div class="progress"><i></i></div></div>
+    <span class="store-status" id="storeStatus" title="Your files are saved in this browser, on this computer"></span>
+    <button class="btn" id="userBtn" type="button" title="Your name, as it appears in the workbench"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="user-name">Your name</span></button>
+    <button class="btn" id="projectBtn" type="button" title="Download all your files, add files, or start afresh"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H7l-4 9z"/><path d="M3 19l3.5-8H22l-3.5 8z"/></svg><span>My files</span></button>
+    <button class="btn" id="answersBtn" type="button"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg><span>My answers</span></button>
+    <button class="btn" id="helpBtn" type="button" title="How this page works"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.2 9a2.9 2.9 0 0 1 5.6 1c0 2-2.8 2.6-2.8 4M12 17.5h.01"/></svg><span>Help</span></button>
+    <button class="btn" id="fullBtn" type="button" title="Full screen"><span>Full screen</span></button>
+  </header>
+
+  <div class="main">
+    <aside class="tut" id="tut" aria-label="Instructions">
+      <nav class="ch-nav" aria-label="Chapters"></nav>
+<!--CHAPTERS-->
+<section class="chapter" id="s4-week" data-num="0" data-title="This week" data-bench="exam">
+  <h1>Supervision 4: the heart and the circulation</h1>
+  <div class="meta-row"><span class="pill time">≈ 5 min</span></div>
+  <p class="lede">This week’s lectures start on the cardiovascular system: the heart as a pump and the muscle it’s made of, the exchange of solutes and water across the walls of the capillaries, and how the arterioles control the flow of blood through each tissue. The essay you hand in is about the heart.</p>
+
+<div class="handin-box">
+  <div class="hb-k">To hand in this week</div>
+  <p class="hb-title">“Explain how the structural and electrical properties of cardiac muscle enable coordinated, rhythmic pumping of blood while allowing relaxation between beats.”</p>
+  <ul>
+    <li>You write the essay in <b>Supervision work</b>, as you have before and as you will in the online exam: in one sitting, without your notes, and without pasting anything in.</li>
+    <li>There’s no time limit, but try to keep to about <b>40 minutes</b>.</li>
+    <li>Once you’ve submitted it, <b>hand it in</b> from the same page before your supervision. You’ll need the <b>hand-in password</b> I give you, and your essay then goes straight into my Google Drive.</li>
+  </ul>
+  <p class="hb-acts"><button class="do showme" type="button" data-goto="s4-write">how to write it and hand it in</button> <button class="do showme" type="button" data-exam="s4-essay">open the essay</button></p>
+</div>
+
+<h2 id="w4-plan">The week, step by step</h2>
+<ol class="plan">
+<li>If you’d like to, start with <b>two short exercises</b>. They’re optional and take about half an hour altogether. In chapter 1 you look at cardiac muscle in the <b>Microscope</b>, then measure the parts of a heartbeat in the ECG and the heart sounds, in the <b>Recorder</b>. That one goes with your essay. In chapter 2 you repeat Furchgott’s experiment on rings of aorta in the <b>Organ bath</b>, the experiment that showed how the endothelium makes arteries relax. <button class="do showme" type="button" data-goto="s4-beat">start</button></li>
+<li>Then <b>write your essay</b> and hand it in (chapter 3, about 45 minutes). <button class="do showme" type="button" data-goto="s4-write">go there</button></li>
+<li>If you’d like more practice, chapter 4 has three short-answer questions, and two more essay titles to note down for revision. These are optional too. <button class="do showme" type="button" data-goto="s4-more">go there</button></li>
+</ol>
+<div class="activity">
+  <div class="act-t">Before you start</div>
+  <ol class="steps">
+    <li data-task="w4-name" data-check="named">Check that your name is at the top of the page. If it says <b>Your name</b>, click it and add yours. It goes at the top of the essay you hand in, and every supervision’s page shares it.</li>
+  </ol>
+</div>
+
+<h2 id="w4-how">How this page works</h2>
+<ul>
+<li>It works in the same way as the earlier ones. The steps tick themselves off as you do them, the buttons do things for you in the workbench on the right, and every question has a <b>model answer</b> you can look at once you’ve had a go.</li>
+<li>Chapters 1, 2 and 4 are optional, so their steps don’t count towards finishing the page. The rest do.</li>
+<li>If you haven’t used one of the workbench’s tabs before, the <a href="workbench.html" target="_blank" rel="noopener">workbench guide</a> shows you how it works.</li>
+</ul>
+
+</section>
+
+<section class="chapter" id="s4-beat" data-num="1" data-title="The heartbeat" data-bench="scope" hidden>
+  <h1>Optional: cardiac muscle and the heartbeat</h1>
+  <div class="meta-row"><span class="pill time">≈ 15 min</span></div>
+  <p class="lede">Look at cardiac muscle in the Microscope, then measure the parts of a heartbeat in the ECG and the heart sounds, in the Recorder.</p>
+<div class="optional whole">
+
+<div class="callout info">
+  <div class="co-t">Optional, about 15 minutes</div>
+  <p>This exercise isn’t part of the work to hand in, and its steps don’t count towards finishing the page. It goes with Professor Giussani’s lecture, and it gives you evidence and numbers you could use in your essay.</p>
+</div>
+
+<h2 id="hb-cells">Cardiac muscle</h2>
+<p>Last week you looked at skeletal muscle. Cardiac muscle is striated too, but its cells are built and joined to each other differently, and those differences are much of what makes the heart work as a pump.</p>
+<div class="activity">
+  <div class="act-t">Cardiac muscle, in the Microscope</div>
+  <ol class="steps">
+    <li data-task="hb-open" data-auto="scope:open slide=heart">Open a section of the wall of the left ventricle, at 20× <button class="do showme" type="button" data-scope="heart@1.779,2.273,20x">show me</button>. These cells were cut lengthways. Each usually has one nucleus, in the middle of the cell, and the cells branch and join their neighbours.</li>
+    <li data-task="hb-disc" data-auto="scope:label slide=heart text~intercal">Look for short, dark lines that cross the cells, often in steps. These are the <b>intercalated discs</b>, where one cell meets the next. Choose the <b>Label</b> tool <button class="do showme" type="button" data-scope-tool="label">show me</button> and label one of them <i>Intercalated disc</i>. Zoom in if that helps.</li>
+    <li data-task="hb-nuc" data-auto="scope:label slide=heart text~nucle">Label a nucleus too, and call it <i>Nucleus</i>. The brown granules beside some of the nuclei are lipofuscin, a pigment that builds up in heart cells with age.</li>
+  </ol>
+</div>
+<div class="q" data-q="hb-q-discs">
+  <div class="q-text">How are cardiac muscle cells joined to each other, and why does that matter for the heart as a pump? Compare them with skeletal muscle fibres.</div>
+  <div class="q-model">At the intercalated discs, the cells are joined by two kinds of junction. Desmosomes hold the cells together and pass the force of each cell on to the next, so that the pull of the whole wall adds up. Gap junctions connect the cytoplasm of neighbouring cells, so that current flows from one to the next, and an action potential that starts in one cell spreads to all of them. So the heart works as a functional syncytium. Once the pacemaker fires, the whole of the atria, and then the whole of the ventricles, are excited and contract together, which is what a pump needs. Skeletal muscle fibres have no intercalated discs. Each is electrically separate and is excited by its own motor neuron at a neuromuscular junction, so the nervous system can grade the force of a muscle by recruiting more or fewer motor units. The heart can’t do that, because every cell contracts in every beat. Its force is graded instead by how much Ca²⁺ each cell releases, and by how far the cells are stretched before they contract.</div>
+</div>
+
+<h2 id="hb-sounds">The heart sounds and the ECG</h2>
+<p>The ECG records the heart’s electrical activity from the surface of the body. The <b>P wave</b> comes as the atria depolarise, the <b>QRS complex</b> as the ventricles depolarise, and the <b>T wave</b> as the ventricles repolarise. The heart sounds come from the valves closing. Recording the two together shows how the electrical events lead to the mechanical ones.</p>
+<div class="activity">
+  <div class="act-t">The heart sounds, in the Recorder</div>
+  <ol class="steps">
+    <li data-task="hb-snd" data-auto="rec:open id=heart-sounds">Open a recording of the heart sounds, made with an electronic stethoscope, with an ECG recorded at the same time <button class="do showme" type="button" data-rec="heart-sounds@0.4,2.4">show me</button>. The start of the first sound of each beat is marked S1, and the start of the second S2.</li>
+    <li data-task="hb-listen" data-auto="rec:play id=heart-sounds on=true">If you can, listen to it. Switch the sound on <button class="do showme" type="button" data-rec-tool="listen">show me</button> and press Play <button class="do showme" type="button" data-rec-tool="play">show me</button>. Headphones help.</li>
+    <li data-task="hb-sys" data-auto="rec:measure id=heart-sounds signal=pcg dt&gt;0.15 dt&lt;0.4">Choose the <b>Calipers</b> <button class="do showme" type="button" data-rec-tool="calipers">show me</button> and, on the heart sounds, drag from the start of an S1 to the start of the S2 that follows it. That’s <b>systole</b>, while the ventricles contract and eject blood.</li>
+    <li data-task="hb-dia" data-auto="rec:measure id=heart-sounds signal=pcg dt&gt;0.4 dt&lt;0.75">Now drag from the start of that S2 to the start of the next S1. That’s <b>diastole</b>, while the ventricles relax and fill.</li>
+  </ol>
+</div>
+<div class="q" data-q="hb-q-sounds">
+  <div class="q-text">Why does S1 come just after the QRS, and S2 near the end of the T wave? And which lasts longer at rest, systole or diastole?</div>
+  <div class="q-model">S1 is heard as the atrioventricular (mitral and tricuspid) valves close at the start of ventricular systole. The QRS is the ventricles depolarising, and their contraction follows that electrical activation. As soon as the pressure in the ventricles rises above the pressure in the atria, the AV valves are pushed shut. S2 is heard as the aortic and pulmonary valves close at the end of systole. The T wave is the ventricles repolarising, and as they relax, the pressure in them falls below the pressure in the arteries, so the semilunar valves close. In this recording systole lasts about 0.26 s and diastole about 0.53 s, at about 75 beats a minute, so diastole is about twice as long. As the heart rate rises, diastole shortens much more than systole. That leaves less time for the ventricles to fill, and for blood to flow through the coronary arteries of the left ventricle, which happens mostly in diastole.</div>
+</div>
+<p>Now look at the intervals of the ECG itself, in one beat of a resting 12-lead ECG.</p>
+<div class="activity">
+  <div class="act-t">The ECG’s intervals</div>
+  <ol class="steps">
+    <li data-task="hb-12" data-auto="rec:open id=ecg-12lead">Open lead II of a resting 12-lead ECG, a second of it at a time <button class="do showme" type="button" data-rec="ecg-12lead@1.1,2.1:II">show me</button>. You can see a whole beat: the P wave, the QRS complex and the T wave.</li>
+    <li data-task="hb-pr" data-auto="rec:measure id=ecg-12lead interval=PR || rec:datapad id=ecg-12lead n_pr&gt;0">With the calipers, measure the <b>PR interval</b>. Drag from the start of the P wave to the start of the QRS. The menu beside the <b>Data pad</b> button shows what the Recorder thinks you’ve measured, and it should say PR.</li>
+    <li data-task="hb-qt" data-auto="rec:measure id=ecg-12lead interval=QT || rec:datapad id=ecg-12lead n_qt&gt;0">Then measure the <b>QT interval</b>, from the start of the QRS to the end of the T wave.</li>
+  </ol>
+</div>
+<div class="q" data-q="hb-q-pr">
+  <div class="q-text">The PR interval is mostly the delay at the atrioventricular node. How long was it, and what is the delay for?</div>
+  <div class="q-model">About 0.18 s (anything from 0.12 to 0.20 s is normal). The fibrous skeleton of the heart insulates the atria from the ventricles, so the only way for excitation to cross is through the AV node and the bundle of His. The AV node conducts slowly, which gives the atria time to contract and top up the ventricles before the ventricles are excited. Then the fast His–Purkinje system spreads the excitation through the ventricles in less than a tenth of a second (the width of the QRS). Its branches run down the septum to the apex before they turn up the walls, so the ventricles contract from the apex upwards and squeeze blood towards the outflow valves.</div>
+</div>
+<div class="q" data-q="hb-q-qt">
+  <div class="q-text">The QT interval is about as long as a ventricular action potential. How does that compare with an action potential in skeletal muscle, and what does a long action potential do for the heart?</div>
+  <div class="q-model">It was about 0.36 s here, roughly a hundred times as long as a skeletal muscle action potential, which lasts only a few milliseconds. During the plateau, Ca²⁺ coming in through L-type channels roughly balances K⁺ going out, which keeps the cell depolarised, and the Ca²⁺ that comes in triggers the release of much more from the sarcoplasmic reticulum (calcium-induced calcium release). While the cell stays depolarised its Na⁺ channels stay inactivated, so the refractory period lasts nearly as long as the contraction. Another action potential can’t start until the muscle has begun to relax, so the heart can’t be tetanised: it has to relax, and fill, between beats. Skeletal muscle, with its short action potentials and refractory periods, can add twitches together into a tetanus.</div>
+</div>
+<div class="optional">
+<h2>If you have time</h2>
+<div class="activity">
+  <div class="act-t">When the atria and ventricles part company</div>
+  <ol class="steps">
+    <li data-task="hb-block" data-auto="rec:open id=ecg-block">Open a recording of second-degree heart block <button class="do showme" type="button" data-rec="ecg-block@8,20">show me</button>. Some of the P waves, marked <i>blocked P</i>, aren’t followed by a QRS at all.</li>
+  </ol>
+</div>
+<div class="q" data-q="hb-q-block">
+  <div class="q-text">In the stretch where only every other P wave is followed by a QRS, the ventricles beat at half the rate of the atria. What does that tell you about the atrioventricular node?</div>
+  <div class="q-model">That it’s the only route by which excitation reaches the ventricles. The P waves keep their regular rhythm, because the sinoatrial node goes on setting the rate of the atria. But each time the AV node fails to conduct, no QRS follows, and the ventricles miss a beat. In a 2:1 block only every other P wave gets through. If conduction through the node failed completely (third-degree block), the ventricles would be left to a slower pacemaker of their own, at perhaps 30 to 40 beats a minute, which is too slow for most people to manage on, and why they’re given artificial pacemakers.</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="chapter" id="s4-endo" data-num="2" data-title="Furchgott’s experiment" data-bench="bath" hidden>
+  <h1>Optional: Furchgott’s experiment</h1>
+  <div class="meta-row"><span class="pill time">≈ 15 min</span></div>
+  <p class="lede">Repeat, in the Organ bath, the experiment that showed that acetylcholine relaxes arteries only if their endothelium is there.</p>
+<div class="optional whole">
+
+<div class="callout info">
+  <div class="co-t">Optional, about 15 minutes</div>
+  <p>This exercise isn’t part of the work to hand in, and its steps don’t count towards finishing the page. It goes with Dr Fraser’s second lecture, on the arterioles, and with the third short-answer question in chapter 4.</p>
+</div>
+
+<p>In 1980 Robert Furchgott found that acetylcholine relaxed strips of rabbit aorta only if their <b>endothelium</b>, the single layer of cells lining the inside of the vessel, was intact. If the endothelium had been rubbed off, acetylcholine no longer relaxed them, though noradrenaline still made them contract. The endothelium was releasing a relaxing factor, later shown to be nitric oxide (NO), and the discovery won Furchgott, Ignarro and Murad the Nobel Prize in 1998. In the <b>Organ bath</b> you can repeat the experiment on rings of rat aorta. Phenylephrine, an α<sub>1</sub>-adrenoceptor agonist like noradrenaline, contracts them first, so that you can see whether anything relaxes them.</p>
+
+<h2 id="fu-with">A ring with its endothelium</h2>
+<div class="activity">
+  <div class="act-t">Acetylcholine, with the endothelium</div>
+  <ol class="steps">
+    <li data-task="fu-ring" data-auto="bath:setup tissue=aorta endothelium=true">Set up a ring of rat aorta <button class="do showme" type="button" data-bath="aorta?seed=1">show me</button>. Its clock already runs 20 times faster than real time, because the aorta responds slowly. This button gives everyone the same ring, so your numbers should be close to the ones in the model answers.</li>
+    <li data-task="fu-pe" data-auto="bath:add drug=phenylephrine">Contract it with phenylephrine, to give 10<sup>−6</sup> M in the bath <button class="do showme" type="button" data-bath-do="add phenylephrine 1e-6">show me</button>, and let the contraction reach its plateau <button class="do showme" type="button" data-bath-do="plateau">show me</button>.</li>
+    <li data-task="fu-ach" data-auto="bath:response drug=acetylcholine pct&gt;50">Now add acetylcholine to give 10<sup>−6</sup> M <button class="do showme" type="button" data-bath-do="add acetylcholine 1e-6">show me</button> and take it to its plateau. Then wash the bath out <button class="do showme" type="button" data-bath-do="wash">show me</button>. The Organ bath reads each response when you wash, or when you add the next drug, and puts it in the <b>Results</b> under the chart.</li>
+  </ol>
+</div>
+
+<h2 id="fu-without">A ring without it</h2>
+<div class="activity">
+  <div class="act-t">Acetylcholine and nitroprusside, without the endothelium</div>
+  <ol class="steps">
+    <li data-task="fu-rub" data-auto="bath:setup tissue=aorta endothelium=false">Set up a second ring from the same aorta, but with its endothelium rubbed off <button class="do showme" type="button" data-bath="aorta?endothelium=off&amp;seed=1">show me</button>.</li>
+    <li data-task="fu-snp" data-auto="bath:add drug=nitroprusside">As before, contract it with phenylephrine <button class="do showme" type="button" data-bath-do="add phenylephrine 1e-6">show me</button> and add acetylcholine <button class="do showme" type="button" data-bath-do="add acetylcholine 1e-6">show me</button>, taking each to its plateau. Then, without washing, add sodium nitroprusside, which releases NO itself, to give 10<sup>−6</sup> M <button class="do showme" type="button" data-bath-do="add nitroprusside 1e-6">show me</button>, and take that to its plateau too.</li>
+    <li data-task="fu-wash" data-auto="bath:response drug=nitroprusside pct&gt;80">Wash the bath out <button class="do showme" type="button" data-bath-do="wash">show me</button>, and compare the three relaxations in the <b>Results</b>.</li>
+  </ol>
+</div>
+<div class="q" data-q="fu-q-endo">
+  <div class="q-text">What do the two rings tell you about how acetylcholine relaxes the aorta?</div>
+  <div class="q-model">With its endothelium, this ring relaxed by about 83% of the tone that phenylephrine gave it. Without its endothelium, it hardly relaxed at all (about 2%). So acetylcholine doesn’t relax the smooth muscle directly. It acts on muscarinic receptors on the endothelial cells, which then make nitric oxide from L-arginine, using nitric oxide synthase. NO is small and lipophilic, so it diffuses straight into the smooth muscle. There it stimulates a soluble guanylyl cyclase, and the cGMP that makes activates a protein kinase that relaxes the muscle, by lowering its [Ca²⁺]<sub>i</sub> and the sensitivity of its contractile machinery to Ca²⁺. Sodium nitroprusside relaxed the rubbed ring completely, because it releases NO itself. The muscle could still respond to NO, so what the ring had lost was the ability to make it.</div>
+</div>
+<div class="q" data-q="fu-q-sild" data-type="mcq">
+  <div class="q-text">Sildenafil (Viagra) makes the NO pathway more effective. How?</div>
+  <div class="mcq"><label data-why="No. Glyceryl trinitrate and nitroprusside release NO, but sildenafil doesn’t. It acts further along the pathway."><input type="radio"> <span>It releases NO, as glyceryl trinitrate does</span></label><label data-why="No. It doesn’t make more NO. It makes the NO that’s there more effective."><input type="radio"> <span>It activates nitric oxide synthase in the endothelium</span></label><label data-correct data-why="Yes. With PDE5 blocked, the cGMP made in response to NO lasts longer, so the same amount of NO relaxes the smooth muscle more. Sildenafil was first developed as a possible treatment for angina."><input type="radio"> <span>It inhibits the phosphodiesterase (PDE5) that breaks down cGMP</span></label><label data-why="No. That’s how prazosin relaxes blood vessels, by blocking the noradrenaline released by sympathetic nerves. Sildenafil acts on the NO pathway."><input type="radio"> <span>It blocks α<sub>1</sub>-adrenoceptors on the smooth muscle</span></label></div>
+</div>
+<div class="optional">
+<h2>If you have time</h2>
+<div class="activity">
+  <div class="act-t">Acetylcholine on its own</div>
+  <ol class="steps">
+    <li data-task="fu-high" data-auto="bath:add drug=acetylcholine conc&gt;5e-5">Once the rubbed ring has settled after the wash <button class="do showme" type="button" data-bath-do="plateau">show me</button>, add acetylcholine to it on its own, at a high concentration, 10<sup>−4</sup> M <button class="do showme" type="button" data-bath-do="add acetylcholine 1e-4">show me</button>, and take it to its plateau. Watch the chart rather than the Results, which measure acetylcholine’s responses as relaxations.</li>
+  </ol>
+</div>
+<div class="q" data-q="fu-q-high">
+  <div class="q-text">Furchgott saw this too: at high concentrations, acetylcholine made the rubbed rings contract. What does that suggest about where its receptors are?</div>
+  <div class="q-model">That the smooth muscle has muscarinic receptors of its own, and that they make it contract, as muscarinic receptors on smooth muscle do elsewhere (in the ileum in Supervision 2, for example). Here the ring contracted by about half a gram. In a ring with its endothelium, the relaxation that the endothelium’s receptors cause, through NO, is far more powerful and hides this. So the same transmitter can relax a blood vessel or contract it, depending on which of its cells have the receptors.</div>
+</div>
+<div class="q" data-q="fu-q-r4" data-accept="num:0.5±0.02" data-placeholder="fraction of the flow">
+  <div class="q-text">Flow through a vessel goes with the fourth power of its radius (Poiseuille’s law). If an arteriole constricts so that its radius falls by 16%, what fraction of the flow is left? Work out 0.84⁴, on a calculator or in R.</div>
+  <div class="q-model">About half: 0.84⁴ = 0.50. The other way round, doubling the radius would increase the flow 16 times (2⁴), and the fourfold range of diameters that arterioles can span changes the flow about 250 times (4⁴ = 256). That’s why the arterioles control the flow through each tissue, and why the balance between dilators such as NO and constrictors such as noradrenaline matters so much.</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="chapter" id="s4-write" data-num="3" data-title="Write your essay" data-bench="exam" hidden>
+  <h1>Write your essay, and hand it in</h1>
+  <div class="meta-row"><span class="pill time">≈ 45 min</span></div>
+  <p class="lede">This is the work to hand in this week. As before, you write it in Supervision work, as you will in the online exam, and then hand it in from the same page. It goes straight into my Google Drive.</p>
+
+<p class="essay-title">“Explain how the structural and electrical properties of cardiac muscle enable coordinated, rhythmic pumping of blood while allowing relaxation between beats.”</p>
+
+<h2 id="es4-title">Thinking about the title</h2>
+<p>The title asks how the properties of cardiac muscle make three things possible. The pumping has to be <b>coordinated</b>, with every cell contracting together and in the right order. It has to be <b>rhythmic</b>, with a beat that starts itself, at a rate that can change. And the heart has to <b>relax between beats</b>, so that it can fill. A good essay is organised around those demands, and shows which structural and electrical properties meet each one, rather than describing the heart from top to bottom. These questions might help you plan.</p>
+<ul>
+<li><b>Coordinated.</b> How do the junctions between the cells, and the conduction system, make the atria and then the ventricles contract as units, and in the right order? Chapter 1 has some numbers for this.</li>
+<li><b>Rhythmic.</b> Where does each beat start, what makes the pacemaker cells fire on their own, and how do the autonomic nerves change the rate?</li>
+<li><b>Pumping.</b> How does an action potential become a contraction in a cardiac muscle cell, and how is the force of a beat graded, when every cell contracts every time?</li>
+<li><b>Relaxation.</b> What stops the heart from being tetanised, and what has to happen for it to relax and fill? Why does relaxing need energy?</li>
+<li><b>The whole cycle.</b> How do the valves, which open and close passively, turn these contractions into one-way flow?</li>
+</ul>
+<p>Comparing cardiac muscle with skeletal muscle, which you wrote about last week, can help, but only where the comparison explains something about the heart.</p>
+
+<h2 id="es4-before">Before you start</h2>
+<ul>
+<li>Look back at the feedback on your earlier essays, and pick one thing to do better this time. If you’d like a reminder of the six criteria I mark against, they’re in <a href="supervision-1.html#s1-marking" target="_blank" rel="noopener">Supervision 1, chapter 4</a>.</li>
+<li>Revise the lectures first if you like. Then put your notes away and find about 45 minutes when you won’t be interrupted.</li>
+<li>Make sure you have the <b>hand-in password</b> I gave you, because you’ll need it at the end. You won’t find it anywhere on this site.</li>
+<li>Give yourself about <b>40 minutes</b>, as you would in the exam, and spend the first five of them planning. The clock at the top of the paper tells you when you reach 40 minutes.</li>
+<li>A diagram can save you a lot of words in this essay: the conduction system of the heart, say, or a ventricular action potential with its phases, or the events of the cardiac cycle. Draw it with <b>Insert drawing</b> (the pencil), or draw it on paper and add a photo of it with <b>Insert picture</b>. Type a caption under it, and refer to it in your text.</li>
+</ul>
+<div class="activity">
+  <div class="act-t">Write it, and hand it in</div>
+  <ol class="steps">
+    <li data-task="es4-start" data-auto="exam:start paper=s4-essay" data-check="paper:s4-essay.started">Open the essay <button class="do showme" type="button" data-exam="s4-essay">show me</button>, read its first page, and press <b>Start</b> when you’re ready to write.</li>
+    <li data-task="es4-write" data-auto="exam:words paper=s4-essay words&gt;299">Plan, then write. Aim for an introduction that says what your essay will argue, paragraphs that each make one point and show how it helps to answer the question, and a conclusion that draws them together.</li>
+    <li data-task="es4-submit" data-auto="exam:submit paper=s4-essay" data-check="paper:s4-essay.submitted">When you’ve finished, go to the submission page (the ✓ tile at the bottom right), check your essay and submit it.</li>
+    <li data-task="es4-send" data-auto="exam:handin paper=s4-essay step=confirmed" data-check="paper:s4-essay.handedIn">Hand it in on the page that comes up next. Type in the hand-in password and press <b>Hand it in</b>. The page shows you a receipt once your essay has arrived.</li>
+    <li data-task="es4-word" data-auto="exam:download paper=s4-essay format=docx" data-check="paper:s4-essay.downloaded">To keep a copy, press <b>Download your copy</b> (before you hand in, it’s called <b>Download a copy for yourself</b>, under the password box). The copy is saved as a Word document in your Downloads folder.</li>
+  </ol>
+</div>
+<div class="callout info">
+  <div class="co-t">Handing in</div>
+  <p>Your essay goes straight from this page into my Google Drive, and you don’t need a Google account for that. The hand-in password I give you stops anyone else from handing work in, so please keep it to yourself. Once your essay has arrived, the page tells you so and gives you a receipt. If it can’t be handed in, the page will tell you why. If you try again and it still won’t go, download a copy and send it to me some other way.</p>
+</div>
+<div class="callout info">
+  <div class="co-t">After you’ve handed it in</div>
+  <p>Once you’ve submitted, <b>Review my answers</b> shows you the ground a good answer would cover. Read it after you’ve handed your essay in, and make a note of what you’d add or change. That’s what we’ll talk about in the supervision.</p><p>Your essay is kept in this browser, in Files → <code>essays</code>. It won’t be there on another computer, and some shared computers clear it when you log out, so download a copy before you finish.</p>
+</div>
+<div class="q" data-q="es4-q-next">
+  <div class="q-text">Once you’ve read the guidance, which of the three demands, coordination, rhythm or relaxation, did your essay deal with least well, and what would you add?</div>
+  <div class="q-model">There’s no single right answer here, so bring yours to the supervision. Many essays on this title describe the action potential and excitation–contraction coupling in detail, but say little about relaxation, which the title asks for in so many words: the long refractory period that prevents tetanus, the removal of Ca²⁺ by SERCA and the Na⁺/Ca²⁺ exchanger, and why that needs energy. Others list the properties of cardiac muscle without saying what each one does for the heart as a pump, which is what the title asks.</div>
+</div>
+
+</section>
+
+<section class="chapter" id="s4-more" data-num="4" data-title="More practice" data-bench="exam" hidden>
+  <h1>More practice: short answers and revision</h1>
+  <p class="lede">This chapter is optional. It has three short-answer questions on this week’s lectures, and two more essay titles to note down for revision. Only the essay needs to be handed in.</p>
+
+<h2 id="m4-saq">Short-answer questions</h2>
+<p>These three go with this week’s lectures, one with each. Each is marked out of five, so answer in bullet points and aim for at least five separate points.</p>
+<ol class="titles"><li>A left ventricle has an EDV of 120 mL and an ESV of 50 mL. Sketch and label its pressure–volume loop. Identify the four valve events and the phases during which both valves are closed. Calculate stroke volume and indicate when S1 and S2 occur.</li><li>What factors influence water movement between plasma and interstitial fluid?</li><li>Explain how the endothelium can cause vasodilatation of arterioles.</li></ol>
+<p>They have a paper of their own in Supervision work <button class="do showme" type="button" data-exam="s4-saqs">open them</button>. There’s no time limit, but about 10 minutes for each is a good aim. Sketch the loop for the first one with <b>Insert drawing</b> (the pencil), or draw it on paper and add a photo of it with <b>Insert picture</b>. After you submit, <b>Review my answers</b> shows you what a good answer covers.</p>
+
+<h2 id="m4-rev">Essay titles for revision</h2>
+<p>It’s worth noting these down. They go with Dr Fraser’s two lectures, and they’re the kind of title you could meet in the exam.</p>
+<ol class="titles"><li>Discuss the factors that govern the exchange of solutes and water across the capillary wall, and explain how disturbances of these factors can lead to oedema.</li><li>Arteriolar resistance must meet the needs of individual tissues while also maintaining arterial blood pressure. Discuss how these demands may conflict and how they are reconciled.</li></ol>
+<p>Planning an answer to each one (your argument, your evidence, and the order you’d put them in) is good revision. You could also write one up in Supervision work <button class="do showme" type="button" data-exam="s4-revision">open them</button> in 40 minutes, for practice. After you submit, the guidance shows you the ground each title should cover.</p>
+<div class="optional">
+<h2>Practice</h2>
+<div class="activity">
+  <div class="act-t">If you want the practice</div>
+  <ol class="steps">
+    <li data-task="m4-saq" data-auto="exam:submit paper=s4-saqs">Answer one or more of the short-answer questions, and submit them.</li>
+    <li data-task="m4-plan">Plan an answer to one of the revision titles. Sum up your position in a sentence, then jot down the three or four points, with the evidence for each, that would support it.</li>
+  </ol>
+</div>
+</div>
+
+</section>
+<!--/CHAPTERS-->
+    </aside>
+
+    <div class="splitter" role="separator" aria-orientation="vertical" title="Drag to resize, or double-click to reset"></div>
+
+    <section class="bench" aria-label="Workbench">
+      <div class="wb-tabs" role="tablist">
+        <button class="wb-tab rail-btn" type="button" id="tutRail" title="Show the instructions (Ctrl+\)" hidden><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M13 10l2 2-2 2"/></svg><span>Instructions</span></button>
+        <button class="wb-tab on" type="button" role="tab" data-wb="exam" title="Supervision work: the essay and the questions set for your supervision, written as in the online exam"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3H6.5A2.5 2.5 0 0 0 4 5.5v13A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg><span class="lbl">Supervision work</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="scope" title="A virtual microscope with slides of human tissues"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9.5 2.8l3.6 1.4-3 7.6-3.6-1.4z"/><path d="M7.7 12.4l-.9 2.2"/><path d="M4 16.5h9"/><path d="M13.6 7.6a6.5 6.5 0 0 1 1.9 11.2"/><path d="M5 21h14"/><path d="M15.5 18.8V21"/></svg><span class="lbl">Microscope</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="anatomy" title="The anatomy of the human body in 3D (from Z-Anatomy)"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="4.6" r="2.3"/><path d="M12 7.6v6.6M6.2 10.6L12 8.8l5.8 1.8M8.8 21l3.2-6.8 3.2 6.8"/></svg><span class="lbl">Anatomy</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="viewer" title="Proteins and other molecules in 3D"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="6" cy="7" r="2.6"/><circle cx="18" cy="7" r="2.6"/><circle cx="12" cy="17.5" r="2.6"/><path d="M8.6 7h6.8M7.3 9.3l3.4 5.9M16.7 9.3l-3.4 5.9"/></svg><span class="lbl">Molecules</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="recorder" title="A chart recorder with real recordings of people (the ECG, heart sounds, blood pressure, breathing, muscle and the brain), from PhysioNet"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M6 13h2.5l1.5-4.5 2.5 8 1.8-5.5 1 2H18"/></svg><span class="lbl">Recorder</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="bath" title="An organ bath: isolated tissues, drugs and concentration–response curves"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5.5 3h13"/><path d="M7 3v13.5A4.5 4.5 0 0 0 11.5 21h1a4.5 4.5 0 0 0 4.5-4.5V3"/><path d="M12 3v4.5"/><rect x="10.7" y="7.5" width="2.6" height="6" rx="1.3"/><path d="M9.3 17.6h.01M14.4 16.4h.01M11.8 18.9h.01"/></svg><span class="lbl">Organ bath</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="flow" title="Flow diagrams of physiological control, with a simulator"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="5" rx="1.2"/><rect x="14" y="3" width="7" height="5" rx="1.2"/><rect x="14" y="16" width="7" height="5" rx="1.2"/><path d="M10 5.5h4M17.5 8v8M14 18.5H7.5a1.5 1.5 0 0 1-1.5-1.5V8"/></svg><span class="lbl">Diagrams</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="circuit" title="Electrical circuits, and the circuit models of physiology"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12h3.5l1.7-4 2.6 8 2.6-8 2.6 8 1.7-4H22"/></svg><span class="lbl">Circuits</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="sims" title="Interactive simulations from PhET (University of Colorado Boulder)"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h8.5M16.5 6H20M4 12h2.5M10.5 12H20M4 18h10.5M18.5 18H20"/><circle cx="14.5" cy="6" r="2"/><circle cx="8.5" cy="12" r="2"/><circle cx="16.5" cy="18" r="2"/></svg><span class="lbl">Simulations</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="rstudio" title="RStudio, for analysing data in R"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/></svg><span class="lbl">RStudio</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="editor" title="Your files"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H7l-4 9z"/><path d="M3 19l3.5-8H22l-3.5 8z"/></svg><span class="lbl">Files</span><span class="dot"></span></button>
+        <button class="bench-close" type="button" aria-label="Back to the instructions" title="Back to the instructions">✕<span class="lbl">Instructions</span></button>
+      </div>
+      <div class="wb-body">
+        <div class="wb-pane" data-wb="scope" hidden><div id="scopeRoot"></div></div>
+        <div class="wb-pane" data-wb="anatomy" hidden><div id="anatRoot"></div></div>
+        <div class="wb-pane" data-wb="viewer" hidden><div id="viewerRoot"></div></div>
+        <div class="wb-pane" data-wb="recorder" hidden><div id="recRoot"></div></div>
+        <div class="wb-pane" data-wb="bath" hidden><div id="bathRoot"></div></div>
+        <div class="wb-pane" data-wb="flow" hidden><div id="flowRoot"></div></div>
+        <div class="wb-pane" data-wb="circuit" hidden><div id="circuitRoot"></div></div>
+        <div class="wb-pane" data-wb="sims" hidden><div id="simsRoot"></div></div>
+        <div class="wb-pane" data-wb="exam"><div id="examRoot"></div></div>
+        <div class="wb-pane" data-wb="rstudio" hidden><div id="rsRoot"></div></div>
+        <div class="wb-pane" data-wb="editor" hidden><div id="edRoot"></div></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<button class="bench-fab" type="button" aria-label="Open the workbench"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/></svg>Workbench</button>
+<noscript><p style="padding:20px">This page needs JavaScript.</p></noscript>
+
+<script>window.BMS_STARTERS = [{"p":"data/heart-rate-24h.csv","s":12626}];
+window.BMS_STARTERS_VERSION = 1;</script>
+<script>window.BMS_PAGE = {"week": 4, "page": "supervision-4.html", "title": "Supervision 4"};</script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/vfs.js"></script>
+<script src="assets/js/project.js"></script>
+<script src="assets/vendor/codemirror/codemirror.js"></script>
+<script src="assets/vendor/codemirror/r.js"></script>
+<script src="assets/vendor/codemirror/markdown.js"></script>
+<script src="assets/vendor/codemirror/yaml.js"></script>
+<script src="assets/vendor/codemirror/shell.js"></script>
+<script src="assets/vendor/codemirror/javascript.js"></script>
+<script src="assets/vendor/codemirror/python.js"></script>
+<script src="assets/vendor/codemirror/overlay.js"></script>
+<script src="assets/vendor/codemirror/multiplex.js"></script>
+<script src="assets/vendor/codemirror/yaml-frontmatter.js"></script>
+<script src="assets/vendor/codemirror/rmarkdown.js"></script>
+<script src="assets/vendor/codemirror/matchbrackets.js"></script>
+<script src="assets/vendor/codemirror/closebrackets.js"></script>
+<script src="assets/vendor/codemirror/comment.js"></script>
+<script src="assets/vendor/codemirror/searchcursor.js"></script>
+<script src="assets/vendor/codemirror/active-line.js"></script>
+<script src="assets/vendor/codemirror/runmode.js"></script>
+<script src="assets/vendor/dompurify/purify.min.js"></script>
+<script src="assets/vendor/marked/marked.min.js"></script>
+<script src="assets/js/rsession.js"></script>
+<script src="assets/js/rui.js"></script>
+<script src="assets/js/dataview.js"></script>
+<script src="assets/js/knit.js"></script>
+<script src="assets/js/rstudio.js"></script>
+<script src="assets/js/rsource.js"></script>
+<script src="assets/js/shiny.js"></script>
+<script src="assets/js/pdfview.js"></script>
+<script src="assets/js/editor.js"></script>
+<script src="assets/js/page.js"></script>
+<script src="assets/js/tutorial.js"></script>
+<script src="assets/js/workbench.js"></script>
+</body>
+</html>

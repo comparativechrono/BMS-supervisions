@@ -143,6 +143,45 @@
    "questions": 3,
    "description": "Three more essay titles from this week’s lectures. Note them down for revision, and write any of them here for practice.",
    "order": 3
+  },
+  {
+   "id": "s4-essay",
+   "file": "s4-essay.json",
+   "title": "Supervision 4 essay",
+   "kind": "practice",
+   "minutes": null,
+   "suggestedMinutes": 40,
+   "week": 4,
+   "required": true,
+   "questions": 1,
+   "description": "Explain how the structural and electrical properties of cardiac muscle enable coordinated, rhythmic pumping of blood while allowing relaxation between beats.",
+   "order": 1
+  },
+  {
+   "id": "s4-saqs",
+   "file": "s4-saqs.json",
+   "title": "Supervision 4 short-answer questions",
+   "kind": "practice",
+   "minutes": null,
+   "suggestedMinutes": 30,
+   "week": 4,
+   "required": false,
+   "questions": 3,
+   "description": "Three short-answer questions (SAQs) on this week’s lectures. They’re for practice, not to hand in.",
+   "order": 2
+  },
+  {
+   "id": "s4-revision",
+   "file": "s4-revision.json",
+   "title": "Essay titles for revision",
+   "kind": "practice",
+   "minutes": null,
+   "suggestedMinutes": null,
+   "week": 4,
+   "required": false,
+   "questions": 2,
+   "description": "Two more essay titles from this week’s lectures. Note them down for revision, and write either of them here for practice.",
+   "order": 3
   }
  ]
 }
