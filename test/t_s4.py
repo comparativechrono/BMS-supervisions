@@ -137,7 +137,7 @@ check(t4[0] == 'supervision-4.html' and t4[1], f'tile 4 opens Supervision 4’s 
 check('The heart and the circulation' in t4[2] and 'To hand in: an essay on how cardiac muscle makes the heart a rhythmic pump' in t4[2]
       and 'Essay not started yet' in t4[2], f'it names the topic and the essay to hand in, and nothing is started: {t4[2][:300]!r}')
 rest = p.js("() => [...document.querySelectorAll('.tile')].slice(4).map(t => t.getAttribute('href') + (t.classList.contains('soon') ? ':soon' : ''))")
-check(rest == ['workbench.html:soon'] * 4, f'Supervisions 5 to 8 are still to come: {rest}')
+check(rest == ['supervision-5.html'] + ['workbench.html:soon'] * 3, f'Supervision 5 has its own page, and 6 to 8 are still to come: {rest}')
 p.js(f"() => MG.user.setFullName('{NAME}')")
 
 # ====================================================================== Supervision 4's page
@@ -151,7 +151,7 @@ p.wait("() => document.querySelectorAll('.ex-card').length >= 11", timeout=30000
 cards = p.js("() => [...document.querySelectorAll('.ex-card')].filter(c => !c.closest('details')).map(c => c.dataset.paper + ':' + (c.querySelector('.ex-badge') ? c.querySelector('.ex-badge').textContent : ''))")
 check(cards[:3] == ['s4-essay:To hand in', 's4-saqs:Optional', 's4-revision:Optional'], f'this week’s papers come first, the essay to hand in at the top: {cards[:3]}')
 others = p.js("() => [...document.querySelectorAll('details.ex-others .ex-card')].map(c => c.dataset.paper)")
-check(others == ['s1-essay', 's1-saqs', 's1-revision', 's2-work', 's2-revision', 's3-essay', 's3-saqs', 's3-revision'],
+check(others == ['s1-essay', 's1-saqs', 's1-revision', 's2-work', 's2-revision', 's3-essay', 's3-saqs', 's3-revision', 's5-essay', 's5-saqs', 's5-revision'],
       f'the earlier weeks’ papers are kept apart: {others}')
 meta = p.js("() => document.querySelector('.ex-card[data-paper=\"s4-essay\"] .ex-cmeta').textContent")
 check('No time limit (about 40 minutes suggested)' in meta, f'the essay has no time limit, and suggests 40 minutes: {meta}')

@@ -130,6 +130,14 @@
    "description": "The two-element Windkessel model. The heart pumps blood into the aorta in pulses (a flow source, 75 beats a minute, about 70 mL a beat); the aortic valve lets it through one way only. The elastic arteries store blood as they stretch (a compliance, 1 mL/mmHg) and the arterioles resist its flow out to the tissues (the peripheral resistance, 1.1 mmHg·s/mL). Run it: the aortic pressure swings between about 75 mmHg (diastolic) and 125 mmHg (systolic), and blood keeps flowing to the tissues between beats – smoothed, though it still rises and falls with each beat – even though the heart pumps in bursts. Make the arteries stiffer (lower the compliance) and watch the pulse pressure grow.",
    "group": "Physiology",
    "order": 7
+  },
+  {
+   "id": "exercise-circulation",
+   "file": "circuits/exercise-circulation.circuit.json",
+   "title": "Exercise and venous return (Guyton’s model)",
+   "description": "Dr Fraser’s two equations, drawn as a circuit. Venous return is driven by the mean systemic filling pressure (MSFP, a pressure source here) through the resistance to venous return (RvR): VR = (MSFP − RAP) / RvR. The heart (a flow source) pumps it into the arteries, and it flows back through the arterioles (the total peripheral resistance, TPR), so that ABP = CO × TPR. At rest the heart pumps 83.3 mL/s (5 L/min), RAP is close to 0 and ABP is 93 mmHg. Then exercise: close <b>Exercising muscles</b>, which lowers TPR to a fifth, and see what the heart, venoconstriction (a higher MSFP) and the <b>Muscle pump</b> (which halves RvR) must do to keep ABP up while RAP stays close to 0. The veins of this model are rigid, so RAP can fall as far as the heart pulls it; real veins collapse once the pressure in them falls 1 or 2 mmHg below zero.",
+   "group": "Physiology",
+   "order": 8
   }
  ]
 }

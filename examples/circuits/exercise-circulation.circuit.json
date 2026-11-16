@@ -1,0 +1,245 @@
+{
+ "format": "bms-circuit-1",
+ "title": "Exercise and venous return (Guyton’s model)",
+ "group": "Physiology",
+ "order": 8,
+ "mode": "physiology",
+ "description": "Dr Fraser’s two equations, drawn as a circuit. Venous return is driven by the mean systemic filling pressure (MSFP, a pressure source here) through the resistance to venous return (RvR): VR = (MSFP − RAP) / RvR. The heart (a flow source) pumps it into the arteries, and it flows back through the arterioles (the total peripheral resistance, TPR), so that ABP = CO × TPR. At rest the heart pumps 83.3 mL/s (5 L/min), RAP is close to 0 and ABP is 93 mmHg. Then exercise: close <b>Exercising muscles</b>, which lowers TPR to a fifth, and see what the heart, venoconstriction (a higher MSFP) and the <b>Muscle pump</b> (which halves RvR) must do to keep ABP up while RAP stays close to 0. The veins of this model are rigid, so RAP can fall as far as the heart pulls it; real veins collapse once the pressure in them falls 1 or 2 mmHg below zero.",
+ "elements": [
+  {
+   "id": "VM1",
+   "type": "voltmeter",
+   "x1": 0,
+   "y1": 20,
+   "x2": 0,
+   "y2": 6,
+   "label": "MSFP",
+   "labelPos": "left"
+  },
+  {
+   "id": "W1",
+   "type": "wire",
+   "x1": 0,
+   "y1": 6,
+   "x2": 6,
+   "y2": 6
+  },
+  {
+   "id": "W2",
+   "type": "wire",
+   "x1": 0,
+   "y1": 20,
+   "x2": 6,
+   "y2": 20
+  },
+  {
+   "id": "V1",
+   "type": "battery",
+   "x1": 6,
+   "y1": 20,
+   "x2": 6,
+   "y2": 6,
+   "value": 7,
+   "label": "Mean systemic filling pressure",
+   "labelPos": "right"
+  },
+  {
+   "id": "W3",
+   "type": "wire",
+   "x1": 6,
+   "y1": 6,
+   "x2": 12,
+   "y2": 6
+  },
+  {
+   "id": "R1",
+   "type": "resistor",
+   "x1": 12,
+   "y1": 6,
+   "x2": 18,
+   "y2": 6,
+   "value": 0.084,
+   "label": "RvR",
+   "labelPos": "below"
+  },
+  {
+   "id": "W4",
+   "type": "wire",
+   "x1": 12,
+   "y1": 6,
+   "x2": 12,
+   "y2": 2
+  },
+  {
+   "id": "S1",
+   "type": "switch",
+   "x1": 12,
+   "y1": 2,
+   "x2": 15,
+   "y2": 2,
+   "closed": false,
+   "label": "Muscle pump",
+   "labelPos": "above"
+  },
+  {
+   "id": "R2",
+   "type": "resistor",
+   "x1": 15,
+   "y1": 2,
+   "x2": 18,
+   "y2": 2,
+   "value": 0.084,
+   "label": "",
+   "labelPos": "none"
+  },
+  {
+   "id": "W5",
+   "type": "wire",
+   "x1": 18,
+   "y1": 2,
+   "x2": 18,
+   "y2": 6
+  },
+  {
+   "id": "W6",
+   "type": "wire",
+   "x1": 18,
+   "y1": 6,
+   "x2": 21,
+   "y2": 6
+  },
+  {
+   "id": "AM1",
+   "type": "ammeter",
+   "x1": 21,
+   "y1": 6,
+   "x2": 26,
+   "y2": 6,
+   "label": "Venous return",
+   "labelPos": "above"
+  },
+  {
+   "id": "W7",
+   "type": "wire",
+   "x1": 26,
+   "y1": 6,
+   "x2": 32,
+   "y2": 6
+  },
+  {
+   "id": "VM2",
+   "type": "voltmeter",
+   "x1": 29,
+   "y1": 20,
+   "x2": 29,
+   "y2": 6,
+   "label": "RAP",
+   "labelPos": "right"
+  },
+  {
+   "id": "I1",
+   "type": "isource",
+   "x1": 32,
+   "y1": 6,
+   "x2": 38,
+   "y2": 6,
+   "value": 83.3,
+   "label": "Heart",
+   "labelPos": "above"
+  },
+  {
+   "id": "AM2",
+   "type": "ammeter",
+   "x1": 38,
+   "y1": 6,
+   "x2": 43,
+   "y2": 6,
+   "label": "Cardiac output",
+   "labelPos": "above"
+  },
+  {
+   "id": "W8",
+   "type": "wire",
+   "x1": 43,
+   "y1": 6,
+   "x2": 68,
+   "y2": 6
+  },
+  {
+   "id": "R3",
+   "type": "resistor",
+   "x1": 47,
+   "y1": 6,
+   "x2": 47,
+   "y2": 20,
+   "value": 1.116,
+   "label": "Arterioles at rest",
+   "labelPos": "right"
+  },
+  {
+   "id": "S2",
+   "type": "switch",
+   "x1": 55,
+   "y1": 6,
+   "x2": 55,
+   "y2": 11,
+   "closed": false,
+   "label": "Exercising muscles",
+   "labelPos": "right"
+  },
+  {
+   "id": "R4",
+   "type": "resistor",
+   "x1": 55,
+   "y1": 11,
+   "x2": 55,
+   "y2": 20,
+   "value": 0.279,
+   "label": "Their dilated arterioles",
+   "labelPos": "right"
+  },
+  {
+   "id": "VM3",
+   "type": "voltmeter",
+   "x1": 68,
+   "y1": 20,
+   "x2": 68,
+   "y2": 6,
+   "label": "ABP",
+   "labelPos": "right"
+  },
+  {
+   "id": "W9",
+   "type": "wire",
+   "x1": 6,
+   "y1": 20,
+   "x2": 68,
+   "y2": 20
+  },
+  {
+   "id": "GND1",
+   "type": "ground",
+   "x1": 6,
+   "y1": 20,
+   "x2": 6,
+   "y2": 21
+  }
+ ],
+ "traces": [
+  {
+   "kind": "v",
+   "id": "VM3"
+  },
+  {
+   "kind": "v",
+   "id": "VM2"
+  },
+  {
+   "kind": "i",
+   "id": "AM2"
+  }
+ ],
+ "settings": {
+  "window": "auto"
+ }
+}

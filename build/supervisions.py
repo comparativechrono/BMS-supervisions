@@ -87,7 +87,24 @@ SUPERVISIONS = [
         'handin_noun': 'Essay',
         'time': 'About 40 minutes for the essay, and half an hour for the optional exercises',
     },
+    {
+        'n': 5, 'status': 'ready', 'page': 'supervision-5.html', 'data_page': 'supervision-5', 'module': 's5',
+        'title': 'Supervision 5', 'topic': 'Cardiac output, blood pressure and exercise',
+        'subtitle': 'Supervision 5: cardiac output, blood pressure and exercise',
+        'description': 'Supervision 5 of NST IA Biomedical Sciences covers what sets the cardiac output, how the arterial '
+                       'blood pressure is controlled, and the circulation under stress: exercise, haemorrhage and hypoxia. '
+                       'There’s an essay to hand in, written as in the online exam, that asks you to use the equations of '
+                       'the circulation, and optional exercises in the workbench.',
+        'card': 'Venous return and cardiac output, the control of arterial blood pressure, and the circulation in '
+                'exercise, haemorrhage and hypoxia, with the equations that tie them together.',
+        'handin': 'Describe the cardiovascular responses during sustained exercise. What limits maximal exercise '
+                  'performance under these conditions?',
+        'handin_short': 'an essay on the circulation in sustained exercise, and what limits it',
+        'handin_paper': 's5-essay',
+        'handin_noun': 'Essay',
+        'time': 'About 50 minutes for the essay, and half an hour for the optional exercises',
+    },
 ] + [
     {'n': n, 'status': 'soon', 'page': GUIDE['page'], 'title': f'Supervision {n}', 'topic': '', 'card': '', 'time': ''}
-    for n in range(5, 9)
+    for n in range(6, 9)
 ]
