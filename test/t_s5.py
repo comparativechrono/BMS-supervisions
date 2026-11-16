@@ -280,7 +280,8 @@ check(abs(rap) < 0.2 and abs(mt['ABP'] - 93) < 0.5 and abs(mt['Venous return'] -
       f'with MSFP 2.5-fold and RvR halved, 417 mL/s returns with RAP at 0 and ABP 93, as the model answer says: {mt}')
 p.shot('s5-model-exercise')
 txt = model('md-q-vr', 'MSFP up 2.5-fold and RvR halved: venous return five-fold, RAP 0.')
-check('RAP is back to about 0 mmHg and ABP to 93 mmHg' in txt and '2.5 × 2 = 5-fold' in txt, 'the model answer works through the venous return equation')
+check('RAP is back to about 0 mmHg' in txt and 'ABP stays at 93 mmHg' in txt and '2.5 × 2 = 5-fold' in txt and 'other way round' in txt,
+      'the model answer works through the venous return equation, and says how the body differs from the model')
 check(mcq_right('md-q-max'), 'md-q-max: MSFP and RvR set the highest cardiac output')
 # a haemorrhage
 p.js(f"() => {{ {CI}.toggleSwitch({el('S1')}); {CI}.toggleSwitch({el('S2')}); }}")
@@ -395,8 +396,9 @@ rv = p.js("() => document.querySelector('.ex-review').innerText")
 check(all(k in rv for k in ('functional hyperaemia', 'five-fold', '2.5 × 2 = 5', 'Fick principle', 'two legs', 'reset', 'Using the equations', 'Against the core criteria')),
       'Review my answers shows the guidance, carried by the equations, on the responses and the limits')
 svg = p.js("() => { const s = document.querySelector('.ex-review svg'); if (!s) return null; const b = s.getBoundingClientRect(); return {lines: s.querySelectorAll('polyline').length, w: b.width, h: b.height, text: s.textContent}; }")
-check(svg and svg['lines'] == 4 and svg['w'] > 250 and svg['h'] > 150 and all(k in svg['text'] for k in ('MSFP 7', 'MSFP 17.5', 'A', 'C', 'D', 'cardiac function', 'venous return')),
+check(svg and svg['lines'] == 4 and svg['w'] > 250 and svg['h'] > 150 and all(k in svg['text'] for k in ('MSFP 7', 'MSFP 17.5', 'A', 'B', 'C', 'D', 'cardiac function', 'venous return')),
       f'and draws Guyton’s curves at rest and in exercise: {svg and {k: v for k, v in svg.items() if k != "text"}}')
+check(not re.search(r'\{[A-Z][A-Za-z0-9]*\}', rv), 'no placeholder is left unfilled in the guidance')
 p.shot('s5-essay-review')
 P.locator('.q[data-q="es5-q-next"] textarea').fill('I quoted ABP = CO × TPR but never used VR = (MSFP − RAP) / RvR to explain why the heart alone cannot raise CO.')
 time.sleep(0.6)
@@ -439,6 +441,7 @@ p.wait("() => document.querySelector('.ex-review')", timeout=10000)
 rv = p.js("() => document.querySelector('.ex-review').innerText")
 check(all(k in rv for k in ('Cowley and Guyton', '120 − 80 = 40 mmHg', '80 + 40/3 ≈ 93 mmHg', 'diving reflex', 'flow × concentration')),
       'and their guidance covers the three questions')
+check(not re.search(r'\{[A-Z][A-Za-z0-9]*\}', rv), 'with no placeholder left unfilled')
 p.shot('s5-saq-review')
 click('.ex-revbar button:has-text("Back")')
 time.sleep(0.5)
